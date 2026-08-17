@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.strife</groupId>
+        <artifactId>strife-parent</artifactId>
+        <version>0.1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>realtime-gateway</artifactId>
+    <packaging>jar</packaging>
+    <name>realtime-gateway</name>
+    <description>Connexions WebSocket, diffusion temps réel, presence via Redis. Voir doc/adr/0009, 0012.</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <!--
+            Squelette minimal volontairement : pas de JPA/AMQP/sécurité pré-ajoutés,
+            pour que ces choix (et leur configuration) restent un exercice.
+            Dépendances probables à ajouter toi-même pour ce service :
+            spring-boot-starter-websocket, spring-boot-starter-data-redis, spring-boot-starter-amqp
+        -->
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+</project>

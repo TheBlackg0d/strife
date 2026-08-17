@@ -1,0 +1,57 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: strife-rabbitmq
+    ports:
+      - "5672:5672"   # protocole AMQP (utilisé par les services)
+      - "15672:15672" # interface de gestion web — http://localhost:15672
+    environment:
+      RABBITMQ_DEFAULT_USER: strife
+      RABBITMQ_DEFAULT_PASS: strife
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    networks:
+      - strife-net
+
+  postgres:
+    image: postgres:16
+    container_name: strife-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: strife
+      POSTGRES_PASSWORD: strife
+      POSTGRES_DB: postgres
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./infra/postgres/init-databases.sh:/docker-entrypoint-initdb.d/init-databases.sh:ro
+    networks:
+      - strife-net
+
+  redis:
+    image: redis:7
+    container_name: strife-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - strife-net
+
+volumes:
+  rabbitmq-data:
+  postgres-data:
+  redis-data:
+
+networks:
+  strife-net:
+    driver: bridge
+
+# Note sur l'isolation réseau (voir doc/adr/0012-network-isolation-and-gateway-trust.md) :
+# ce docker-compose ne fournit QUE l'infrastructure (broker, bases de données, cache) pour
+# le développement local — les ports sont publiés vers l'hôte par confort (inspecter RabbitMQ
+# via l'UI de gestion, se connecter aux DB avec un client, etc.). Il ne contient pas encore
+# les services applicatifs eux-mêmes. Quand tu les ajouteras (une fois chaque service prêt à
+# être conteneurisé), le modèle décrit dans l'ADR-0012 s'appliquera : seuls API Gateway et
+# Realtime Gateway auront un port publié, les autres services applicatifs resteront internes
+# au réseau Docker.

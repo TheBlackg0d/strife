@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.strife</groupId>
+    <artifactId>strife-parent</artifactId>
+    <version>0.1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>strife-parent</name>
+    <description>Parent POM for the Strife microservices — see doc/architecture/services-overview.md</description>
+
+    <!--
+        Ce POM parent centralise la version de Java, la version de Spring Boot,
+        et le plugin de build. Chaque module (auth-service, users-service, ...)
+        hérite de ce parent plutôt que de spring-boot-starter-parent directement,
+        pour qu'on ait un seul endroit où bumper les versions.
+    -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <!-- À vérifier/bumper régulièrement : https://spring.io/projects/spring-boot#learn -->
+        <version>3.3.4</version>
+        <relativePath/>
+    </parent>
+
+    <properties>
+        <java.version>21</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <modules>
+        <module>auth-service</module>
+        <module>users-service</module>
+        <module>guild-service</module>
+        <module>messaging-service</module>
+        <module>realtime-gateway</module>
+        <module>api-gateway</module>
+        <module>event-store-service</module>
+    </modules>
+
+</project>
