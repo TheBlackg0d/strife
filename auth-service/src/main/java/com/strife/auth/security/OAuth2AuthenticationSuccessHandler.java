@@ -11,24 +11,20 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.strife.auth.service.AccountService;
+import com.strife.auth.service.TokenRefreshService;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
 
 @Component
+@AllArgsConstructor
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-    private final AccountRepository accountRepository;
     private final JwtUtility jwtUtility;
     private final AccountService accountService;
-
-    public OAuth2AuthenticationSuccessHandler(JwtUtility jwtUtility, AccountService accountService,
-            AccountRepository accountRepository) {
-        this.jwtUtility = jwtUtility;
-        this.accountService = accountService;
-        this.accountRepository = accountRepository;
-    }
+    private final TokenRefreshService tokenRefreshService;
 
     @Override
     public void onAuthenticationSuccess(
@@ -45,14 +41,15 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         String providerUserId = oauth2User.getAttribute("sub");
 
         String token = jwtUtility.generateToken(email);
-
+        String refreshToken = tokenRefreshService.generateRefreshToken(email);
         if (!this.accountService.existsByEmail(email)) {
             this.accountService.createAccountFromOAuth2User(email, providerName, providerUserId);
         }
         this.accountService.addProviderToAccount(email, providerName, providerUserId);
 
         String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:8080")
-                .fragment("token=" + token)
+                .fragment("accessToken=" + token)
+                .fragment("refreshToken=" + refreshToken)
                 .build().toUriString();
 
         clearAuthenticationAttributes(request);
