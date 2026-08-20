@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.strife.auth.dto.ChangePasswordDTO;
 import com.strife.auth.dto.LoginDTO;
 import com.strife.auth.dto.RegisterDTO;
 import com.strife.auth.dto.ResponseDTO;
@@ -44,4 +45,5 @@ public class AuthController {
         accountService.createAccount(registerDTO);
         return ResponseEntity.ok(new ResponseDTO("200", "Account created successfully"));
     }
+
 }

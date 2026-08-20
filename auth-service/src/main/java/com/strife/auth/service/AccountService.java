@@ -6,10 +6,11 @@ import com.strife.auth.repository.ProviderRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.strife.auth.exception.AuthenticationFailedException;
 import com.strife.auth.exception.RessourceAlreadyExistException;
 import com.strife.auth.exception.RessourceDoNotMatchException;
 import com.strife.auth.exception.RessourceNotFoundException;
-
+import com.strife.auth.dto.ChangePasswordDTO;
 import com.strife.auth.dto.RegisterDTO;
 import com.strife.auth.model.Account;
 import com.strife.auth.model.Provider;
@@ -71,5 +72,23 @@ public class AccountService {
 
         this.providerRepository.save(provider);
 
+    }
+
+    public void changePassword(String email, ChangePasswordDTO changePasswordDTO) {
+        Account account = accountRepository.findByEmail(email)
+                .orElseThrow(() -> new RessourceNotFoundException("Account not found"));
+
+        if (account.getPasswordHash() == null) {
+            throw new AuthenticationFailedException("Account has no password");
+        }
+
+        if (!encoder.matches(changePasswordDTO.oldPassword(), account.getPasswordHash())) {
+            throw new AuthenticationFailedException("Old password is incorrect");
+        }
+
+        String hashedNewPassword = encoder.encode(changePasswordDTO.newPassword());
+        account.setPasswordHash(hashedNewPassword);
+
+        accountRepository.save(account);
     }
 }
