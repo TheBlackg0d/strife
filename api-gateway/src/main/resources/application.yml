@@ -1,6 +1,15 @@
 spring:
   application:
     name: api-gateway
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: auth-service
+              uri: lb://auth-service
+              predicates:
+                - Path=/auth/**
 
 server:
   port: 8080
@@ -11,7 +20,5 @@ management:
       exposure:
         include: health,info
 
-# TODO au fur et à mesure que tu construis ce service :
-#   - spring.datasource.* (si ce service a sa propre base de données — voir doc/architecture/services-overview.md)
-#   - spring.rabbitmq.* (host/port/credentials — voir docker-compose.yml à la racine)
-#   - toute autre config spécifique à ce service
+jwt:
+  secret: ${JWT_SECRET}

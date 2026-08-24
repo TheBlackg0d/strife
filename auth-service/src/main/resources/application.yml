@@ -31,7 +31,7 @@ management:
       exposure:
         include: health,info
 jwt:
-  secret: dGhpcy1pcy1hLXZlcnktc2VjdXJlLXNlY3JldC1rZXktZm9yLWp3dC1leGFtcGxlLWtleQ==
+  secret: ${JWT_SECRET}
   expiration: 300000
   refresh-token:
     expiration: 604800

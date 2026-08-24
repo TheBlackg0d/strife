@@ -1,0 +1,6 @@
+include:
+  - ./postgres.yml
+  - ./redis.yml
+  - ./rabbitmq.yml
+
+services:
