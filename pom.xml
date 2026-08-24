@@ -6,7 +6,7 @@
 
     <groupId>com.strife</groupId>
     <artifactId>strife-parent</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>latest</version>
     <packaging>pom</packaging>
     <name>strife-parent</name>
     <description>Parent POM for the Strife microservices — see doc/architecture/services-overview.md</description>
@@ -41,6 +41,22 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+    <!--
+        Le plugin spring-boot-maven-plugin est déclaré ici pour que TOUS les modules
+        en héritent : c'est lui qui "repackage" le jar en fat jar exécutable
+        (java -jar app.jar). Sans lui, target/*.jar n'a pas de manifest Main-Class
+        et l'image Docker démarre sur "no main manifest attribute".
+        Sur ce POM (packaging=pom) le goal repackage est automatiquement ignoré.
+    -->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
     <modules>
         <module>auth-service</module>
         <module>users-service</module>

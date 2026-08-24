@@ -1,4 +1,4 @@
-# Image du service auth-service.
+# Image du service messaging-service.
 #
 # Le jar est construit EN DEHORS de l'image (build multi-modules Maven à la
 # racine du repo) puis simplement copié ici :
@@ -14,5 +14,5 @@ ARG JAR_FILE=target/*.jar
 COPY ${JAR_FILE} /app.jar
 
 USER strife
-EXPOSE 8081
+EXPOSE 8084
 ENTRYPOINT ["java","-jar","/app.jar"]
