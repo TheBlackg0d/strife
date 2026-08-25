@@ -1,0 +1,25 @@
+import type { SVGProps } from "react";
+
+interface IconProps extends Omit<SVGProps<SVGSVGElement>, "color"> {
+  color?: string;
+  size?: number;
+}
+
+const StrifeLogo = ({ color = "#5865F2", size = 30, ...props }: IconProps) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 30 30"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    aria-hidden="true"
+    {...props}
+  >
+    <path
+      d="M7.5 24C7.075 24 6.71875 23.8563 6.43125 23.5688C6.14375 23.2813 6 22.925 6 22.5V19.5H25.5V19.5V6H28.5C28.925 6 29.2813 6.14375 29.5688 6.43125C29.8563 6.71875 30 7.075 30 7.5V30L24 24H7.5V24M0 22.5V1.5C0 1.075 0.14375 0.71875 0.43125 0.43125C0.71875 0.14375 1.075 0 1.5 0H21C21.425 0 21.7813 0.14375 22.0688 0.43125C22.3563 0.71875 22.5 1.075 22.5 1.5V15C22.5 15.425 22.3563 15.7813 22.0688 16.0688C21.7813 16.3563 21.425 16.5 21 16.5H6L0 22.5V22.5"
+      fill={color}
+    />
+  </svg>
+);
+
+export default StrifeLogo;

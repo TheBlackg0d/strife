@@ -1,6 +1,6 @@
 import React from "react";
 
-interface RegisterInputProps {
+interface FormInputProps {
   label: string;
   type: string;
   placeholder: string;
@@ -8,13 +8,13 @@ interface RegisterInputProps {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-function RegisterInput({
+function FormInput({
   label,
   type,
   placeholder,
   value,
   onChange,
-}: RegisterInputProps) {
+}: FormInputProps) {
   return (
     <div className="flex flex-col gap-2 mb-4">
       <label
@@ -35,4 +35,4 @@ function RegisterInput({
   );
 }
 
-export default RegisterInput;
+export default FormInput;

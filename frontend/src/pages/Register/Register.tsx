@@ -1,5 +1,5 @@
 import React from "react";
-import RegisterInput from "../../components/ui/FormInput";
+import FormInput from "../../components/ui/FormInput";
 import HeaderRegister from "../../components/ui/Header";
 import RegisterButton from "../../components/ui/SubmitButton";
 import AuthLink from "../../components/ui/AuthLink";
@@ -11,28 +11,28 @@ function Register() {
     <AuthSection>
       <HeaderRegister />
       <form className="flex flex-col gap-4">
-        <RegisterInput
+        <FormInput
           label="Email"
           type="email"
           placeholder="Enter your email"
           value=""
           onChange={() => {}}
         />
-        <RegisterInput
+        <FormInput
           label="Username"
           type="text"
           placeholder="Enter your username"
           value=""
           onChange={() => {}}
         />
-        <RegisterInput
+        <FormInput
           label="Password"
           type="password"
           placeholder="Enter your password"
           value=""
           onChange={() => {}}
         />
-        <RegisterInput
+        <FormInput
           label="Confirm Password"
           type="password"
           placeholder="Confirm your password"
