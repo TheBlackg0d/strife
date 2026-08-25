@@ -1,4 +1,3 @@
-import React from "react";
 import FormInput from "../../components/ui/FormInput";
 import HeaderRegister from "../../components/ui/Header";
 import RegisterButton from "../../components/ui/SubmitButton";

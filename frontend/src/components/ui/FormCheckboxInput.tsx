@@ -1,4 +1,4 @@
-import React, { Children } from "react";
+import React from "react";
 
 interface CheckboxInputProps {
   checked: boolean;
@@ -12,6 +12,8 @@ function CheckboxInput({ checked, onChange, children }: CheckboxInputProps) {
       <input
         type="checkbox"
         id="terms"
+        checked={checked}
+        onChange={onChange}
         className="mr-2 bg-neutral-900 not-checked:appearance-none accent-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none rounded-sm h-4 w-4"
       />
       <label
