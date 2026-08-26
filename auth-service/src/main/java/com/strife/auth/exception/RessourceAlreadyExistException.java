@@ -6,7 +6,14 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(value = HttpStatus.BAD_REQUEST)
 public class RessourceAlreadyExistException extends RuntimeException {
 
-    public RessourceAlreadyExistException(String message) {
+    private final String fieldName;
+
+    public RessourceAlreadyExistException(String message, String fieldName) {
         super(message);
+        this.fieldName = fieldName;
+    }
+
+    public String getFieldName() {
+        return fieldName;
     }
 }

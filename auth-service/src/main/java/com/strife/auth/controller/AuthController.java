@@ -1,5 +1,7 @@
 package com.strife.auth.controller;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -10,17 +12,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.strife.auth.dto.ChangePasswordDTO;
+import com.strife.auth.dto.AccountDTO;
 import com.strife.auth.dto.LoginDTO;
 import com.strife.auth.dto.RegisterDTO;
-import com.strife.auth.dto.ResponseDTO;
 import com.strife.auth.dto.TokenDTO;
+import com.strife.auth.model.Account;
 import com.strife.auth.model.RedisRefreshToken;
 import com.strife.auth.security.JwtUtility;
 import com.strife.auth.service.AccountService;
 import com.strife.auth.service.TokenRefreshService;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
@@ -30,37 +33,56 @@ import lombok.AllArgsConstructor;
 @Validated
 public class AuthController {
 
-    private AuthenticationManager authenticationManager;
-    private final AccountService accountService;
+        private final AuthenticationManager authenticationManager;
+        private final AccountService accountService;
 
-    private final TokenRefreshService tokenRefreshService;
+        private final TokenRefreshService tokenRefreshService;
 
-    private final JwtUtility jwtUtility;
+        private final JwtUtility jwtUtility;
 
-    @PostMapping("/login")
-    public ResponseEntity<TokenDTO> login(@Valid @RequestBody LoginDTO loginDTO) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginDTO.email(), loginDTO.password()));
-        final UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        @PostMapping("/login")
+        public ResponseEntity<TokenDTO> login(@Valid @RequestBody LoginDTO loginDTO, HttpServletResponse response) {
+                Authentication authentication = authenticationManager.authenticate(
+                                new UsernamePasswordAuthenticationToken(loginDTO.email(), loginDTO.password()));
+                final UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
-        String refreshToken = tokenRefreshService.generateRefreshToken(userDetails.getUsername());
-        String accessToken = jwtUtility.generateToken(userDetails.getUsername());
+                String refreshToken = tokenRefreshService.generateRefreshToken(userDetails.getUsername());
+                String accessToken = jwtUtility.generateToken(userDetails.getUsername());
 
-        return ResponseEntity.ok(new TokenDTO(accessToken, refreshToken));
-    }
+                response.addHeader(HttpHeaders.SET_COOKIE,
+                                tokenRefreshService.generateRefreshTokenCookie(refreshToken).toString());
 
-    @PostMapping("/register")
-    public ResponseEntity<ResponseDTO> register(@Valid @RequestBody RegisterDTO registerDTO) {
-        accountService.createAccount(registerDTO);
-        return ResponseEntity.ok(new ResponseDTO("200", "Account created successfully"));
-    }
+                return ResponseEntity.ok(new TokenDTO(accessToken, new AccountDTO(userDetails.getUsername())));
+        }
 
-    @PostMapping("refresh-token")
-    public ResponseEntity<String> refreshToken(@RequestBody String refreshToken) {
+        @PostMapping("/register")
+        public ResponseEntity<TokenDTO> register(@Valid @RequestBody RegisterDTO registerDTO,
+                        HttpServletResponse response) {
+                Account account = accountService.createAccount(registerDTO);
 
-        RedisRefreshToken redisRefreshToken = tokenRefreshService.getRefreshToken(refreshToken);
+                String refreshToken = tokenRefreshService.generateRefreshToken(account.getEmail());
+                String accessToken = jwtUtility.generateToken(account.getEmail());
 
-        return ResponseEntity.ok(jwtUtility.generateToken(redisRefreshToken.getEmail()));
-    }
+                response.addHeader(HttpHeaders.SET_COOKIE,
+                                tokenRefreshService.generateRefreshTokenCookie(refreshToken).toString());
+
+                return ResponseEntity.ok(new TokenDTO(accessToken, new AccountDTO(account.getEmail())));
+        }
+
+        @PostMapping("refresh-token")
+        public ResponseEntity<TokenDTO> refreshToken(HttpServletRequest request, HttpServletResponse response) {
+
+                RedisRefreshToken redisRefreshToken = tokenRefreshService.verifyRefreshToken(request);
+
+                ResponseCookie refreshTokenCookie = tokenRefreshService
+                                .generateRefreshTokenCookie(redisRefreshToken.getToken());
+
+                response.addHeader(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
+
+                String email = redisRefreshToken.getEmail();
+                String token = jwtUtility.generateToken(email);
+
+                return ResponseEntity.ok(new TokenDTO(token, new AccountDTO(email)));
+        }
 
 }

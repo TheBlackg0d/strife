@@ -42,11 +42,11 @@ public class AccountService {
 
     public Account createAccount(RegisterDTO registerDTO) {
         if (accountRepository.existsByEmail(registerDTO.email())) {
-            throw new RessourceAlreadyExistException("Email already exists");
+            throw new RessourceAlreadyExistException("Email already exists", "email");
         }
 
         if (!registerDTO.password().equals(registerDTO.passwordConfirmation())) {
-            throw new RessourceDoNotMatchException("Passwords do not match");
+            throw new RessourceDoNotMatchException("Passwords do not match", "password");
         }
 
         Account account = new Account();

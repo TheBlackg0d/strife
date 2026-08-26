@@ -9,6 +9,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -26,34 +27,33 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(RessourceAlreadyExistException.class)
     public ResponseEntity<ErrorResponseDTO> handleRessourceAlreadyExistException(
             RessourceAlreadyExistException exception, WebRequest webRequest) {
-        ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO(
-                webRequest.getDescription(false),
-                HttpStatus.BAD_REQUEST,
-                exception.getMessage(),
-                LocalDateTime.now());
-        return new ResponseEntity<>(errorResponseDTO, HttpStatus.BAD_REQUEST);
+        return buildResponse(HttpStatus.BAD_REQUEST, exception.getMessage(),
+                fieldError(exception.getFieldName(), exception.getMessage()), webRequest);
     }
 
     @ExceptionHandler(RessourceDoNotMatchException.class)
     public ResponseEntity<ErrorResponseDTO> handleRessourceDoNotMatchException(
             RessourceDoNotMatchException exception, WebRequest webRequest) {
-        ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO(
-                webRequest.getDescription(false),
-                HttpStatus.BAD_REQUEST,
-                exception.getMessage(),
-                LocalDateTime.now());
-        return new ResponseEntity<>(errorResponseDTO, HttpStatus.BAD_REQUEST);
+        return buildResponse(HttpStatus.BAD_REQUEST, exception.getMessage(),
+                fieldError(exception.getFieldName(), exception.getMessage()), webRequest);
+    }
+
+    @ExceptionHandler(RessourceNotFoundException.class)
+    public ResponseEntity<ErrorResponseDTO> handleRessourceNotFoundException(
+            RessourceNotFoundException exception, WebRequest webRequest) {
+        return buildResponse(HttpStatus.NOT_FOUND, exception.getMessage(), Map.of(), webRequest);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorResponseDTO> handleBadCredentialsException(
+            BadCredentialsException exception, WebRequest webRequest) {
+        return buildResponse(HttpStatus.UNAUTHORIZED, "Invalid email or password", Map.of(), webRequest);
     }
 
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ErrorResponseDTO> handleAuthenticationException(
             AuthenticationException exception, WebRequest webRequest) {
-        ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO(
-                webRequest.getDescription(false),
-                HttpStatus.UNAUTHORIZED,
-                exception.getMessage(),
-                LocalDateTime.now());
-        return new ResponseEntity<>(errorResponseDTO, HttpStatus.UNAUTHORIZED);
+        return buildResponse(HttpStatus.UNAUTHORIZED, exception.getMessage(), Map.of(), webRequest);
     }
 
     @Override
@@ -62,10 +62,37 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         Map<String, String> validationErrors = new HashMap<>();
         List<ObjectError> validationErrorList = ex.getBindingResult().getAllErrors();
         validationErrorList.forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String validationMsg = error.getDefaultMessage();
-            validationErrors.put(fieldName, validationMsg);
+            if (error instanceof FieldError fieldError) {
+                validationErrors.put(fieldError.getField(), fieldError.getDefaultMessage());
+            }
         });
-        return new ResponseEntity<>(validationErrors, HttpStatus.BAD_REQUEST);
+
+        ErrorResponseDTO body = new ErrorResponseDTO(
+                request.getDescription(false),
+                HttpStatus.BAD_REQUEST.value(),
+                "Please fix the errors below",
+                validationErrors,
+                LocalDateTime.now());
+
+        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+    }
+
+    private ResponseEntity<ErrorResponseDTO> buildResponse(HttpStatus status, String message,
+            Map<String, String> fieldErrors, WebRequest webRequest) {
+        ErrorResponseDTO body = new ErrorResponseDTO(
+                webRequest.getDescription(false),
+                status.value(),
+                message,
+                fieldErrors,
+                LocalDateTime.now());
+
+        return new ResponseEntity<>(body, status);
+    }
+
+    private Map<String, String> fieldError(String fieldName, String message) {
+        if (fieldName == null || fieldName.isBlank() || message == null) {
+            return Map.of();
+        }
+        return Map.of(fieldName, message);
     }
 }

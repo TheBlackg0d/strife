@@ -1,13 +1,23 @@
+interface SubmitButtonProps {
+  text?: string;
+  pendingText?: string;
+  isPending?: boolean;
+}
 
-function RegisterButton() {
+function SubmitButton({
+  text = "Register",
+  pendingText = "Please wait...",
+  isPending = false,
+}: SubmitButtonProps) {
   return (
     <button
       type="submit"
-      className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-sm "
+      disabled={isPending}
+      className="bg-blue-500 hover:bg-blue-600 disabled:bg-blue-500/50 disabled:cursor-not-allowed text-white font-bold py-2 px-4 rounded-sm "
     >
-      Register
+      {isPending ? pendingText : text}
     </button>
   );
 }
 
-export default RegisterButton;
+export default SubmitButton;

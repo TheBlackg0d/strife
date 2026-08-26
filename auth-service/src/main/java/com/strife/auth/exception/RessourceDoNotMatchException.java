@@ -6,8 +6,14 @@ import org.springframework.http.HttpStatus;
 @ResponseStatus(value = HttpStatus.BAD_REQUEST)
 public class RessourceDoNotMatchException extends RuntimeException {
 
-    public RessourceDoNotMatchException(String message) {
+    private final String fieldName;
+
+    public RessourceDoNotMatchException(String message, String fieldName) {
         super(message);
+        this.fieldName = fieldName;
     }
 
+    public String getFieldName() {
+        return fieldName;
+    }
 }

@@ -1,13 +1,13 @@
 package com.strife.auth.dto;
 
 import java.time.LocalDateTime;
-
-import org.springframework.http.HttpStatus;
+import java.util.Map;
 
 public record ErrorResponseDTO(
         String apiPath,
-        HttpStatus errorCode,
-        String errorMessage,
-        LocalDateTime errorTime) {
+        int status,
+        String message,
+        Map<String, String> fieldErrors,
+        LocalDateTime timestamp) {
 
 }

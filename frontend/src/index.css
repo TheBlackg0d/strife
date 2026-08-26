@@ -1,1 +1,95 @@
 @import "tailwindcss";
+
+/* Kinetic Dark — see DESIGN.md. Tailwind v4 reads these tokens directly,
+   so `--color-surface-container-low` becomes `bg-surface-container-low`. */
+@theme {
+  --color-background: #111318;
+  --color-on-background: #e2e2e8;
+
+  --color-surface: #111318;
+  --color-surface-dim: #111318;
+  --color-surface-bright: #37393e;
+  --color-surface-variant: #33353a;
+  --color-surface-tint: #bec2ff;
+  --color-surface-container-lowest: #0c0e13;
+  --color-surface-container-low: #191c20;
+  --color-surface-container: #1d2024;
+  --color-surface-container-high: #282a2f;
+  --color-surface-container-highest: #33353a;
+  --color-on-surface: #e2e2e8;
+  --color-on-surface-variant: #c6c5d7;
+  --color-inverse-surface: #e2e2e8;
+  --color-inverse-on-surface: #2e3035;
+
+  --color-outline: #8f8fa0;
+  --color-outline-variant: #454655;
+
+  --color-primary: #bec2ff;
+  --color-on-primary: #000da4;
+  --color-primary-container: #5865f2;
+  --color-on-primary-container: #fffdff;
+  --color-inverse-primary: #3f4cda;
+  --color-primary-fixed: #e0e0ff;
+  --color-primary-fixed-dim: #bec2ff;
+  --color-on-primary-fixed: #000569;
+  --color-on-primary-fixed-variant: #222fc2;
+
+  --color-secondary: #66de8b;
+  --color-on-secondary: #003919;
+  --color-secondary-container: #24a559;
+  --color-on-secondary-container: #003115;
+  --color-secondary-fixed: #83fba4;
+  --color-secondary-fixed-dim: #66de8b;
+  --color-on-secondary-fixed: #00210c;
+  --color-on-secondary-fixed-variant: #005227;
+
+  --color-tertiary: #ffb689;
+  --color-on-tertiary: #512300;
+  --color-tertiary-container: #bb5a00;
+  --color-on-tertiary-container: #fffdff;
+  --color-tertiary-fixed: #ffdbc8;
+  --color-tertiary-fixed-dim: #ffb689;
+  --color-on-tertiary-fixed: #311300;
+  --color-on-tertiary-fixed-variant: #743500;
+
+  --color-error: #ffb4ab;
+  --color-on-error: #690005;
+  --color-error-container: #93000a;
+  --color-on-error-container: #ffdad6;
+
+  /* Status indicators (DESIGN.md > Status Indicators) */
+  --color-status-online: #23a559;
+  --color-status-idle: #f0b232;
+  --color-status-dnd: #f23f43;
+
+  --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-label: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  /* Fixed columns of the three-pane shell */
+  --spacing-guild-rail: 72px;
+  --spacing-dm-sidebar: 240px;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-background);
+    color: var(--color-on-surface);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Dark-theme scrollbars — panes scroll, the page never does */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-surface-container-lowest);
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-surface-container-high);
+  }
+}

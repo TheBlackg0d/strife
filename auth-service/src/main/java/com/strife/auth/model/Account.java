@@ -1,6 +1,7 @@
 package com.strife.auth.model;
 
 import java.util.Set;
+import java.util.UUID;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -27,7 +28,7 @@ public class Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    private UUID id;
 
     @Column(unique = true)
     private String email;
