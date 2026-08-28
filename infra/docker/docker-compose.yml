@@ -1,0 +1,13 @@
+# Stack complète Strife (dev local).
+#
+#   1. mvn -f ../../pom.xml clean package -DskipTests   # produit les fat jars
+#   2. cp .env.example .env                             # secrets locaux
+#   3. docker compose build                             # construit les 8 images
+#   4. docker compose up -d
+#
+# Voir README.md dans ce dossier pour le détail.
+include:
+  - ./postgres.yml
+  - ./redis.yml
+  - ./rabbitmq.yml
+  - ./services.yml

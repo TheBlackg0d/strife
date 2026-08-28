@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="001-create-accounts-table" author="Moncles Junior Herisse">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="accounts"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="accounts">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" primaryKeyName="pk_accounts" nullable="false"/>
+            </column>
+            <column name="email" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="uk_accounts_email"/>
+            </column>
+            <column name="password_hash" type="VARCHAR(255)"/>
+            <column name="email_verified" type="BOOLEAN" defaultValueBoolean="false"/>
+            <column name="version" type="BIGINT" defaultValueNumeric="1"/>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

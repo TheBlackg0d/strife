@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="001-create-profile-table" author="Moncles Junior Herisse">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="profile"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="profile">
+            <!-- = id du compte Auth, jamais généré localement (ADR-0010). -->
+            <column name="user_id" type="uuid">
+                <constraints primaryKey="true" primaryKeyName="pk_profile" nullable="false"/>
+            </column>
+            <!-- username/discriminator nullables : le profil est créé avant que
+                 l'utilisateur choisisse son username (ADR-0014). -->
+            <column name="username" type="VARCHAR(32)"/>
+            <column name="discriminator" type="VARCHAR(4)"/>
+            <!-- Copie répliquée depuis Auth, jamais modifiée ici (ADR-0003). -->
+            <column name="email" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <!-- Valeurs par défaut posées par ProfileService à la création. -->
+            <column name="status_preference" type="VARCHAR(20)" defaultValue="ONLINE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="avatar" type="VARCHAR(512)"/>
+            <column name="bio" type="TEXT"/>
+            <column name="dm_privacy" type="VARCHAR(20)" defaultValue="EVERYONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="profile_complete" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="BIGINT" defaultValueNumeric="1">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!-- Le username n'est unique que parmi les profils qui partagent
+             déjà ce username, d'où la contrainte composite. -->
+        <addUniqueConstraint
+                tableName="profile"
+                columnNames="username, discriminator"
+                constraintName="username_discriminator_unique"/>
+
+        <!-- Sert à generateDiscriminator() : findByUsernameOrderByDiscriminatorDesc. -->
+        <createIndex tableName="profile" indexName="idx_profile_username">
+            <column name="username"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

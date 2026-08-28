@@ -1,6 +1,31 @@
 spring:
   application:
     name: auth-service
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/authdb
+    username: root
+    password: root
+    driverClassName: org.postgresql.Driver
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.xml
+    enabled: true
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope: email, profile
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: strife
+    password: strife
 
 server:
   port: 8081
@@ -10,8 +35,15 @@ management:
     web:
       exposure:
         include: health,info
+jwt:
+  secret: ${JWT_SECRET}
+  expiration: 300000
+  refresh-token:
+    expiration: 604800
 
-# TODO au fur et à mesure que tu construis ce service :
-#   - spring.datasource.* (si ce service a sa propre base de données — voir doc/architecture/services-overview.md)
-#   - spring.rabbitmq.* (host/port/credentials — voir docker-compose.yml à la racine)
-#   - toute autre config spécifique à ce service
+cookie:
+  secure: true
+  http-only: true
+  same-site: strict
+  name: refreshToken
+  expiration: 604800

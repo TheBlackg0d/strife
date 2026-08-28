@@ -1,0 +1,26 @@
+services:
+  network-deploy-service:
+    networks:
+      - strife-net
+  microservice-base-config:
+    extends:
+      service: network-deploy-service
+    environment:
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: strife
+      SPRING_RABBITMQ_PASSWORD: strife
+      JAVA_TOOL_OPTIONS: "-XX:MaxRAMPercentage=75"
+    restart: unless-stopped
+
+  microservice-db-config:
+    extends:
+      service: microservice-base-config
+    environment:
+      SPRING_DATASOURCE_USERNAME: strife
+      SPRING_DATASOURCE_PASSWORD: strife
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+
+networks:
+  strife-net:
+    driver: bridge
