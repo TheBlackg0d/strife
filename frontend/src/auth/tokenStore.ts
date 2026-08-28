@@ -7,7 +7,7 @@ export function getAccessToken(): string | null {
   return accessToken;
 }
 
-export function getaccount(): Account | null {
+export function getAccount(): Account | null {
   return currentaccount;
 }
 

@@ -1,5 +1,5 @@
 import { redirect, type MiddlewareFunction } from "react-router";
-import { ensureUser } from "./session";
+import { ensureAccount } from "./session";
 import { userContext } from "./context";
 import axios from "axios";
 import { getAccessToken } from "./tokenStore";
@@ -9,7 +9,7 @@ export const authMiddleware: MiddlewareFunction = async ({
   context,
 }) => {
   try {
-    const user = await ensureUser();
+    const user = await ensureAccount();
     context.set(userContext, user);
   } catch (error) {
     const status = axios.isAxiosError(error)

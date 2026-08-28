@@ -1,4 +1,4 @@
 import { createContext } from "react-router";
-import type { User } from "./types/auth";
+import type { Account } from "./types/auth";
 
-export const userContext = createContext<User>();
+export const userContext = createContext<Account>();

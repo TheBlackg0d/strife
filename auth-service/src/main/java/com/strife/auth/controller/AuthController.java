@@ -16,10 +16,12 @@ import com.strife.auth.dto.AccountDTO;
 import com.strife.auth.dto.LoginDTO;
 import com.strife.auth.dto.RegisterDTO;
 import com.strife.auth.dto.TokenDTO;
+import com.strife.auth.dto.UserDTO;
 import com.strife.auth.model.Account;
 import com.strife.auth.model.RedisRefreshToken;
 import com.strife.auth.security.JwtUtility;
 import com.strife.auth.service.AccountService;
+import com.strife.auth.service.MessageService;
 import com.strife.auth.service.TokenRefreshService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,11 +36,16 @@ import lombok.AllArgsConstructor;
 public class AuthController {
 
         private final AuthenticationManager authenticationManager;
+
         private final AccountService accountService;
 
         private final TokenRefreshService tokenRefreshService;
 
         private final JwtUtility jwtUtility;
+
+        private final MessageService messageService;
+
+        private static final String ACCOUNT_CREATED_EVENT_ROUTING_KEY = "auth.account.created";
 
         @PostMapping("/login")
         public ResponseEntity<TokenDTO> login(@Valid @RequestBody LoginDTO loginDTO, HttpServletResponse response) {
@@ -66,6 +73,8 @@ public class AuthController {
                 response.addHeader(HttpHeaders.SET_COOKIE,
                                 tokenRefreshService.generateRefreshTokenCookie(refreshToken).toString());
 
+                messageService.sendMessage(UserDTO.fromEntity(account, registerDTO.username()),
+                                ACCOUNT_CREATED_EVENT_ROUTING_KEY);
                 return ResponseEntity.ok(new TokenDTO(accessToken, new AccountDTO(account.getEmail())));
         }
 

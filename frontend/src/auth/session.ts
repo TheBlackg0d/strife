@@ -32,8 +32,8 @@ export function refreshSession(): Promise<Account> {
   return refreshTokenPromise;
 }
 
-export async function ensureaccount(): Promise<Account> {
-  const account = getaccount();
+export async function ensureAccount(): Promise<Account> {
+  const account = getAccount();
   if (account) {
     return account;
   }

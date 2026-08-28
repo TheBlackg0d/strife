@@ -35,7 +35,7 @@ export default function AppLayout() {
 
       <DirectMessageSidebar
         conversations={conversations}
-        currentUsername={data ? displayName(data.user.email) : "Strife"}
+        currentUsername={data ? displayName(data.account.email) : "Strife"}
         currentUserStatus="online"
         activeConversationId={activeConversationId}
         pendingRequestCount={pendingRequestCount}
