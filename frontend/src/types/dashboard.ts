@@ -41,7 +41,7 @@ export interface Conversation {
   icon?: IconType;
 }
 
-export interface DashBoard {
+export interface IDashBoard {
   friends: Record<FriendFilter, Friend[]>;
 }
 

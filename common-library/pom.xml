@@ -32,6 +32,12 @@
             <artifactId>spring-security-core</artifactId>
             <optional>true</optional>
         </dependency>
+        <!-- Filtre JWT servlet : AuthenticationEntryPoint, WebAuthenticationDetailsSource. -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-web</artifactId>
+            <optional>true</optional>
+        </dependency>
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-api</artifactId>
@@ -51,6 +57,24 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!--
+            L'implémentation jjwt est fournie au runtime par chaque service
+            (jjwt-api seule ne suffit pas à initialiser io.jsonwebtoken.Keys) :
+            il faut donc la remettre ici pour que les tests de la bibliothèque
+            puissent instancier un JwtUtility.
+        -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>0.13.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>0.13.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

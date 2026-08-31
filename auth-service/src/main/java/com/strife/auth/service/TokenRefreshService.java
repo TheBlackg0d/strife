@@ -16,7 +16,6 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 
 import com.strife.auth.config.CookieProperties;
-import com.strife.auth.exception.RessourceNotFoundException;
 
 @Service
 public class TokenRefreshService {

@@ -7,5 +7,6 @@
 
     <include file="db/changelog/changes/001-create-profile-table.xml"/>
     <include file="db/changelog/changes/002-create-relationship-table.xml"/>
+    <include file="db/changelog/changes/003-drop-discriminator-from-profile.xml"/>
 
 </databaseChangeLog>

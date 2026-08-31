@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.strife.auth.dto.ChangePasswordDTO;
 import com.strife.auth.dto.ResponseDTO;
 import com.strife.auth.service.AccountService;
+import com.strife.common.security.JwtPrincipal;
 
 @RestController
 @RequestMapping("/api/v1/account")
@@ -24,7 +25,7 @@ public class AccountController {
 
     @PostMapping("/change-password")
     public ResponseEntity<ResponseDTO> changePassword(@RequestBody ChangePasswordDTO changePasswordDTO,
-            Principal authenticatedPrincipal) {
+            JwtPrincipal authenticatedPrincipal) {
         accountService.changePassword(authenticatedPrincipal.getName(), changePasswordDTO);
         return ResponseEntity.ok(new ResponseDTO("200", "Password changed successfully"));
     }

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="003-add-username-to-accounts" author="Moncles Junior Herisse">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="accounts" columnName="username"/>
+            </not>
+        </preConditions>
+
+        <!-- Le username est porté par le compte Auth et recopié dans le claim
+             JWT (AuthController.login/refreshToken). Nullable : les comptes
+             créés via OAuth2 n'en ont pas encore. -->
+        <addColumn tableName="accounts">
+            <column name="username" type="VARCHAR(32)"/>
+        </addColumn>
+
+        <!-- Postgres autorise plusieurs NULL sous une contrainte unique,
+             les comptes OAuth2 sans username coexistent donc sans conflit. -->
+        <addUniqueConstraint
+                tableName="accounts"
+                columnNames="username"
+                constraintName="uk_accounts_username"/>
+
+        <rollback>
+            <dropUniqueConstraint tableName="accounts" constraintName="uk_accounts_username"/>
+            <dropColumn tableName="accounts" columnName="username"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,7 +1,7 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import FriendRow from "./components/FriendRow";
 import FriendsHeader from "./components/FriendsHeader";
-import type { DashBoard, Friend, FriendFilter } from "../../types/dashboard";
+import type { IDashBoard, FriendFilter } from "../../types/dashboard";
 import { useLoaderData } from "react-router";
 
 const sectionTitles: Record<FriendFilter, string> = {
@@ -18,9 +18,8 @@ const emptyMessages: Record<FriendFilter, string> = {
   blocked: "Vous n'avez bloqué personne.",
 };
 
-/** Main stage of the home view: the friends list. */
 function DashBoard() {
-  const dashboardData = useLoaderData() as DashBoard;
+  const dashboardData = useLoaderData() as IDashBoard;
   const [filter, setFilter] = useState<FriendFilter>("online");
 
   return (

@@ -10,6 +10,12 @@ services:
       SPRING_RABBITMQ_PORT: 5672
       SPRING_RABBITMQ_USERNAME: strife
       SPRING_RABBITMQ_PASSWORD: strife
+      # Secret de signature des JWT, partagé par tous les services : le binding
+      # relâché de Boot mappe JWT_SECRET sur la propriété jwt.secret, donc
+      # aucun service n'a de bloc `jwt:` à écrire dans son application.yml.
+      # C'est aussi ce qui déclenche CommonJwtAutoConfiguration côté
+      # common-library. Valeur unique dans .env (voir .env.example).
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET manquant - copie .env.example vers .env}
       JAVA_TOOL_OPTIONS: "-XX:MaxRAMPercentage=75"
     restart: unless-stopped
 

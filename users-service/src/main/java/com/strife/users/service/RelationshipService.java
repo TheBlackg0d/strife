@@ -1,5 +1,6 @@
 package com.strife.users.service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -29,10 +30,11 @@ public class RelationshipService {
     public FriendStatusList getFriends(Profile profile) {
         List<Relationship> relationships = relationshipRepository.findAllForProfile(profile.getUserId());
 
-        Map<RelationshipStatus, List<ProfileDTO>> friends = relationships.stream()
-                .collect(Collectors.groupingBy(Relationship::getStatus,
-                        Collectors.mapping(r -> ProfileDTO.fromEntity(r.otherFriend(profile.getUserId())),
-                                Collectors.toList())));
+        Map<RelationshipStatus, List<ProfileDTO>> friends = Arrays.stream(RelationshipStatus.values())
+                .collect(Collectors.toMap(status -> status, status -> relationships.stream()
+                        .filter(r -> r.getStatus() == status)
+                        .map(r -> ProfileDTO.fromEntity(r.otherFriend(profile.getUserId())))
+                        .collect(Collectors.toList())));
 
         return new FriendStatusList(friends);
     }

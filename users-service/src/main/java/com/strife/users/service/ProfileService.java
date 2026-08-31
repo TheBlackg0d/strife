@@ -4,7 +4,8 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
-import com.strife.common.dto.UserDTO;
+import com.strife.common.exception.RessourceNotFoundException;
+import com.strife.common.security.JwtPrincipal;
 import com.strife.users.model.DmPrivacy;
 import com.strife.users.model.Profile;
 import com.strife.users.model.StatusPreference;
@@ -19,15 +20,21 @@ public class ProfileService {
         this.profileRepository = profileRepository;
     }
 
+    public Profile getOrCreateProfileById(JwtPrincipal jwtPrincipal) {
+        return this.profileRepository.findById(jwtPrincipal.id()).orElse(this.createProfile(jwtPrincipal));
+    }
+
     public Profile getProfileByEmail(String email) {
-        return profileRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Profile not found"));
+        return profileRepository.findByEmail(email)
+                .orElseThrow(() -> new RessourceNotFoundException("Profile not found"));
     }
 
     public Profile getProfileById(UUID userId) {
-        return profileRepository.findById(userId).orElseThrow(() -> new RuntimeException("Profile not found"));
+        return profileRepository.findById(userId)
+                .orElseThrow(() -> new RessourceNotFoundException("Profile not found"));
     }
 
-    public Profile createProfile(UserDTO user) {
+    public Profile createProfile(JwtPrincipal user) {
 
         Profile newProfile = new Profile();
         newProfile.setUserId(user.id());
@@ -43,8 +50,8 @@ public class ProfileService {
         return profileRepository.save(newProfile);
     }
 
-    public Profile findProfileByUsernameAndDiscriminator(String username, String discriminator) {
-        return profileRepository.findByUsernameAndDiscriminator(username, discriminator)
-                .orElseThrow(() -> new RuntimeException("Profile not found"));
+    public Profile findProfileByUsername(String username) {
+        return profileRepository.findByUsername(username)
+                .orElseThrow(() -> new RessourceNotFoundException("Profile not found"));
     }
 }

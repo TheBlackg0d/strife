@@ -12,7 +12,6 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/auth_db
       SPRING_DATA_REDIS_HOST: redis
       SPRING_DATA_REDIS_PORT: 6379
-      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET manquant - copie .env.example vers .env}
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-dummy-client-id}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-dummy-client-secret}
     healthcheck:
@@ -181,7 +180,6 @@ services:
       file: common-config.yml
       service: microservice-base-config
     environment:
-      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET manquant - copie .env.example vers .env}
       EUREKA_CLIENT_ENABLED: "false"
     ports:
       - "8080:8080"

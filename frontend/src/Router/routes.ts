@@ -1,12 +1,13 @@
 import { createBrowserRouter, type LoaderFunctionArgs } from "react-router";
 import Register from "../pages/register/Register";
 import Login from "../pages/login/Login";
+import DashBoard from "../pages/dashboard/DashBoard";
 import RootLayout from "../layout/RootLayout";
 import type { Account } from "../auth/types/auth";
 import { userContext } from "../auth/context";
 import { authMiddleware, loggedInMiddleware } from "../auth/authMiddleware";
 import AppLayout from "../layout/AppLayout";
-import DashBoard from "../pages/dashboard/DashBoard";
+
 import { getFriendList } from "../api/dashboard";
 
 export interface ProtectedLoaderData {

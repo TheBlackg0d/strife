@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <!-- Le username vient maintenant du compte Auth via le claim JWT et est
+         déjà unique à la source : le discriminator n'a plus de raison d'être,
+         et profile_complete n'est plus porté par l'entité Profile. -->
+    <changeSet id="003-drop-discriminator-from-profile" author="Moncles Junior Herisse">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="profile" columnName="discriminator"/>
+        </preConditions>
+
+        <dropUniqueConstraint
+                tableName="profile"
+                constraintName="username_discriminator_unique"/>
+
+        <dropColumn tableName="profile" columnName="discriminator"/>
+
+        <dropColumn tableName="profile" columnName="profile_complete"/>
+
+        <!-- Redondant une fois la contrainte unique posée : Postgres crée son
+             propre index pour la contrainte. -->
+        <dropIndex tableName="profile" indexName="idx_profile_username"/>
+
+        <addUniqueConstraint
+                tableName="profile"
+                columnNames="username"
+                constraintName="uk_profile_username"/>
+
+        <rollback>
+            <dropUniqueConstraint tableName="profile" constraintName="uk_profile_username"/>
+            <createIndex tableName="profile" indexName="idx_profile_username">
+                <column name="username"/>
+            </createIndex>
+            <addColumn tableName="profile">
+                <column name="discriminator" type="VARCHAR(4)"/>
+                <column name="profile_complete" type="BOOLEAN" defaultValueBoolean="false">
+                    <constraints nullable="false"/>
+                </column>
+            </addColumn>
+            <addUniqueConstraint
+                    tableName="profile"
+                    columnNames="username, discriminator"
+                    constraintName="username_discriminator_unique"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

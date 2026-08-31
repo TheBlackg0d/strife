@@ -2,6 +2,7 @@ package com.strife.users.controller;
 
 import java.util.UUID;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.strife.common.dto.ResponseDTO;
+import com.strife.common.security.JwtPrincipal;
 import com.strife.users.dto.FriendStatusList;
 import com.strife.users.dto.RelationshipDTO;
 import com.strife.users.dto.UsernameDTO;
@@ -32,59 +35,47 @@ public class RelationshipController {
     }
 
     @GetMapping("/friends")
-    public ResponseEntity<FriendStatusList> getFriends(@RequestHeader("x-auth-user-email") String email) {
+    public ResponseEntity<FriendStatusList> getFriends(JwtPrincipal principal, String email) {
 
         if (email == null) {
             throw new IllegalArgumentException("Email is required");
         }
 
-        Profile profile = profileService.getProfileByEmail(email);
+        Profile profile = profileService.getOrCreateProfileById(principal);
 
         return ResponseEntity.ok(relationshipService.getFriends(profile));
     }
 
     @PostMapping("/friends")
-    public ResponseEntity<RelationshipDTO> sendFriendRequest(@RequestHeader("x-auth-user-email") String email,
+    public ResponseEntity<RelationshipDTO> sendFriendRequest(JwtPrincipal principal,
             @RequestBody UsernameDTO usernameDTO) {
 
-        if (email == null) {
-            throw new IllegalArgumentException("Email is required");
-        }
-        Profile profile = profileService.getProfileByEmail(email);
-        Profile friend = profileService.findProfileByUsernameAndDiscriminator(usernameDTO.username(),
-                usernameDTO.discriminator());
+        Profile profile = profileService.getProfileByEmail(principal.email());
+        Profile friend = profileService.findProfileByUsername(usernameDTO.username());
 
         return ResponseEntity.ok(relationshipService.sendFriendRequest(profile, friend));
     }
 
     @PostMapping("/friends/{friendId}/accept")
-    public ResponseEntity<RelationshipDTO> acceptFriendRequest(@RequestHeader("x-auth-user-email") String email,
+    public ResponseEntity<RelationshipDTO> acceptFriendRequest(JwtPrincipal principal,
             @PathVariable UUID friendId) {
 
-        if (email == null) {
-            throw new IllegalArgumentException("Email is required");
-        }
-
-        Profile profile = profileService.getProfileByEmail(email);
+        Profile profile = profileService.getProfileByEmail(principal.email());
         Profile friend = profileService.getProfileById(friendId);
 
         return ResponseEntity.ok(relationshipService.acceptFriendRequest(profile, friend));
     }
 
     @PostMapping("/friends/{friendId}/remove")
-    public ResponseEntity<String> rejectFriendRequest(@RequestHeader("x-auth-user-email") String email,
+    public ResponseEntity<ResponseDTO> rejectFriendRequest(JwtPrincipal principal,
             @PathVariable UUID friendId) {
 
-        if (email == null) {
-            throw new IllegalArgumentException("Email is required");
-        }
-
-        Profile profile = profileService.getProfileByEmail(email);
+        Profile profile = profileService.getProfileByEmail(principal.email());
         Profile friend = profileService.getProfileById(friendId);
 
         relationshipService.declineFriendRequest(profile, friend);
 
-        return ResponseEntity.ok("Friend request rejected");
+        return ResponseEntity.ok(new ResponseDTO(HttpStatus.OK.toString(), "Friend request declined"));
     }
 
 }

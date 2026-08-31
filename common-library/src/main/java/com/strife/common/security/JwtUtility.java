@@ -6,17 +6,22 @@ import java.util.Map;
 
 import javax.crypto.SecretKey;
 
+import org.springframework.util.StringUtils;
+
 import com.strife.common.dto.UserDTO;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
 @Slf4j
 public class JwtUtility {
+
+    private static final String BEARER_PREFIX = "Bearer ";
 
     private final SecretKey key;
     private final long expirationMs;
@@ -71,5 +76,15 @@ public class JwtUtility {
             log.error("Invalid JWT token: {}", e.getMessage());
         }
         return false;
+    }
+
+    public String parseJwt(HttpServletRequest request) {
+        String headerAuth = request.getHeader("Authorization");
+
+        if (StringUtils.hasText(headerAuth) && headerAuth.startsWith(BEARER_PREFIX)) {
+            return headerAuth.substring(BEARER_PREFIX.length());
+        }
+
+        return null;
     }
 }
