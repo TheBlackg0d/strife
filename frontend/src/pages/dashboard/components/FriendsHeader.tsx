@@ -2,10 +2,10 @@ import { MdGroups } from "react-icons/md";
 import type { FriendFilter } from "../../../types/dashboard";
 
 const filters: { value: FriendFilter; label: string }[] = [
-  { value: "online", label: "En ligne" },
-  { value: "all", label: "Tous" },
-  { value: "pending", label: "En attente" },
-  { value: "blocked", label: "Bloqués" },
+  { value: "ACCEPTED", label: "En ligne" },
+  { value: "ALL", label: "Tous" },
+  { value: "PENDING", label: "En attente" },
+  { value: "BLOCKED", label: "Bloqués" },
 ];
 
 interface FriendsHeaderProps {

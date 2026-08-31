@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,8 +22,11 @@ import com.strife.users.model.Profile;
 import com.strife.users.service.ProfileService;
 import com.strife.users.service.RelationshipService;
 
+import lombok.extern.slf4j.Slf4j;
+
 @RestController
 @RequestMapping("/api/v1/relationships")
+@Slf4j
 public class RelationshipController {
 
     private RelationshipService relationshipService;
@@ -35,19 +39,14 @@ public class RelationshipController {
     }
 
     @GetMapping("/friends")
-    public ResponseEntity<FriendStatusList> getFriends(JwtPrincipal principal, String email) {
-
-        if (email == null) {
-            throw new IllegalArgumentException("Email is required");
-        }
-
+    public ResponseEntity<FriendStatusList> getFriends(@AuthenticationPrincipal JwtPrincipal principal, String email) {
         Profile profile = profileService.getOrCreateProfileById(principal);
 
         return ResponseEntity.ok(relationshipService.getFriends(profile));
     }
 
     @PostMapping("/friends")
-    public ResponseEntity<RelationshipDTO> sendFriendRequest(JwtPrincipal principal,
+    public ResponseEntity<RelationshipDTO> sendFriendRequest(@AuthenticationPrincipal JwtPrincipal principal,
             @RequestBody UsernameDTO usernameDTO) {
 
         Profile profile = profileService.getProfileByEmail(principal.email());
@@ -57,7 +56,7 @@ public class RelationshipController {
     }
 
     @PostMapping("/friends/{friendId}/accept")
-    public ResponseEntity<RelationshipDTO> acceptFriendRequest(JwtPrincipal principal,
+    public ResponseEntity<RelationshipDTO> acceptFriendRequest(@AuthenticationPrincipal JwtPrincipal principal,
             @PathVariable UUID friendId) {
 
         Profile profile = profileService.getProfileByEmail(principal.email());
@@ -67,7 +66,7 @@ public class RelationshipController {
     }
 
     @PostMapping("/friends/{friendId}/remove")
-    public ResponseEntity<ResponseDTO> rejectFriendRequest(JwtPrincipal principal,
+    public ResponseEntity<ResponseDTO> rejectFriendRequest(@AuthenticationPrincipal JwtPrincipal principal,
             @PathVariable UUID friendId) {
 
         Profile profile = profileService.getProfileByEmail(principal.email());

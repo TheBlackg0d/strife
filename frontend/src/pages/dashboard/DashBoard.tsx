@@ -5,22 +5,22 @@ import type { IDashBoard, FriendFilter } from "../../types/dashboard";
 import { useLoaderData } from "react-router";
 
 const sectionTitles: Record<FriendFilter, string> = {
-  online: "EN LIGNE",
-  all: "TOUS LES AMIS",
-  pending: "EN ATTENTE",
-  blocked: "BLOQUÉS",
+  ACCEPTED: "EN LIGNE",
+  ALL: "TOUS LES AMIS",
+  PENDING: "EN ATTENTE",
+  BLOCKED: "BLOQUÉS",
 };
 
 const emptyMessages: Record<FriendFilter, string> = {
-  online: "Personne n'est en ligne pour le moment.",
-  all: "Vous n'avez pas encore d'amis.",
-  pending: "Aucune demande en attente.",
-  blocked: "Vous n'avez bloqué personne.",
+  ACCEPTED: "Personne n'est en ligne pour le moment.",
+  ALL: "Vous n'avez pas encore d'amis.",
+  PENDING: "Aucune demande en attente.",
+  BLOCKED: "Vous n'avez bloqué personne.",
 };
 
 function DashBoard() {
   const dashboardData = useLoaderData() as IDashBoard;
-  const [filter, setFilter] = useState<FriendFilter>("online");
+  const [filter, setFilter] = useState<FriendFilter>("ACCEPTED");
 
   return (
     <>

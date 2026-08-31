@@ -57,6 +57,7 @@ public class AccountService {
 
         Account account = new Account();
         account.setEmail(registerDTO.email());
+        account.setUsername(registerDTO.username());
         account.setPasswordHash(
                 encoder.encode(registerDTO.password()));
         account.setVersion(1L);

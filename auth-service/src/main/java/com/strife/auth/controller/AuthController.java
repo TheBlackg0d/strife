@@ -43,10 +43,6 @@ public class AuthController {
 
         private final JwtUtility jwtUtility;
 
-        private final MessageService messageService;
-
-        private static final String ACCOUNT_CREATED_EVENT_ROUTING_KEY = "auth.account.created";
-
         @PostMapping("/login")
         public ResponseEntity<TokenDTO> login(@Valid @RequestBody LoginDTO loginDTO, HttpServletResponse response) {
                 Authentication authentication = authenticationManager.authenticate(
@@ -74,8 +70,8 @@ public class AuthController {
 
                 String refreshToken = tokenRefreshService.generateRefreshToken(account.getEmail());
 
-                UserDTO userDTO = new com.strife.common.dto.UserDTO(account.getId(),
-                                account.getEmail(), registerDTO.username());
+                UserDTO userDTO = new UserDTO(account.getId(),
+                                account.getEmail(), account.getUsername());
 
                 String accessToken = jwtUtility.generateToken(account.getEmail(), userDTO);
 

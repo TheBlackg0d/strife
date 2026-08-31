@@ -45,4 +45,4 @@ export interface IDashBoard {
   friends: Record<FriendFilter, Friend[]>;
 }
 
-export type FriendFilter = "online" | "all" | "pending" | "blocked";
+export type FriendFilter = "ACCEPTED" | "ALL" | "PENDING" | "BLOCKED";

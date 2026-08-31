@@ -26,3 +26,6 @@ management:
     web:
       exposure:
         include: health,info
+
+jwt:
+  secret: pte6x9lyvgDVGWX9UwyMsXvuEfVbMsBNlWTLZHQc35z
