@@ -16,10 +16,10 @@ import com.strife.auth.dto.AccountDTO;
 import com.strife.auth.dto.LoginDTO;
 import com.strife.auth.dto.RegisterDTO;
 import com.strife.auth.dto.TokenDTO;
-import com.strife.auth.dto.UserDTO;
 import com.strife.auth.model.Account;
 import com.strife.auth.model.RedisRefreshToken;
-import com.strife.auth.security.JwtUtility;
+import com.strife.common.dto.UserDTO;
+import com.strife.common.security.JwtUtility;
 import com.strife.auth.service.AccountService;
 import com.strife.auth.service.MessageService;
 import com.strife.auth.service.TokenRefreshService;
@@ -54,12 +54,15 @@ public class AuthController {
                 final UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
                 String refreshToken = tokenRefreshService.generateRefreshToken(userDetails.getUsername());
-                String accessToken = jwtUtility.generateToken(userDetails.getUsername());
 
                 response.addHeader(HttpHeaders.SET_COOKIE,
                                 tokenRefreshService.generateRefreshTokenCookie(refreshToken).toString());
 
                 Account account = accountService.getAccountByEmail(userDetails.getUsername());
+
+                UserDTO userDTO = new UserDTO(account.getId(), account.getEmail(), account.getUsername());
+
+                String accessToken = jwtUtility.generateToken(userDetails.getUsername(), userDTO);
                 return ResponseEntity.ok(
                                 new TokenDTO(accessToken, new AccountDTO(account.getId(), userDetails.getUsername())));
         }
@@ -70,13 +73,18 @@ public class AuthController {
                 Account account = accountService.createAccount(registerDTO);
 
                 String refreshToken = tokenRefreshService.generateRefreshToken(account.getEmail());
-                String accessToken = jwtUtility.generateToken(account.getEmail());
+
+                UserDTO userDTO = new com.strife.common.dto.UserDTO(account.getId(),
+                                account.getEmail(), registerDTO.username());
+
+                String accessToken = jwtUtility.generateToken(account.getEmail(), userDTO);
 
                 response.addHeader(HttpHeaders.SET_COOKIE,
                                 tokenRefreshService.generateRefreshTokenCookie(refreshToken).toString());
 
-                messageService.sendMessage(UserDTO.fromEntity(account, registerDTO.username()),
-                                ACCOUNT_CREATED_EVENT_ROUTING_KEY);
+                // messageService.sendMessage(UserDTO.fromEntity(account,
+                // registerDTO.username()),
+                // ACCOUNT_CREATED_EVENT_ROUTING_KEY);
                 return ResponseEntity
                                 .ok(new TokenDTO(accessToken, new AccountDTO(account.getId(), account.getEmail())));
         }
@@ -93,10 +101,11 @@ public class AuthController {
 
                 String email = redisRefreshToken.getEmail();
 
-                String token = jwtUtility.generateToken(email);
-
                 Account account = accountService.getAccountByEmail(email);
 
+                UserDTO userDTO = new UserDTO(account.getId(), account.getEmail(), account.getUsername());
+
+                String token = jwtUtility.generateToken(email, userDTO);
                 return ResponseEntity.ok(new TokenDTO(token, new AccountDTO(account.getId(), email)));
         }
 

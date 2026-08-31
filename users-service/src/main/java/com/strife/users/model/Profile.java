@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -12,14 +13,11 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "profile", uniqueConstraints = {
-        @UniqueConstraint(name = "username_discriminator_unique", columnNames = { "username", "discriminator" })
-})
+@Table(name = "profile")
 @Getter
 @Setter
 public class Profile {
@@ -27,9 +25,8 @@ public class Profile {
     @Id
     private UUID userId;
 
+    @Column(unique = true)
     private String username;
-
-    private String discriminator;
 
     private String email;
 
@@ -42,8 +39,6 @@ public class Profile {
 
     @Enumerated(EnumType.STRING)
     private DmPrivacy dmPrivacy;
-
-    private Boolean profileComplete;
 
     @OneToMany(mappedBy = "firstFriend", fetch = FetchType.LAZY)
     private List<Relationship> relationshipsAsFirstFriend = new ArrayList<>();

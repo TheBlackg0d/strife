@@ -16,6 +16,11 @@
     <description>Profil utilisateur. Voir doc/adr/0010, 0009.</description>
 
     <dependencies>
+    <dependency>
+        <groupId>com.strife</groupId>
+        <artifactId>common-library</artifactId>
+        <version>${project.version}</version>
+    </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>

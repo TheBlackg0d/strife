@@ -1,13 +1,10 @@
 package com.strife.users.service;
 
-import java.util.Optional;
 import java.util.UUID;
-
-import javax.management.RuntimeErrorException;
 
 import org.springframework.stereotype.Service;
 
-import com.strife.users.dto.userDTO;
+import com.strife.common.dto.UserDTO;
 import com.strife.users.model.DmPrivacy;
 import com.strife.users.model.Profile;
 import com.strife.users.model.StatusPreference;
@@ -30,12 +27,10 @@ public class ProfileService {
         return profileRepository.findById(userId).orElseThrow(() -> new RuntimeException("Profile not found"));
     }
 
-    public Profile createProfile(userDTO user) {
+    public Profile createProfile(UserDTO user) {
 
         Profile newProfile = new Profile();
-        newProfile.setUserId(user.userId());
-
-        String discriminator = generateDiscriminator(user.username());
+        newProfile.setUserId(user.id());
         newProfile.setEmail(user.email());
         newProfile.setAvatar(null);
         newProfile.setBio(null);
@@ -43,33 +38,9 @@ public class ProfileService {
         newProfile.setDmPrivacy(DmPrivacy.EVERYONE);
         newProfile.setVersion(1l);
 
-        if (discriminator == null) {
-            newProfile.setProfileComplete(false);
-            return profileRepository.save(newProfile);
-        }
-
-        newProfile.setProfileComplete(true);
         newProfile.setUsername(user.username());
-        newProfile.setDiscriminator(generateDiscriminator(user.username()));
 
         return profileRepository.save(newProfile);
-    }
-
-    private String generateDiscriminator(String username) {
-        Profile profile = profileRepository.findByUsernameOrderByDiscriminatorDesc(username);
-
-        if (profile == null) {
-            return "0001";
-        }
-
-        if (profile.getDiscriminator().equals("9999")) {
-            return null;
-        }
-
-        int number = Integer.parseInt(profile.getDiscriminator());
-        number++;
-
-        return String.format("%04d", number);
     }
 
     public Profile findProfileByUsernameAndDiscriminator(String username, String discriminator) {

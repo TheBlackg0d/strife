@@ -1,8 +1,10 @@
 package com.strife.auth.security;
 
+import com.strife.auth.model.Account;
 import com.strife.auth.repository.AccountRepository;
 import java.io.IOException;
 
+import org.springframework.boot.webmvc.autoconfigure.WebMvcProperties.Apiversion.Use;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -12,6 +14,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.strife.auth.service.AccountService;
 import com.strife.auth.service.TokenRefreshService;
+import com.strife.common.dto.UserDTO;
+import com.strife.common.security.JwtUtility;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -40,12 +44,19 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         String email = oauth2User.getAttribute("email");
         String providerUserId = oauth2User.getAttribute("sub");
 
-        String token = jwtUtility.generateToken(email);
-        String refreshToken = tokenRefreshService.generateRefreshToken(email);
-        if (!this.accountService.existsByEmail(email)) {
-            this.accountService.createAccountFromOAuth2User(email, providerName, providerUserId);
+        Account account = this.accountService.getAccountByEmail(email);
+
+        if (account == null) {
+            account = this.accountService.createAccountFromOAuth2User(email, providerName, providerUserId);
         }
+
         this.accountService.addProviderToAccount(email, providerName, providerUserId);
+
+        UserDTO userDTO = new UserDTO(account.getId(), email, email);
+
+        String token = jwtUtility.generateToken(email, userDTO);
+
+        String refreshToken = tokenRefreshService.generateRefreshToken(email);
 
         String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:8080")
                 .fragment("accessToken=" + token)
