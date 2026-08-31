@@ -10,13 +10,6 @@
     <packaging>pom</packaging>
     <name>strife-parent</name>
     <description>Parent POM for the Strife microservices — see doc/architecture/services-overview.md</description>
-
-    <!--
-        Ce POM parent centralise la version de Java, la version de Spring Boot,
-        et le plugin de build. Chaque module (auth-service, users-service, ...)
-        hérite de ce parent plutôt que de spring-boot-starter-parent directement,
-        pour qu'on ait un seul endroit où bumper les versions.
-    -->
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -41,13 +34,6 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-    <!--
-        Le plugin spring-boot-maven-plugin est déclaré ici pour que TOUS les modules
-        en héritent : c'est lui qui "repackage" le jar en fat jar exécutable
-        (java -jar app.jar). Sans lui, target/*.jar n'a pas de manifest Main-Class
-        et l'image Docker démarre sur "no main manifest attribute".
-        Sur ce POM (packaging=pom) le goal repackage est automatiquement ignoré.
-    -->
     <build>
         <plugins>
             <plugin>
@@ -71,6 +57,7 @@
     </build>
 
     <modules>
+        <module>common-library</module>
         <module>auth-service</module>
         <module>users-service</module>
         <module>guild-service</module>

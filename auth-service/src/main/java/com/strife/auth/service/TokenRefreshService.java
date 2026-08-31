@@ -42,7 +42,7 @@ public class TokenRefreshService {
 
     public RedisRefreshToken getRefreshToken(String refreshToken) {
         return redisRefreshTokenRepository.findById(refreshToken)
-                .orElseThrow(() -> new RessourceNotFoundException("Refresh token not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Refresh token not found"));
     }
 
     public void deleteToken(String tokenString) {

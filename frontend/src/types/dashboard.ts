@@ -18,14 +18,12 @@ export interface Guild {
   id: string;
   name: string;
   imageUrl?: string;
-  /** Used instead of an image/initials when the guild has no icon uploaded. */
   icon?: IconType;
 }
 
 export interface Friend {
   id: string;
   username: string;
-  /** Discriminator shown on hover, e.g. "#1337" */
   tag?: string;
   status: PresenceStatus;
   activity?: Activity;
@@ -38,10 +36,13 @@ export interface Conversation {
   id: string;
   name: string;
   status?: PresenceStatus;
-  /** Set for group DMs; renders as the secondary line. */
   memberCount?: number;
   imageUrl?: string;
   icon?: IconType;
+}
+
+export interface DashBoard {
+  friends: Record<FriendFilter, Friend[]>;
 }
 
 export type FriendFilter = "online" | "all" | "pending" | "blocked";

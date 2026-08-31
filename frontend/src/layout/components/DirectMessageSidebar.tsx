@@ -18,6 +18,7 @@ interface DirectMessageSidebarProps {
   onOpenRequests?: () => void;
   onSearch?: () => void;
   onNewConversation?: () => void;
+  onOpenSettings?: () => void;
 }
 
 /** Level 2 surface: contextual navigation for the home view. */
@@ -33,6 +34,7 @@ function DirectMessageSidebar({
   onOpenRequests,
   onSearch,
   onNewConversation,
+  onOpenSettings,
 }: DirectMessageSidebarProps) {
   return (
     <aside className="flex h-full w-dm-sidebar shrink-0 flex-col bg-surface-container-low">
@@ -79,7 +81,11 @@ function DirectMessageSidebar({
         ))}
       </div>
 
-      <UserPanel username={currentUsername} status={currentUserStatus} />
+      <UserPanel
+        username={currentUsername}
+        status={currentUserStatus}
+        onOpenSettings={onOpenSettings}
+      />
     </aside>
   );
 }

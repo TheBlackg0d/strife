@@ -7,6 +7,7 @@ import { userContext } from "../auth/context";
 import { authMiddleware, loggedInMiddleware } from "../auth/authMiddleware";
 import AppLayout from "../layout/AppLayout";
 import DashBoard from "../pages/dashboard/DashBoard";
+import { getFriendList } from "../api/dashboard";
 
 export interface ProtectedLoaderData {
   account: Account;
@@ -41,6 +42,9 @@ const router = createBrowserRouter([
         children: [
           {
             path: "/",
+            loader: async () => {
+              return getFriendList();
+            },
             Component: DashBoard,
           },
         ],

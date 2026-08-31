@@ -31,6 +31,11 @@ public class AccountService {
         return accountRepository.existsByEmail(email);
     }
 
+    public Account getAccountByEmail(String email) {
+        return accountRepository.findByEmail(email)
+                .orElseThrow(() -> new RessourceNotFoundException("Account not found"));
+    }
+
     public Account createAccountFromOAuth2User(String email, String providerType, String providerUserId) {
         Account account = new Account();
         account.setEmail(email);

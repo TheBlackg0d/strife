@@ -15,7 +15,9 @@ services:
     # Les services attendent ce healthcheck (depends_on: service_healthy) :
     # sans ça ils démarrent avant que Postgres accepte les connexions.
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U strife"]
+      # -d postgres pour la même raison que dans init-databases.sh : sinon
+      # pg_isready vise la base "strife" et pollue les logs de FATAL.
+      test: ["CMD-SHELL", "pg_isready -U strife -d postgres"]
       interval: 10s
       timeout: 5s
       retries: 10

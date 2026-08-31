@@ -1,8 +1,8 @@
 import { useMemo, useState } from "react";
 import FriendRow from "./components/FriendRow";
 import FriendsHeader from "./components/FriendsHeader";
-import { friends } from "../../data/dashboard";
-import type { FriendFilter } from "../../types/dashboard";
+import type { DashBoard, Friend, FriendFilter } from "../../types/dashboard";
+import { useLoaderData } from "react-router";
 
 const sectionTitles: Record<FriendFilter, string> = {
   online: "EN LIGNE",
@@ -20,20 +20,8 @@ const emptyMessages: Record<FriendFilter, string> = {
 
 /** Main stage of the home view: the friends list. */
 function DashBoard() {
+  const dashboardData = useLoaderData() as DashBoard;
   const [filter, setFilter] = useState<FriendFilter>("online");
-
-  const visibleFriends = useMemo(() => {
-    switch (filter) {
-      case "online":
-        return friends.filter((friend) => friend.status !== "offline");
-      case "all":
-        return friends;
-      // TODO: served by the friend-request endpoints once they exist.
-      case "pending":
-      case "blocked":
-        return [];
-    }
-  }, [filter]);
 
   return (
     <>
@@ -41,17 +29,18 @@ function DashBoard() {
 
       <div className="flex-1 overflow-y-auto p-4 md:px-8">
         <h2 className="mb-4 font-label text-xs font-bold text-outline">
-          {sectionTitles[filter]} — {visibleFriends.length}
+          {sectionTitles[filter]} — {dashboardData.friends[filter]?.length}
         </h2>
 
-        {visibleFriends.length === 0 ? (
-          <p className="text-sm text-outline">{emptyMessages[filter]}</p>
-        ) : (
+        {dashboardData.friends[filter] &&
+        dashboardData.friends[filter]?.length > 0 ? (
           <ul className="flex flex-col gap-2">
-            {visibleFriends.map((friend) => (
+            {dashboardData.friends[filter]?.map((friend) => (
               <FriendRow key={friend.id} friend={friend} />
             ))}
           </ul>
+        ) : (
+          <p className="text-sm text-outline">{emptyMessages[filter]}</p>
         )}
       </div>
     </>

@@ -31,11 +31,11 @@ public class Relationship {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "first_friend_id", nullable = false, foreignKey = @ForeignKey(name = "fk_relationship_first_friend"))
-    private Profile firstFriendId;
+    private Profile firstFriend;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "second_friend_id", nullable = false, foreignKey = @ForeignKey(name = "fk_relationship_second_friend"))
-    private Profile secondFriendId;
+    private Profile secondFriend;
 
     @Enumerated(EnumType.STRING)
     private RelationshipStatus status;
@@ -43,4 +43,27 @@ public class Relationship {
     private UUID statusInitiator;
 
     private Long version;
+
+    public static Relationship of(Profile a, Profile b, RelationshipStatus status, UUID statusInitiator) {
+        boolean aFirst = a.getUserId().compareTo(b.getUserId()) < 0;
+
+        Relationship relationship = new Relationship();
+        relationship.setFirstFriend(aFirst ? a : b);
+        relationship.setSecondFriend(aFirst ? b : a);
+        relationship.setStatus(status);
+        relationship.setStatusInitiator(statusInitiator);
+        relationship.setVersion(1L);
+
+        return relationship;
+    }
+
+    public Profile otherFriend(UUID profileId) {
+        if (firstFriend.getUserId().equals(profileId)) {
+            return secondFriend;
+        }
+        if (secondFriend.getUserId().equals(profileId)) {
+            return firstFriend;
+        }
+        throw new IllegalArgumentException("Profile " + profileId + " is not part of relationship " + id);
+    }
 }

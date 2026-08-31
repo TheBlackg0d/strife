@@ -1,0 +1,72 @@
+package com.strife.users.service;
+
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+
+import com.strife.users.dto.FriendStatusList;
+import com.strife.users.dto.ProfileDTO;
+import com.strife.users.dto.RelationshipDTO;
+import com.strife.users.model.Profile;
+import com.strife.users.model.Relationship;
+import com.strife.users.model.RelationshipStatus;
+import com.strife.users.repository.RelationshipRepository;
+
+import jakarta.transaction.Transactional;
+
+@Service
+public class RelationshipService {
+
+    private RelationshipRepository relationshipRepository;
+
+    public RelationshipService(RelationshipRepository relationshipRepository) {
+        this.relationshipRepository = relationshipRepository;
+    }
+
+    public FriendStatusList getFriends(Profile profile) {
+        List<Relationship> relationships = relationshipRepository.findAllForProfile(profile.getUserId());
+
+        Map<RelationshipStatus, List<ProfileDTO>> friends = relationships.stream()
+                .collect(Collectors.groupingBy(Relationship::getStatus,
+                        Collectors.mapping(r -> ProfileDTO.fromEntity(r.otherFriend(profile.getUserId())),
+                                Collectors.toList())));
+
+        return new FriendStatusList(friends);
+    }
+
+    public RelationshipDTO sendFriendRequest(Profile profile, Profile friend) {
+        Relationship relationship = Relationship.of(profile, friend, RelationshipStatus.PENDING, profile.getUserId());
+        relationshipRepository.save(relationship);
+        return RelationshipDTO.fromEntity(relationship);
+    }
+
+    public RelationshipDTO acceptFriendRequest(Profile profile, Profile friend) {
+        Relationship relationship = relationshipRepository.findByProfilePair(profile.getUserId(), friend.getUserId())
+                .orElseThrow(() -> new RuntimeException("Relationship not found"));
+
+        if (relationship.getStatus().equals(RelationshipStatus.BLOCKED)) {
+            throw new RuntimeException("Relationship is blocked");
+        }
+
+        if (relationship.getStatus().equals(RelationshipStatus.ACCEPTED)) {
+            throw new RuntimeException("Relationship is already accepted");
+        }
+
+        relationship.setStatus(RelationshipStatus.ACCEPTED);
+        relationshipRepository.save(relationship);
+        return RelationshipDTO.fromEntity(relationship);
+    }
+
+    @Transactional
+    public void declineFriendRequest(Profile profile, Profile friend) {
+        Relationship relationship = relationshipRepository.findByProfilePair(profile.getUserId(), friend.getUserId())
+                .orElseThrow(() -> new RuntimeException("Relationship not found"));
+
+        relationshipRepository.delete(relationship);
+
+    }
+
+}

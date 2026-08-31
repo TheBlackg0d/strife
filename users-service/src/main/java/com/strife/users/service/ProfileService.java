@@ -1,5 +1,10 @@
 package com.strife.users.service;
 
+import java.util.Optional;
+import java.util.UUID;
+
+import javax.management.RuntimeErrorException;
+
 import org.springframework.stereotype.Service;
 
 import com.strife.users.dto.userDTO;
@@ -15,6 +20,14 @@ public class ProfileService {
 
     public ProfileService(ProfileRepository profileRepository) {
         this.profileRepository = profileRepository;
+    }
+
+    public Profile getProfileByEmail(String email) {
+        return profileRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Profile not found"));
+    }
+
+    public Profile getProfileById(UUID userId) {
+        return profileRepository.findById(userId).orElseThrow(() -> new RuntimeException("Profile not found"));
     }
 
     public Profile createProfile(userDTO user) {
@@ -57,5 +70,10 @@ public class ProfileService {
         number++;
 
         return String.format("%04d", number);
+    }
+
+    public Profile findProfileByUsernameAndDiscriminator(String username, String discriminator) {
+        return profileRepository.findByUsernameAndDiscriminator(username, discriminator)
+                .orElseThrow(() -> new RuntimeException("Profile not found"));
     }
 }

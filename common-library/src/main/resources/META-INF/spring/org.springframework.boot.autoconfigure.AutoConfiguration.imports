@@ -1,0 +1,2 @@
+com.strife.common.autoconfigure.CommonWebAutoConfiguration
+com.strife.common.autoconfigure.CommonJwtAutoConfiguration

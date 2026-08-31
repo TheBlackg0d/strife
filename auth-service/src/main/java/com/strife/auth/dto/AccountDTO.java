@@ -1,5 +1,7 @@
 package com.strife.auth.dto;
 
-public record AccountDTO(String email) {
+import java.util.UUID;
+
+public record AccountDTO(UUID id, String email) {
 
 }

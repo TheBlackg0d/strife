@@ -34,8 +34,9 @@ public class AuthFilterGatewayFilterFactory
                 return exchange.getResponse().setComplete();
             }
 
+            String email = jwtUtility.getEmailFromToken(jwtToken);
             ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
+                    .header("x-auth-user-email", email)
                     .build();
 
             ServerWebExchange mutatedExchange = exchange.mutate().request(mutatedRequest).build();

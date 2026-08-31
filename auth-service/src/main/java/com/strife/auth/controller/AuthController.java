@@ -59,7 +59,9 @@ public class AuthController {
                 response.addHeader(HttpHeaders.SET_COOKIE,
                                 tokenRefreshService.generateRefreshTokenCookie(refreshToken).toString());
 
-                return ResponseEntity.ok(new TokenDTO(accessToken, new AccountDTO(userDetails.getUsername())));
+                Account account = accountService.getAccountByEmail(userDetails.getUsername());
+                return ResponseEntity.ok(
+                                new TokenDTO(accessToken, new AccountDTO(account.getId(), userDetails.getUsername())));
         }
 
         @PostMapping("/register")
@@ -75,7 +77,8 @@ public class AuthController {
 
                 messageService.sendMessage(UserDTO.fromEntity(account, registerDTO.username()),
                                 ACCOUNT_CREATED_EVENT_ROUTING_KEY);
-                return ResponseEntity.ok(new TokenDTO(accessToken, new AccountDTO(account.getEmail())));
+                return ResponseEntity
+                                .ok(new TokenDTO(accessToken, new AccountDTO(account.getId(), account.getEmail())));
         }
 
         @PostMapping("refresh-token")
@@ -89,9 +92,12 @@ public class AuthController {
                 response.addHeader(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
 
                 String email = redisRefreshToken.getEmail();
+
                 String token = jwtUtility.generateToken(email);
 
-                return ResponseEntity.ok(new TokenDTO(token, new AccountDTO(email)));
+                Account account = accountService.getAccountByEmail(email);
+
+                return ResponseEntity.ok(new TokenDTO(token, new AccountDTO(account.getId(), email)));
         }
 
 }

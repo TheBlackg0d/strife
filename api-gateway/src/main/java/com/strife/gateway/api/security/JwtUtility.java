@@ -35,4 +35,11 @@ public class JwtUtility {
         }
         return false;
     }
+
+    public String getEmailFromToken(String token) {
+        return Jwts.parser().verifyWith(key).build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .getSubject();
+    }
 }
