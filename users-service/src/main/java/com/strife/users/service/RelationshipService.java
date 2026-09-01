@@ -1,6 +1,7 @@
 package com.strife.users.service;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -35,7 +36,13 @@ public class RelationshipService {
                         .map(r -> ProfileDTO.fromEntity(r.otherFriend(profile.getUserId())))
                         .collect(Collectors.toList())));
 
-        return new FriendStatusList(friends);
+        List<ProfileDTO> allFriends = relationships.stream()
+                .map(r -> ProfileDTO.fromEntity(r.otherFriend(profile.getUserId())))
+                .collect(Collectors.toList());
+
+        friends.put(RelationshipStatus.ALL, allFriends);
+
+        return FriendStatusList.of(friends);
     }
 
     public RelationshipDTO sendFriendRequest(Profile profile, Profile friend) {

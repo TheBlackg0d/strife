@@ -5,7 +5,11 @@ import {
   MdSmartToy,
   MdTerminal,
 } from "react-icons/md";
-import type { Conversation, Friend, Guild } from "../types/dashboard";
+import type {
+  Conversation,
+  Friend,
+  Guild,
+} from "../pages/dashboard/types/dashboard";
 
 /**
  * Placeholder content for the dashboard shell.
@@ -21,10 +25,10 @@ export const guilds: Guild[] = [
 ];
 
 export const conversations: Conversation[] = [
-  { id: "c1", name: "CyberNinja", status: "online" },
-  { id: "c2", name: "DesignArch", status: "offline" },
+  { id: "c1", name: "CyberNinja", statusPreference: "ONLINE" },
+  { id: "c2", name: "DesignArch", statusPreference: "OFFLINE" },
   { id: "c3", name: "Project Alpha Team", memberCount: 3, icon: MdGroups },
-  { id: "c4", name: "DevExpert", status: "dnd" },
+  { id: "c4", name: "DevExpert", statusPreference: "DO_NOT_DISTURB" },
 ];
 
 export const friends: Friend[] = [
@@ -32,7 +36,7 @@ export const friends: Friend[] = [
     id: "f1",
     username: "CyberNinja",
     tag: "#1337",
-    status: "online",
+    statusPreference: "ONLINE",
     activity: {
       verb: "Joue à",
       target: "Visual Studio Code",
@@ -43,13 +47,13 @@ export const friends: Friend[] = [
   {
     id: "f2",
     username: "DesignArch",
-    status: "offline",
+    statusPreference: "OFFLINE",
     activity: { verb: "Mapping out the design system" },
   },
   {
     id: "f3",
     username: "DevExpert",
-    status: "dnd",
+    statusPreference: "DO_NOT_DISTURB",
     activity: {
       verb: "Coding in",
       target: "Rust",
@@ -60,7 +64,7 @@ export const friends: Friend[] = [
   {
     id: "f4",
     username: "MusicBot",
-    status: "online",
+    statusPreference: "ONLINE",
     isBot: true,
     icon: MdSmartToy,
     activity: {

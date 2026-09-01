@@ -1,0 +1,818 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <!-- Profils correspondant aux comptes crees par le changeSet
+         004-seed-dev-accounts de auth-service : meme UUID des deux cotes.
+         Actif uniquement avec LIQUIBASE_CONTEXTS=seed. -->
+    <changeSet id="004-seed-dev-profiles" author="Moncles Junior Herisse" context="seed">
+        <insert tableName="profile">
+            <column name="user_id" value="e6cd52d9-3043-4d1d-bc14-8a7233097919"/>
+            <column name="username" value="dev"/>
+            <column name="email" value="dev@strife.test"/>
+            <column name="status_preference" value="ONLINE"/>
+            <column name="dm_privacy" value="EVERYONE"/>
+            <column name="bio" value="Compte de dev principal, ami de tout le monde."/>
+            <column name="avatar"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="profile">
+            <column name="user_id" value="ac6db61b-746a-4bd5-8bbf-050783632a71"/>
+            <column name="username" value="lunarfox"/>
+            <column name="email" value="lunarfox@strife.test"/>
+            <column name="status_preference" value="ONLINE"/>
+            <column name="dm_privacy" value="FRIENDS_OF_FRIENDS"/>
+            <column name="bio" value="Toujours en train de refactorer quelque chose."/>
+            <column name="avatar"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="profile">
+            <column name="user_id" value="d3037129-c9a7-44ee-8486-70698fe98d52"/>
+            <column name="username" value="pixelmancer"/>
+            <column name="email" value="pixelmancer@strife.test"/>
+            <column name="status_preference" value="INVISIBLE"/>
+            <column name="dm_privacy" value="FRIENDS_OF_FRIENDS"/>
+            <column name="bio" value="Pixel art &amp; shaders."/>
+            <column name="avatar"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="profile">
+            <column name="user_id" value="15ca6b1e-a272-4cc2-811a-c61fd6dfb612"/>
+            <column name="username" value="quietstorm"/>
+            <column name="email" value="quietstorm@strife.test"/>
+            <column name="status_preference" value="DO_NOT_DISTURB"/>
+            <column name="dm_privacy" value="FRIENDS"/>
+            <column name="bio"/>
+            <column name="avatar"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="profile">
+            <column name="user_id" value="fbd47297-c2a6-41fd-ba61-555f805d8122"/>
+            <column name="username" value="cinderbyte"/>
+            <column name="email" value="cinderbyte@strife.test"/>
+            <column name="status_preference" value="OFFLINE"/>
+            <column name="dm_privacy" value="FRIENDS"/>
+            <column name="bio" value="Rust le jour, Java la nuit."/>
+            <column name="avatar"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="profile">
+            <column name="user_id" value="275188f1-83ca-4a20-a1ec-9b7bff8bd37d"/>
+            <column name="username" value="velvetotter"/>
+            <column name="email" value="velvetotter@strife.test"/>
+            <column name="status_preference" value="DO_NOT_DISTURB"/>
+            <column name="dm_privacy" value="NOBODY"/>
+            <column name="bio" value="Nage dans les logs."/>
+            <column name="avatar"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="profile">
+            <column name="user_id" value="18f0ff38-2112-4600-8c88-a75e61115b24"/>
+            <column name="username" value="nova_kade"/>
+            <column name="email" value="nova_kade@strife.test"/>
+            <column name="status_preference" value="INVISIBLE"/>
+            <column name="dm_privacy" value="EVERYONE"/>
+            <column name="bio" value="Speedrunner du dimanche."/>
+            <column name="avatar"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="profile">
+            <column name="user_id" value="f01b7c74-06b3-42a6-92b7-20f7c8127616"/>
+            <column name="username" value="amberlynx"/>
+            <column name="email" value="amberlynx@strife.test"/>
+            <column name="status_preference" value="INACTIVE"/>
+            <column name="dm_privacy" value="NOBODY"/>
+            <column name="bio"/>
+            <column name="avatar"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="profile">
+            <column name="user_id" value="c51bcf9e-c52d-4b62-bc25-12b6a68f682d"/>
+            <column name="username" value="tidalward"/>
+            <column name="email" value="tidalward@strife.test"/>
+            <column name="status_preference" value="DO_NOT_DISTURB"/>
+            <column name="dm_privacy" value="EVERYONE"/>
+            <column name="bio" value="Ops. Ne me parlez pas de DNS."/>
+            <column name="avatar"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="profile">
+            <column name="user_id" value="d618221a-6708-4644-8779-f7cb749d7e1c"/>
+            <column name="username" value="frostquill"/>
+            <column name="email" value="frostquill@strife.test"/>
+            <column name="status_preference" value="ONLINE"/>
+            <column name="dm_privacy" value="FRIENDS"/>
+            <column name="bio" value="Ecrit plus de doc que de code."/>
+            <column name="avatar"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="profile">
+            <column name="user_id" value="71d0119c-5630-4a89-8940-04c9615a5ac5"/>
+            <column name="username" value="hollowmaple"/>
+            <column name="email" value="hollowmaple@strife.test"/>
+            <column name="status_preference" value="INVISIBLE"/>
+            <column name="dm_privacy" value="EVERYONE"/>
+            <column name="bio"/>
+            <column name="avatar"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="profile">
+            <column name="user_id" value="52adab65-bfcf-463e-adde-e6687be042eb"/>
+            <column name="username" value="solarnomad"/>
+            <column name="email" value="solarnomad@strife.test"/>
+            <column name="status_preference" value="DO_NOT_DISTURB"/>
+            <column name="dm_privacy" value="EVERYONE"/>
+            <column name="bio" value="Remote depuis Lisbonne."/>
+            <column name="avatar"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="profile">
+            <column name="user_id" value="722a9af1-9b38-4f12-9f3c-4e08a5cb724b"/>
+            <column name="username" value="crimsonharbor"/>
+            <column name="email" value="crimsonharbor@strife.test"/>
+            <column name="status_preference" value="DO_NOT_DISTURB"/>
+            <column name="dm_privacy" value="EVERYONE"/>
+            <column name="bio" value="Designer, mais je touche au CSS."/>
+            <column name="avatar"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="profile">
+            <column name="user_id" value="461a4a50-231d-4a55-a611-3b2af26165de"/>
+            <column name="username" value="silentbadger"/>
+            <column name="email" value="silentbadger@strife.test"/>
+            <column name="status_preference" value="DO_NOT_DISTURB"/>
+            <column name="dm_privacy" value="FRIENDS"/>
+            <column name="bio"/>
+            <column name="avatar"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="profile">
+            <column name="user_id" value="f61cafd4-06df-4d7d-95b5-56ee15f31915"/>
+            <column name="username" value="neonthistle"/>
+            <column name="email" value="neonthistle@strife.test"/>
+            <column name="status_preference" value="DO_NOT_DISTURB"/>
+            <column name="dm_privacy" value="FRIENDS_OF_FRIENDS"/>
+            <column name="bio" value="Synthwave enjoyer."/>
+            <column name="avatar"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="profile">
+            <column name="user_id" value="8376afab-8346-457e-a761-2a3682eab4c6"/>
+            <column name="username" value="rogue_ember"/>
+            <column name="email" value="rogue_ember@strife.test"/>
+            <column name="status_preference" value="ONLINE"/>
+            <column name="dm_privacy" value="EVERYONE"/>
+            <column name="bio" value="Toujours en DND."/>
+            <column name="avatar"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="profile">
+            <column name="user_id" value="a88b97d3-8d97-454e-b3eb-9b3d2fadb12b"/>
+            <column name="username" value="wiredorchid"/>
+            <column name="email" value="wiredorchid@strife.test"/>
+            <column name="status_preference" value="ONLINE"/>
+            <column name="dm_privacy" value="NOBODY"/>
+            <column name="bio" value="QA. Je casse vos features."/>
+            <column name="avatar"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="profile">
+            <column name="user_id" value="f1498f0e-853d-4495-8f04-634bff7b38e6"/>
+            <column name="username" value="mistybison"/>
+            <column name="email" value="mistybison@strife.test"/>
+            <column name="status_preference" value="OFFLINE"/>
+            <column name="dm_privacy" value="EVERYONE"/>
+            <column name="bio"/>
+            <column name="avatar"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="profile">
+            <column name="user_id" value="102bed32-9a82-493b-b4d5-8f2c5f9a48f2"/>
+            <column name="username" value="goldenvulture"/>
+            <column name="email" value="goldenvulture@strife.test"/>
+            <column name="status_preference" value="DO_NOT_DISTURB"/>
+            <column name="dm_privacy" value="EVERYONE"/>
+            <column name="bio" value="Trading bots &amp; mauvaises idees."/>
+            <column name="avatar"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="profile">
+            <column name="user_id" value="9dbfadcf-b81f-4099-a620-486a6c93c0d0"/>
+            <column name="username" value="arcticdrifter"/>
+            <column name="email" value="arcticdrifter@strife.test"/>
+            <column name="status_preference" value="INVISIBLE"/>
+            <column name="dm_privacy" value="EVERYONE"/>
+            <column name="bio" value="Hiver permanent."/>
+            <column name="avatar"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="profile">
+            <column name="user_id" value="19e8e64e-b2c0-4269-abae-4952b3db4414"/>
+            <column name="username" value="feralbeacon"/>
+            <column name="email" value="feralbeacon@strife.test"/>
+            <column name="status_preference" value="INVISIBLE"/>
+            <column name="dm_privacy" value="NOBODY"/>
+            <column name="bio" value="Je repond dans 3 jours."/>
+            <column name="avatar"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="profile">
+                <where>email LIKE '%@strife.test'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <!-- Relations entre comptes seedes : amis acceptes, demandes en attente
+         dans les deux sens et un blocage, pour que la liste d'amis ait tous
+         ses etats. first_friend_id &lt; second_friend_id est impose par
+         ck_relationship_canonical_order, l'ordre ci-dessous le respecte. -->
+    <changeSet id="005-seed-dev-relationships" author="Moncles Junior Herisse" context="seed">
+        <insert tableName="relationship">
+            <column name="id" value="a736501c-71db-48b7-8573-cc612441a4eb"/>
+            <column name="first_friend_id" value="102bed32-9a82-493b-b4d5-8f2c5f9a48f2"/>
+            <column name="second_friend_id" value="8376afab-8346-457e-a761-2a3682eab4c6"/>
+            <column name="status" value="ACCEPTED"/>
+            <column name="status_initiator" value="102bed32-9a82-493b-b4d5-8f2c5f9a48f2"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="relationship">
+            <column name="id" value="242f1b44-a08e-43b9-bb19-723a540f6a41"/>
+            <column name="first_friend_id" value="102bed32-9a82-493b-b4d5-8f2c5f9a48f2"/>
+            <column name="second_friend_id" value="e6cd52d9-3043-4d1d-bc14-8a7233097919"/>
+            <column name="status" value="ACCEPTED"/>
+            <column name="status_initiator" value="e6cd52d9-3043-4d1d-bc14-8a7233097919"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="relationship">
+            <column name="id" value="61a52102-0d76-417d-a5e4-94420760493f"/>
+            <column name="first_friend_id" value="15ca6b1e-a272-4cc2-811a-c61fd6dfb612"/>
+            <column name="second_friend_id" value="19e8e64e-b2c0-4269-abae-4952b3db4414"/>
+            <column name="status" value="ACCEPTED"/>
+            <column name="status_initiator" value="19e8e64e-b2c0-4269-abae-4952b3db4414"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="relationship">
+            <column name="id" value="4cd4e7e5-3402-4b0c-85f7-64778eb000c7"/>
+            <column name="first_friend_id" value="15ca6b1e-a272-4cc2-811a-c61fd6dfb612"/>
+            <column name="second_friend_id" value="461a4a50-231d-4a55-a611-3b2af26165de"/>
+            <column name="status" value="ACCEPTED"/>
+            <column name="status_initiator" value="15ca6b1e-a272-4cc2-811a-c61fd6dfb612"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="relationship">
+            <column name="id" value="25160e48-baa0-4fa8-bd65-c89b627711cd"/>
+            <column name="first_friend_id" value="15ca6b1e-a272-4cc2-811a-c61fd6dfb612"/>
+            <column name="second_friend_id" value="52adab65-bfcf-463e-adde-e6687be042eb"/>
+            <column name="status" value="PENDING"/>
+            <column name="status_initiator" value="15ca6b1e-a272-4cc2-811a-c61fd6dfb612"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="relationship">
+            <column name="id" value="4e525e62-eea2-47e8-8297-23cabf6b64da"/>
+            <column name="first_friend_id" value="15ca6b1e-a272-4cc2-811a-c61fd6dfb612"/>
+            <column name="second_friend_id" value="722a9af1-9b38-4f12-9f3c-4e08a5cb724b"/>
+            <column name="status" value="ACCEPTED"/>
+            <column name="status_initiator" value="15ca6b1e-a272-4cc2-811a-c61fd6dfb612"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="relationship">
+            <column name="id" value="fdcdc1f1-b6bb-489f-8356-22ffea54601b"/>
+            <column name="first_friend_id" value="15ca6b1e-a272-4cc2-811a-c61fd6dfb612"/>
+            <column name="second_friend_id" value="8376afab-8346-457e-a761-2a3682eab4c6"/>
+            <column name="status" value="ACCEPTED"/>
+            <column name="status_initiator" value="15ca6b1e-a272-4cc2-811a-c61fd6dfb612"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="relationship">
+            <column name="id" value="b75f9f80-fbf2-4e9c-bde5-15f35764b9c7"/>
+            <column name="first_friend_id" value="15ca6b1e-a272-4cc2-811a-c61fd6dfb612"/>
+            <column name="second_friend_id" value="a88b97d3-8d97-454e-b3eb-9b3d2fadb12b"/>
+            <column name="status" value="ACCEPTED"/>
+            <column name="status_initiator" value="a88b97d3-8d97-454e-b3eb-9b3d2fadb12b"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="relationship">
+            <column name="id" value="379fbddf-c20a-4f0f-8c85-f7eedb7942ba"/>
+            <column name="first_friend_id" value="15ca6b1e-a272-4cc2-811a-c61fd6dfb612"/>
+            <column name="second_friend_id" value="e6cd52d9-3043-4d1d-bc14-8a7233097919"/>
+            <column name="status" value="ACCEPTED"/>
+            <column name="status_initiator" value="e6cd52d9-3043-4d1d-bc14-8a7233097919"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="relationship">
+            <column name="id" value="28c23169-1ce4-4a12-a4ac-cc2da1dacaae"/>
+            <column name="first_friend_id" value="18f0ff38-2112-4600-8c88-a75e61115b24"/>
+            <column name="second_friend_id" value="ac6db61b-746a-4bd5-8bbf-050783632a71"/>
+            <column name="status" value="ACCEPTED"/>
+            <column name="status_initiator" value="18f0ff38-2112-4600-8c88-a75e61115b24"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="relationship">
+            <column name="id" value="1fc224ab-a6cf-4e6b-a923-2e30787c2f00"/>
+            <column name="first_friend_id" value="18f0ff38-2112-4600-8c88-a75e61115b24"/>
+            <column name="second_friend_id" value="e6cd52d9-3043-4d1d-bc14-8a7233097919"/>
+            <column name="status" value="ACCEPTED"/>
+            <column name="status_initiator" value="e6cd52d9-3043-4d1d-bc14-8a7233097919"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="relationship">
+            <column name="id" value="11260e92-aa78-46a3-8938-aba1995fec6e"/>
+            <column name="first_friend_id" value="18f0ff38-2112-4600-8c88-a75e61115b24"/>
+            <column name="second_friend_id" value="f1498f0e-853d-4495-8f04-634bff7b38e6"/>
+            <column name="status" value="ACCEPTED"/>
+            <column name="status_initiator" value="f1498f0e-853d-4495-8f04-634bff7b38e6"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="relationship">
+            <column name="id" value="6ac2d433-a7e2-4351-9607-bd6929de10a1"/>
+            <column name="first_friend_id" value="18f0ff38-2112-4600-8c88-a75e61115b24"/>
+            <column name="second_friend_id" value="fbd47297-c2a6-41fd-ba61-555f805d8122"/>
+            <column name="status" value="ACCEPTED"/>
+            <column name="status_initiator" value="fbd47297-c2a6-41fd-ba61-555f805d8122"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="relationship">
+            <column name="id" value="6e20c7fb-58a8-4097-b718-b4462be7834b"/>
+            <column name="first_friend_id" value="19e8e64e-b2c0-4269-abae-4952b3db4414"/>
+            <column name="second_friend_id" value="461a4a50-231d-4a55-a611-3b2af26165de"/>
+            <column name="status" value="ACCEPTED"/>
+            <column name="status_initiator" value="461a4a50-231d-4a55-a611-3b2af26165de"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="relationship">
+            <column name="id" value="0b55a1e3-3a6a-4645-b9c4-06f9ea64f3b1"/>
+            <column name="first_friend_id" value="19e8e64e-b2c0-4269-abae-4952b3db4414"/>
+            <column name="second_friend_id" value="8376afab-8346-457e-a761-2a3682eab4c6"/>
+            <column name="status" value="PENDING"/>
+            <column name="status_initiator" value="8376afab-8346-457e-a761-2a3682eab4c6"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="relationship">
+            <column name="id" value="dc28ef13-a269-4bdc-a6fc-f1ec01b9b21b"/>
+            <column name="first_friend_id" value="19e8e64e-b2c0-4269-abae-4952b3db4414"/>
+            <column name="second_friend_id" value="f1498f0e-853d-4495-8f04-634bff7b38e6"/>
+            <column name="status" value="ACCEPTED"/>
+            <column name="status_initiator" value="f1498f0e-853d-4495-8f04-634bff7b38e6"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="relationship">
+            <column name="id" value="b7173197-dc5d-454d-9c8d-9fdee38f60b5"/>
+            <column name="first_friend_id" value="19e8e64e-b2c0-4269-abae-4952b3db4414"/>
+            <column name="second_friend_id" value="f61cafd4-06df-4d7d-95b5-56ee15f31915"/>
+            <column name="status" value="ACCEPTED"/>
+            <column name="status_initiator" value="f61cafd4-06df-4d7d-95b5-56ee15f31915"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="relationship">
+            <column name="id" value="b19dbbb0-fd24-4598-978d-f0a91ff4c405"/>
+            <column name="first_friend_id" value="275188f1-83ca-4a20-a1ec-9b7bff8bd37d"/>
+            <column name="second_friend_id" value="52adab65-bfcf-463e-adde-e6687be042eb"/>
+            <column name="status" value="ACCEPTED"/>
+            <column name="status_initiator" value="275188f1-83ca-4a20-a1ec-9b7bff8bd37d"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="relationship">
+            <column name="id" value="4668d27a-e57e-4187-b543-33cc0b97a245"/>
+            <column name="first_friend_id" value="275188f1-83ca-4a20-a1ec-9b7bff8bd37d"/>
+            <column name="second_friend_id" value="722a9af1-9b38-4f12-9f3c-4e08a5cb724b"/>
+            <column name="status" value="ACCEPTED"/>
+            <column name="status_initiator" value="275188f1-83ca-4a20-a1ec-9b7bff8bd37d"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="relationship">
+            <column name="id" value="258937f7-5476-4120-9596-bc6db4b44d5e"/>
+            <column name="first_friend_id" value="275188f1-83ca-4a20-a1ec-9b7bff8bd37d"/>
+            <column name="second_friend_id" value="9dbfadcf-b81f-4099-a620-486a6c93c0d0"/>
+            <column name="status" value="PENDING"/>
+            <column name="status_initiator" value="275188f1-83ca-4a20-a1ec-9b7bff8bd37d"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="relationship">
+            <column name="id" value="878186e6-1476-4adf-a885-d543b9878871"/>
+            <column name="first_friend_id" value="275188f1-83ca-4a20-a1ec-9b7bff8bd37d"/>
+            <column name="second_friend_id" value="c51bcf9e-c52d-4b62-bc25-12b6a68f682d"/>
+            <column name="status" value="ACCEPTED"/>
+            <column name="status_initiator" value="c51bcf9e-c52d-4b62-bc25-12b6a68f682d"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="relationship">
+            <column name="id" value="5d944cf2-0bb2-49ad-8ac0-b11ab9de3c2f"/>
+            <column name="first_friend_id" value="275188f1-83ca-4a20-a1ec-9b7bff8bd37d"/>
+            <column name="second_friend_id" value="d3037129-c9a7-44ee-8486-70698fe98d52"/>
+            <column name="status" value="ACCEPTED"/>
+            <column name="status_initiator" value="275188f1-83ca-4a20-a1ec-9b7bff8bd37d"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="relationship">
+            <column name="id" value="6dbd24f5-8274-4fd8-bee4-e2b1b35cddef"/>
+            <column name="first_friend_id" value="275188f1-83ca-4a20-a1ec-9b7bff8bd37d"/>
+            <column name="second_friend_id" value="e6cd52d9-3043-4d1d-bc14-8a7233097919"/>
+            <column name="status" value="ACCEPTED"/>
+            <column name="status_initiator" value="275188f1-83ca-4a20-a1ec-9b7bff8bd37d"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="relationship">
+            <column name="id" value="b2016295-3d08-4819-a369-a5773bb8f714"/>
+            <column name="first_friend_id" value="461a4a50-231d-4a55-a611-3b2af26165de"/>
+            <column name="second_friend_id" value="71d0119c-5630-4a89-8940-04c9615a5ac5"/>
+            <column name="status" value="PENDING"/>
+            <column name="status_initiator" value="71d0119c-5630-4a89-8940-04c9615a5ac5"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="relationship">
+            <column name="id" value="3cf8bc3a-e661-41a4-9934-11cf4ca8ad60"/>
+            <column name="first_friend_id" value="461a4a50-231d-4a55-a611-3b2af26165de"/>
+            <column name="second_friend_id" value="c51bcf9e-c52d-4b62-bc25-12b6a68f682d"/>
+            <column name="status" value="ACCEPTED"/>
+            <column name="status_initiator" value="c51bcf9e-c52d-4b62-bc25-12b6a68f682d"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="relationship">
+            <column name="id" value="7521ebdf-5ab0-4615-8d28-82a935310a05"/>
+            <column name="first_friend_id" value="461a4a50-231d-4a55-a611-3b2af26165de"/>
+            <column name="second_friend_id" value="d618221a-6708-4644-8779-f7cb749d7e1c"/>
+            <column name="status" value="ACCEPTED"/>
+            <column name="status_initiator" value="461a4a50-231d-4a55-a611-3b2af26165de"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="relationship">
+            <column name="id" value="743de76c-ec85-4d15-9669-4c80e699eee4"/>
+            <column name="first_friend_id" value="461a4a50-231d-4a55-a611-3b2af26165de"/>
+            <column name="second_friend_id" value="f61cafd4-06df-4d7d-95b5-56ee15f31915"/>
+            <column name="status" value="PENDING"/>
+            <column name="status_initiator" value="461a4a50-231d-4a55-a611-3b2af26165de"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="relationship">
+            <column name="id" value="a5f5e57d-99fa-41d1-8339-31fbd8fce490"/>
+            <column name="first_friend_id" value="52adab65-bfcf-463e-adde-e6687be042eb"/>
+            <column name="second_friend_id" value="71d0119c-5630-4a89-8940-04c9615a5ac5"/>
+            <column name="status" value="ACCEPTED"/>
+            <column name="status_initiator" value="71d0119c-5630-4a89-8940-04c9615a5ac5"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="relationship">
+            <column name="id" value="2bde04cb-84b0-43f0-82ac-390d6f577524"/>
+            <column name="first_friend_id" value="52adab65-bfcf-463e-adde-e6687be042eb"/>
+            <column name="second_friend_id" value="e6cd52d9-3043-4d1d-bc14-8a7233097919"/>
+            <column name="status" value="ACCEPTED"/>
+            <column name="status_initiator" value="e6cd52d9-3043-4d1d-bc14-8a7233097919"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="relationship">
+            <column name="id" value="51ef09e3-c3ab-4036-b394-20a271afb842"/>
+            <column name="first_friend_id" value="52adab65-bfcf-463e-adde-e6687be042eb"/>
+            <column name="second_friend_id" value="fbd47297-c2a6-41fd-ba61-555f805d8122"/>
+            <column name="status" value="ACCEPTED"/>
+            <column name="status_initiator" value="fbd47297-c2a6-41fd-ba61-555f805d8122"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="relationship">
+            <column name="id" value="7344135d-ecef-48bc-a506-c42f6d33bcba"/>
+            <column name="first_friend_id" value="71d0119c-5630-4a89-8940-04c9615a5ac5"/>
+            <column name="second_friend_id" value="8376afab-8346-457e-a761-2a3682eab4c6"/>
+            <column name="status" value="ACCEPTED"/>
+            <column name="status_initiator" value="8376afab-8346-457e-a761-2a3682eab4c6"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="relationship">
+            <column name="id" value="a10b364d-7baa-46a1-ab86-e1631bb20824"/>
+            <column name="first_friend_id" value="71d0119c-5630-4a89-8940-04c9615a5ac5"/>
+            <column name="second_friend_id" value="e6cd52d9-3043-4d1d-bc14-8a7233097919"/>
+            <column name="status" value="ACCEPTED"/>
+            <column name="status_initiator" value="e6cd52d9-3043-4d1d-bc14-8a7233097919"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="relationship">
+            <column name="id" value="82c64ec2-a6a2-4f3b-be59-7c00b8e09e22"/>
+            <column name="first_friend_id" value="722a9af1-9b38-4f12-9f3c-4e08a5cb724b"/>
+            <column name="second_friend_id" value="e6cd52d9-3043-4d1d-bc14-8a7233097919"/>
+            <column name="status" value="PENDING"/>
+            <column name="status_initiator" value="722a9af1-9b38-4f12-9f3c-4e08a5cb724b"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="relationship">
+            <column name="id" value="551a0237-50e8-42d7-b095-9d9c8fa91e77"/>
+            <column name="first_friend_id" value="8376afab-8346-457e-a761-2a3682eab4c6"/>
+            <column name="second_friend_id" value="e6cd52d9-3043-4d1d-bc14-8a7233097919"/>
+            <column name="status" value="ACCEPTED"/>
+            <column name="status_initiator" value="8376afab-8346-457e-a761-2a3682eab4c6"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="relationship">
+            <column name="id" value="31698d81-cb6b-4f28-a391-b3dca14963a4"/>
+            <column name="first_friend_id" value="8376afab-8346-457e-a761-2a3682eab4c6"/>
+            <column name="second_friend_id" value="f01b7c74-06b3-42a6-92b7-20f7c8127616"/>
+            <column name="status" value="PENDING"/>
+            <column name="status_initiator" value="8376afab-8346-457e-a761-2a3682eab4c6"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="relationship">
+            <column name="id" value="a7e78f21-13a6-4a9a-9161-5576426b646b"/>
+            <column name="first_friend_id" value="9dbfadcf-b81f-4099-a620-486a6c93c0d0"/>
+            <column name="second_friend_id" value="e6cd52d9-3043-4d1d-bc14-8a7233097919"/>
+            <column name="status" value="PENDING"/>
+            <column name="status_initiator" value="e6cd52d9-3043-4d1d-bc14-8a7233097919"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="relationship">
+            <column name="id" value="9bf8a97a-8fee-47dc-b71b-710473fbdec1"/>
+            <column name="first_friend_id" value="a88b97d3-8d97-454e-b3eb-9b3d2fadb12b"/>
+            <column name="second_friend_id" value="d3037129-c9a7-44ee-8486-70698fe98d52"/>
+            <column name="status" value="PENDING"/>
+            <column name="status_initiator" value="a88b97d3-8d97-454e-b3eb-9b3d2fadb12b"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="relationship">
+            <column name="id" value="41cf0dcf-570d-43c4-96d7-cdb042e3ccdd"/>
+            <column name="first_friend_id" value="a88b97d3-8d97-454e-b3eb-9b3d2fadb12b"/>
+            <column name="second_friend_id" value="d618221a-6708-4644-8779-f7cb749d7e1c"/>
+            <column name="status" value="ACCEPTED"/>
+            <column name="status_initiator" value="d618221a-6708-4644-8779-f7cb749d7e1c"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="relationship">
+            <column name="id" value="2c0cddce-67f7-4ef6-9495-d86d615b5e92"/>
+            <column name="first_friend_id" value="a88b97d3-8d97-454e-b3eb-9b3d2fadb12b"/>
+            <column name="second_friend_id" value="e6cd52d9-3043-4d1d-bc14-8a7233097919"/>
+            <column name="status" value="BLOCKED"/>
+            <column name="status_initiator" value="e6cd52d9-3043-4d1d-bc14-8a7233097919"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="relationship">
+            <column name="id" value="fa4ddef7-00da-4c86-aff0-393d14f3cd23"/>
+            <column name="first_friend_id" value="a88b97d3-8d97-454e-b3eb-9b3d2fadb12b"/>
+            <column name="second_friend_id" value="f61cafd4-06df-4d7d-95b5-56ee15f31915"/>
+            <column name="status" value="ACCEPTED"/>
+            <column name="status_initiator" value="a88b97d3-8d97-454e-b3eb-9b3d2fadb12b"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="relationship">
+            <column name="id" value="b01f61d3-9e27-4e24-a1c9-5c2d579d5e41"/>
+            <column name="first_friend_id" value="ac6db61b-746a-4bd5-8bbf-050783632a71"/>
+            <column name="second_friend_id" value="c51bcf9e-c52d-4b62-bc25-12b6a68f682d"/>
+            <column name="status" value="ACCEPTED"/>
+            <column name="status_initiator" value="c51bcf9e-c52d-4b62-bc25-12b6a68f682d"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="relationship">
+            <column name="id" value="d05aa465-bc86-4bba-b7ee-fcd9d612d262"/>
+            <column name="first_friend_id" value="ac6db61b-746a-4bd5-8bbf-050783632a71"/>
+            <column name="second_friend_id" value="fbd47297-c2a6-41fd-ba61-555f805d8122"/>
+            <column name="status" value="PENDING"/>
+            <column name="status_initiator" value="fbd47297-c2a6-41fd-ba61-555f805d8122"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="relationship">
+            <column name="id" value="00e6a57d-f2a8-4261-b867-848196893b18"/>
+            <column name="first_friend_id" value="c51bcf9e-c52d-4b62-bc25-12b6a68f682d"/>
+            <column name="second_friend_id" value="e6cd52d9-3043-4d1d-bc14-8a7233097919"/>
+            <column name="status" value="PENDING"/>
+            <column name="status_initiator" value="c51bcf9e-c52d-4b62-bc25-12b6a68f682d"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="relationship">
+            <column name="id" value="db561542-0d2e-4b88-9156-001f2a112a6c"/>
+            <column name="first_friend_id" value="d3037129-c9a7-44ee-8486-70698fe98d52"/>
+            <column name="second_friend_id" value="f61cafd4-06df-4d7d-95b5-56ee15f31915"/>
+            <column name="status" value="ACCEPTED"/>
+            <column name="status_initiator" value="f61cafd4-06df-4d7d-95b5-56ee15f31915"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="relationship">
+            <column name="id" value="fbd3a573-a131-4f85-a0e8-5923cc029ee1"/>
+            <column name="first_friend_id" value="d618221a-6708-4644-8779-f7cb749d7e1c"/>
+            <column name="second_friend_id" value="e6cd52d9-3043-4d1d-bc14-8a7233097919"/>
+            <column name="status" value="PENDING"/>
+            <column name="status_initiator" value="e6cd52d9-3043-4d1d-bc14-8a7233097919"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="relationship">
+            <column name="id" value="aa74f341-e4a3-4e63-bab3-2e0fa353ca9f"/>
+            <column name="first_friend_id" value="d618221a-6708-4644-8779-f7cb749d7e1c"/>
+            <column name="second_friend_id" value="f01b7c74-06b3-42a6-92b7-20f7c8127616"/>
+            <column name="status" value="ACCEPTED"/>
+            <column name="status_initiator" value="d618221a-6708-4644-8779-f7cb749d7e1c"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="relationship">
+            <column name="id" value="e5f256b5-8011-4ec3-b8ab-30bc72ee9c57"/>
+            <column name="first_friend_id" value="d618221a-6708-4644-8779-f7cb749d7e1c"/>
+            <column name="second_friend_id" value="f1498f0e-853d-4495-8f04-634bff7b38e6"/>
+            <column name="status" value="ACCEPTED"/>
+            <column name="status_initiator" value="f1498f0e-853d-4495-8f04-634bff7b38e6"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="relationship">
+            <column name="id" value="cd2506f4-6052-4e6f-b72d-09dd8674cf6c"/>
+            <column name="first_friend_id" value="e6cd52d9-3043-4d1d-bc14-8a7233097919"/>
+            <column name="second_friend_id" value="f01b7c74-06b3-42a6-92b7-20f7c8127616"/>
+            <column name="status" value="PENDING"/>
+            <column name="status_initiator" value="f01b7c74-06b3-42a6-92b7-20f7c8127616"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="relationship">
+            <column name="id" value="71e0c870-165b-41d0-bcf9-2940040dcbc8"/>
+            <column name="first_friend_id" value="e6cd52d9-3043-4d1d-bc14-8a7233097919"/>
+            <column name="second_friend_id" value="f1498f0e-853d-4495-8f04-634bff7b38e6"/>
+            <column name="status" value="ACCEPTED"/>
+            <column name="status_initiator" value="f1498f0e-853d-4495-8f04-634bff7b38e6"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="relationship">
+            <column name="id" value="e48cd716-34d9-4daf-bbba-4d7041945354"/>
+            <column name="first_friend_id" value="e6cd52d9-3043-4d1d-bc14-8a7233097919"/>
+            <column name="second_friend_id" value="f61cafd4-06df-4d7d-95b5-56ee15f31915"/>
+            <column name="status" value="ACCEPTED"/>
+            <column name="status_initiator" value="f61cafd4-06df-4d7d-95b5-56ee15f31915"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="relationship">
+            <column name="id" value="d6215690-1054-4d0e-86f0-7495988c938e"/>
+            <column name="first_friend_id" value="f01b7c74-06b3-42a6-92b7-20f7c8127616"/>
+            <column name="second_friend_id" value="f1498f0e-853d-4495-8f04-634bff7b38e6"/>
+            <column name="status" value="PENDING"/>
+            <column name="status_initiator" value="f1498f0e-853d-4495-8f04-634bff7b38e6"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="relationship">
+            <column name="id" value="26058352-94df-46a9-b936-89698545b794"/>
+            <column name="first_friend_id" value="f1498f0e-853d-4495-8f04-634bff7b38e6"/>
+            <column name="second_friend_id" value="fbd47297-c2a6-41fd-ba61-555f805d8122"/>
+            <column name="status" value="ACCEPTED"/>
+            <column name="status_initiator" value="f1498f0e-853d-4495-8f04-634bff7b38e6"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="relationship">
+            <column name="id" value="f70b467d-b98f-4f37-8e06-40d77516ee93"/>
+            <column name="first_friend_id" value="f61cafd4-06df-4d7d-95b5-56ee15f31915"/>
+            <column name="second_friend_id" value="fbd47297-c2a6-41fd-ba61-555f805d8122"/>
+            <column name="status" value="PENDING"/>
+            <column name="status_initiator" value="f61cafd4-06df-4d7d-95b5-56ee15f31915"/>
+            <column name="version" valueNumeric="1"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="relationship">
+                <where>first_friend_id IN (SELECT user_id FROM profile WHERE email LIKE '%@strife.test')
+                    OR second_friend_id IN (SELECT user_id FROM profile WHERE email LIKE '%@strife.test')</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <!-- Rattache les profils deja presents (ton propre compte) a une poignee
+         de comptes seedes, sinon le dashboard reste vide quand on se connecte
+         avec son vrai compte plutot qu'avec dev@strife.test. Ne fait rien si
+         la base ne contient que les profils seedes. -->
+    <changeSet id="006-seed-link-existing-profiles" author="Moncles Junior Herisse" context="seed">
+        <sql>
+            INSERT INTO relationship (id, first_friend_id, second_friend_id, status, status_initiator, version)
+            SELECT gen_random_uuid(),
+                   LEAST(existing.user_id, seeded.user_id),
+                   GREATEST(existing.user_id, seeded.user_id),
+                   seeded.status,
+                   CASE WHEN seeded.status = 'PENDING' THEN seeded.user_id ELSE existing.user_id END,
+                   1
+            FROM profile existing
+            CROSS JOIN (
+                SELECT user_id,
+                       CASE WHEN row_number() OVER (ORDER BY username) &lt;= 6 THEN 'ACCEPTED' ELSE 'PENDING' END AS status
+                FROM profile
+                WHERE user_id IN (
+            'e6cd52d9-3043-4d1d-bc14-8a7233097919',
+            'ac6db61b-746a-4bd5-8bbf-050783632a71',
+            'd3037129-c9a7-44ee-8486-70698fe98d52',
+            '15ca6b1e-a272-4cc2-811a-c61fd6dfb612',
+            'fbd47297-c2a6-41fd-ba61-555f805d8122',
+            '275188f1-83ca-4a20-a1ec-9b7bff8bd37d',
+            '18f0ff38-2112-4600-8c88-a75e61115b24',
+            'f01b7c74-06b3-42a6-92b7-20f7c8127616',
+            'c51bcf9e-c52d-4b62-bc25-12b6a68f682d',
+            'd618221a-6708-4644-8779-f7cb749d7e1c',
+            '71d0119c-5630-4a89-8940-04c9615a5ac5',
+            '52adab65-bfcf-463e-adde-e6687be042eb',
+            '722a9af1-9b38-4f12-9f3c-4e08a5cb724b',
+            '461a4a50-231d-4a55-a611-3b2af26165de',
+            'f61cafd4-06df-4d7d-95b5-56ee15f31915',
+            '8376afab-8346-457e-a761-2a3682eab4c6',
+            'a88b97d3-8d97-454e-b3eb-9b3d2fadb12b',
+            'f1498f0e-853d-4495-8f04-634bff7b38e6',
+            '102bed32-9a82-493b-b4d5-8f2c5f9a48f2',
+            '9dbfadcf-b81f-4099-a620-486a6c93c0d0',
+            '19e8e64e-b2c0-4269-abae-4952b3db4414'
+                )
+                ORDER BY username
+                LIMIT 8
+            ) seeded
+            WHERE existing.user_id NOT IN (
+            'e6cd52d9-3043-4d1d-bc14-8a7233097919',
+            'ac6db61b-746a-4bd5-8bbf-050783632a71',
+            'd3037129-c9a7-44ee-8486-70698fe98d52',
+            '15ca6b1e-a272-4cc2-811a-c61fd6dfb612',
+            'fbd47297-c2a6-41fd-ba61-555f805d8122',
+            '275188f1-83ca-4a20-a1ec-9b7bff8bd37d',
+            '18f0ff38-2112-4600-8c88-a75e61115b24',
+            'f01b7c74-06b3-42a6-92b7-20f7c8127616',
+            'c51bcf9e-c52d-4b62-bc25-12b6a68f682d',
+            'd618221a-6708-4644-8779-f7cb749d7e1c',
+            '71d0119c-5630-4a89-8940-04c9615a5ac5',
+            '52adab65-bfcf-463e-adde-e6687be042eb',
+            '722a9af1-9b38-4f12-9f3c-4e08a5cb724b',
+            '461a4a50-231d-4a55-a611-3b2af26165de',
+            'f61cafd4-06df-4d7d-95b5-56ee15f31915',
+            '8376afab-8346-457e-a761-2a3682eab4c6',
+            'a88b97d3-8d97-454e-b3eb-9b3d2fadb12b',
+            'f1498f0e-853d-4495-8f04-634bff7b38e6',
+            '102bed32-9a82-493b-b4d5-8f2c5f9a48f2',
+            '9dbfadcf-b81f-4099-a620-486a6c93c0d0',
+            '19e8e64e-b2c0-4269-abae-4952b3db4414'
+            )
+            ON CONFLICT ON CONSTRAINT relationship_unique DO NOTHING;
+        </sql>
+        <rollback>
+            <sql>
+                DELETE FROM relationship
+                WHERE first_friend_id IN (SELECT user_id FROM profile WHERE email LIKE '%@strife.test')
+                   OR second_friend_id IN (SELECT user_id FROM profile WHERE email LIKE '%@strife.test');
+            </sql>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

@@ -13,6 +13,11 @@ spring:
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml
     enabled: true
+    # Sans contexte explicite Liquibase joue TOUS les changeSets, y compris
+    # ceux marques context="seed" : la valeur par defaut "default" est donc
+    # ce qui garde le jeu de donnees de dev hors de la base.
+    # Pour le charger : LIQUIBASE_CONTEXTS=seed.
+    contexts: ${LIQUIBASE_CONTEXTS:default}
   security:
     oauth2:
       client:

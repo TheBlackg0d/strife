@@ -1,4 +1,4 @@
-import type { PresenceStatus } from "../../types/dashboard";
+import type { PresenceStatus } from "../../pages/dashboard/types/dashboard";
 
 /**
  * Surface the avatar sits on. The status dot punches a ring of that colour
@@ -28,17 +28,19 @@ const ringStyles: Record<RingSurface, { border: string; fill: string }> = {
 };
 
 const statusColor: Record<PresenceStatus, string> = {
-  online: "bg-status-online",
-  idle: "bg-status-idle",
-  dnd: "bg-status-dnd",
-  offline: "bg-surface-container-high",
+  ONLINE: "bg-status-online",
+  INACTIVE: "bg-status-idle",
+  DO_NOT_DISTURB: "bg-status-dnd",
+  OFFLINE: "bg-surface-container-high",
+  INVISIBLE: "bg-surface-container-high",
 };
 
 const statusLabel: Record<PresenceStatus, string> = {
-  online: "En ligne",
-  idle: "Inactif",
-  dnd: "Ne pas déranger",
-  offline: "Hors ligne",
+  ONLINE: "En ligne",
+  INACTIVE: "Inactif",
+  DO_NOT_DISTURB: "Ne pas déranger",
+  OFFLINE: "Hors ligne",
+  INVISIBLE: "Invisible",
 };
 
 interface StatusDotProps {
@@ -58,10 +60,10 @@ function StatusDot({ status, size = 12, ring = "surface" }: StatusDotProps) {
       style={{ width: size, height: size, borderWidth: size >= 14 ? 3 : 2 }}
       className={`absolute bottom-0 right-0 flex items-center justify-center rounded-full border-solid ${statusColor[status]} ${border}`}
     >
-      {status === "offline" && (
+      {status === "OFFLINE" && (
         <span className="h-1.5 w-1.5 rounded-full bg-outline" />
       )}
-      {status === "dnd" && (
+      {status === "DO_NOT_DISTURB" && (
         <span className={`h-0.5 w-1.5 rounded-full ${fill}`} />
       )}
     </span>

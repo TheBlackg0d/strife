@@ -1,4 +1,4 @@
-import type { PresenceStatus } from "./dashboard";
+import type { PresenceStatus } from "../pages/dashboard/types/dashboard";
 
 /** Identity shown and edited in the settings modal. */
 export interface SettingsUser {

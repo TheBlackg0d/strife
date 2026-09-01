@@ -1,6 +1,6 @@
 import { MdAdd, MdHome } from "react-icons/md";
 import GuildItem from "./GuildItem";
-import type { Guild } from "../../types/dashboard";
+import type { Guild } from "../../pages/dashboard/types/dashboard";
 
 interface GuildRailProps {
   guilds: Guild[];

@@ -12,16 +12,10 @@ function displayName(email: string): string {
   return email.split("@")[0];
 }
 
-/**
- * Three-pane application shell (DESIGN.md > Layout & Spacing):
- * guild rail (72px) + contextual nav (240px) + fluid main stage.
- */
 export default function AppLayout() {
   const data = useRouteLoaderData<ProtectedLoaderData>("protected");
   const navigate = useNavigate();
 
-  // TODO: promote to route params (/channels/:guildId/:conversationId)
-  // once guild and DM routes exist.
   const [activeGuildId, setActiveGuildId] = useState<string | undefined>();
   const [activeConversationId, setActiveConversationId] = useState<
     string | undefined
@@ -48,7 +42,7 @@ export default function AppLayout() {
       <DirectMessageSidebar
         conversations={conversations}
         currentUsername={username}
-        currentUserStatus="online"
+        currentUserStatus="ONLINE"
         activeConversationId={activeConversationId}
         pendingRequestCount={pendingRequestCount}
         onSelectConversation={setActiveConversationId}
@@ -67,7 +61,7 @@ export default function AppLayout() {
         user={{
           username,
           email: data?.account.email ?? "",
-          status: "online",
+          status: "ONLINE",
         }}
       />
     </div>

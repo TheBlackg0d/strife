@@ -1,7 +1,7 @@
 import { MdHeadphones, MdMic, MdSettings } from "react-icons/md";
 import Avatar from "../../components/ui/Avatar";
 import IconButton from "../../components/ui/IconButton";
-import type { PresenceStatus } from "../../types/dashboard";
+import type { PresenceStatus } from "../../pages/dashboard/types/dashboard";
 
 interface UserPanelProps {
   username: string;
@@ -13,16 +13,17 @@ interface UserPanelProps {
 }
 
 const statusLabel: Record<PresenceStatus, string> = {
-  online: "En ligne",
-  idle: "Inactif",
-  dnd: "Ne pas déranger",
-  offline: "Hors ligne",
+  ONLINE: "En ligne",
+  INACTIVE: "Inactif",
+  DO_NOT_DISTURB: "Ne pas déranger",
+  OFFLINE: "Hors ligne",
+  INVISIBLE: "Invisible",
 };
 
 /** Pinned to the bottom of the DM sidebar; never scrolls. */
 function UserPanel({
   username,
-  status = "online",
+  status = "ONLINE",
   imageUrl,
   onOpenSettings,
   onToggleMic,

@@ -8,7 +8,8 @@ import { userContext } from "../auth/context";
 import { authMiddleware, loggedInMiddleware } from "../auth/authMiddleware";
 import AppLayout from "../layout/AppLayout";
 
-import { getFriendList } from "../api/dashboard";
+import { queryClient } from "../main";
+import createFriendListQueryOptions from "../pages/dashboard/types/friend-list-query-option";
 
 export interface ProtectedLoaderData {
   account: Account;
@@ -43,9 +44,7 @@ const router = createBrowserRouter([
         children: [
           {
             path: "/",
-            loader: async () => {
-              return getFriendList();
-            },
+            loader: () => queryClient.query(createFriendListQueryOptions()),
             Component: DashBoard,
           },
         ],

@@ -8,5 +8,7 @@
     <include file="db/changelog/changes/001-create-accounts-table.xml"/>
     <include file="db/changelog/changes/002-create-providers-table.xml"/>
     <include file="db/changelog/changes/003-add-username-to-accounts.xml"/>
+    <!-- Jeu de donnees de dev, ignore tant que LIQUIBASE_CONTEXTS ne vaut pas "seed". -->
+    <include file="db/changelog/changes/004-seed-dev-accounts.xml"/>
 
 </databaseChangeLog>

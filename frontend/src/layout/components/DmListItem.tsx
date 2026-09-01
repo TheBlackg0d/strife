@@ -1,5 +1,5 @@
 import Avatar from "../../components/ui/Avatar";
-import type { Conversation } from "../../types/dashboard";
+import type { Conversation } from "../../pages/dashboard/types/dashboard";
 
 interface DmListItemProps {
   conversation: Conversation;
@@ -12,8 +12,9 @@ function DmListItem({
   isActive = false,
   onSelect,
 }: DmListItemProps) {
-  const { id, name, status, memberCount, imageUrl, icon } = conversation;
-  const isOffline = status === "offline";
+  const { id, name, statusPreference, memberCount, imageUrl, icon } =
+    conversation;
+  const isOffline = statusPreference === "OFFLINE";
 
   return (
     <button
@@ -30,17 +31,17 @@ function DmListItem({
         name={name}
         imageUrl={imageUrl}
         icon={icon}
-        status={status}
+        status={statusPreference}
         ring={isActive ? "surface-variant" : "surface-container-low"}
         className={isOffline ? "opacity-60" : undefined}
       />
 
-      <div className={`min-w-0 flex-1 text-left ${isOffline ? "opacity-60" : ""}`}>
+      <div
+        className={`min-w-0 flex-1 text-left ${isOffline ? "opacity-60" : ""}`}
+      >
         <p className="truncate text-[15px] font-medium">{name}</p>
         {memberCount !== undefined && (
-          <p className="truncate text-xs text-outline">
-            {memberCount} membres
-          </p>
+          <p className="truncate text-xs text-outline">{memberCount} membres</p>
         )}
       </div>
     </button>

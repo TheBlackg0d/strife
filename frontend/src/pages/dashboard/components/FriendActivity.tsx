@@ -1,4 +1,4 @@
-import type { Activity, ActivityTone } from "../../../types/dashboard";
+import type { Activity, ActivityTone } from "../types/dashboard";
 
 const tones: Record<ActivityTone, string> = {
   primary: "bg-primary-container/80 text-on-primary-container",

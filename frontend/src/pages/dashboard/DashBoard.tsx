@@ -1,8 +1,10 @@
 import { useState } from "react";
+import AddFriendForm from "./components/AddFriendForm";
 import FriendRow from "./components/FriendRow";
 import FriendsHeader from "./components/FriendsHeader";
-import type { IDashBoard, FriendFilter } from "../../types/dashboard";
-import { useLoaderData } from "react-router";
+import type { DashboardTab, Friend, FriendFilter } from "./types/dashboard";
+import { useQuery } from "@tanstack/react-query";
+import createFriendListQueryOptions from "./types/friend-list-query-option";
 
 const sectionTitles: Record<FriendFilter, string> = {
   ACCEPTED: "EN LIGNE",
@@ -19,30 +21,50 @@ const emptyMessages: Record<FriendFilter, string> = {
 };
 
 function DashBoard() {
-  const dashboardData = useLoaderData() as IDashBoard;
-  const [filter, setFilter] = useState<FriendFilter>("ACCEPTED");
+  const { data: friends } = useQuery(createFriendListQueryOptions());
+
+  console.log(friends);
+  const [tab, setTab] = useState<DashboardTab>("ACCEPTED");
 
   return (
     <>
-      <FriendsHeader activeFilter={filter} onFilterChange={setFilter} />
+      <FriendsHeader activeTab={tab} onTabChange={setTab} />
 
-      <div className="flex-1 overflow-y-auto p-4 md:px-8">
-        <h2 className="mb-4 font-label text-xs font-bold text-outline">
-          {sectionTitles[filter]} — {dashboardData.friends[filter]?.length}
-        </h2>
-
-        {dashboardData.friends[filter] &&
-        dashboardData.friends[filter]?.length > 0 ? (
-          <ul className="flex flex-col gap-2">
-            {dashboardData.friends[filter]?.map((friend) => (
-              <FriendRow key={friend.id} friend={friend} />
-            ))}
-          </ul>
-        ) : (
-          <p className="text-sm text-outline">{emptyMessages[filter]}</p>
-        )}
-      </div>
+      {tab === "ADD_FRIEND" ? (
+        <AddFriendForm />
+      ) : (
+        <FriendList filter={tab} friends={friends?.[tab] ?? undefined} />
+      )}
     </>
+  );
+}
+
+interface FriendListProps {
+  filter: FriendFilter;
+  friends?: Friend[];
+}
+
+function FriendList({ filter, friends }: FriendListProps) {
+  return (
+    <div className="flex-1 overflow-y-auto p-4 md:px-8">
+      <h2 className="mb-4 font-label text-xs font-bold text-outline">
+        {sectionTitles[filter]} — {friends?.length}
+      </h2>
+
+      {friends && friends.length > 0 ? (
+        <ul className="flex flex-col gap-2">
+          {friends.map((friend) => (
+            <FriendRow
+              key={friend.id}
+              friend={friend}
+              isInFriendRequestArea={filter === "PENDING"}
+            />
+          ))}
+        </ul>
+      ) : (
+        <p className="text-sm text-outline">{emptyMessages[filter]}</p>
+      )}
+    </div>
   );
 }
 

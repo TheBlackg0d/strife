@@ -1,5 +1,5 @@
 import { MdGroups } from "react-icons/md";
-import type { FriendFilter } from "../../../types/dashboard";
+import type { DashboardTab, FriendFilter } from "../types/dashboard";
 
 const filters: { value: FriendFilter; label: string }[] = [
   { value: "ACCEPTED", label: "En ligne" },
@@ -9,16 +9,12 @@ const filters: { value: FriendFilter; label: string }[] = [
 ];
 
 interface FriendsHeaderProps {
-  activeFilter: FriendFilter;
-  onFilterChange: (filter: FriendFilter) => void;
-  onAddFriend?: () => void;
+  activeTab: DashboardTab;
+  onTabChange: (tab: DashboardTab) => void;
 }
 
-function FriendsHeader({
-  activeFilter,
-  onFilterChange,
-  onAddFriend,
-}: FriendsHeaderProps) {
+function FriendsHeader({ activeTab, onTabChange }: FriendsHeaderProps) {
+  const isAddingFriend = activeTab === "ADD_FRIEND";
   return (
     <header className="flex h-12 shrink-0 items-center border-b border-surface-container-lowest/30 px-4">
       <div className="flex flex-1 items-center gap-4">
@@ -34,10 +30,10 @@ function FriendsHeader({
             <button
               key={value}
               type="button"
-              onClick={() => onFilterChange(value)}
-              aria-current={value === activeFilter ? "true" : undefined}
+              onClick={() => onTabChange(value)}
+              aria-current={value === activeTab ? "true" : undefined}
               className={`cursor-pointer rounded-sm px-2 py-0.5 text-[15px] font-medium transition-colors ${
-                value === activeFilter
+                value === activeTab
                   ? "bg-surface-variant text-on-surface"
                   : "text-on-surface-variant hover:bg-surface-variant/50 hover:text-on-surface"
               }`}
@@ -50,8 +46,13 @@ function FriendsHeader({
 
       <button
         type="button"
-        onClick={onAddFriend}
-        className="cursor-pointer rounded-sm bg-primary-container px-2 py-1 text-[13px] font-medium text-on-primary-container transition-colors hover:bg-primary-container/90"
+        onClick={() => onTabChange(isAddingFriend ? "ACCEPTED" : "ADD_FRIEND")}
+        aria-current={isAddingFriend ? "true" : undefined}
+        className={`cursor-pointer rounded-sm px-2 py-1 text-[13px] font-medium transition-colors ${
+          isAddingFriend
+            ? "bg-transparent text-secondary hover:bg-surface-variant/50"
+            : "bg-primary-container text-on-primary-container hover:bg-primary-container/90"
+        }`}
       >
         Ajouter un ami
       </button>

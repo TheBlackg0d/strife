@@ -1,5 +1,5 @@
 import type { IconType } from "react-icons";
-import type { PresenceStatus } from "../../types/dashboard";
+import type { PresenceStatus } from "../../pages/dashboard/types/dashboard";
 import StatusDot, { type RingSurface } from "./StatusDot";
 
 interface AvatarProps {
@@ -22,7 +22,10 @@ interface AvatarProps {
 }
 
 function initials(name: string): string {
-  const parts = name.trim().split(/[\s_-]+/).filter(Boolean);
+  const parts = name
+    .trim()
+    .split(/[\s_-]+/)
+    .filter(Boolean);
   if (parts.length > 1) {
     return (parts[0][0] + parts[1][0]).toUpperCase();
   }

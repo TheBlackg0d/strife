@@ -3,7 +3,10 @@ import DmListItem from "./DmListItem";
 import SectionHeader from "./SectionHeader";
 import SidebarNavItem from "./SidebarNavItem";
 import UserPanel from "./UserPanel";
-import type { Conversation, PresenceStatus } from "../../types/dashboard";
+import type {
+  Conversation,
+  PresenceStatus,
+} from "../../pages/dashboard/types/dashboard";
 
 interface DirectMessageSidebarProps {
   conversations: Conversation[];
