@@ -5,6 +5,5 @@ public enum RelationshipStatus {
     ACCEPTED,
     BLOCKED,
     DENIED,
-    REMOVED,
-    ALL
+    REMOVED
 }

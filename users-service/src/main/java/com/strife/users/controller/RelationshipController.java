@@ -39,7 +39,7 @@ public class RelationshipController {
     }
 
     @GetMapping("/friends")
-    public ResponseEntity<FriendStatusList> getFriends(@AuthenticationPrincipal JwtPrincipal principal, String email) {
+    public ResponseEntity<FriendStatusList> getFriends(@AuthenticationPrincipal JwtPrincipal principal) {
         Profile profile = profileService.getOrCreateProfileById(principal);
 
         return ResponseEntity.ok(relationshipService.getFriends(profile));
@@ -65,6 +65,16 @@ public class RelationshipController {
         return ResponseEntity.ok(relationshipService.acceptFriendRequest(profile, friend));
     }
 
+    @PostMapping("/friends/{friendId}/block")
+    public ResponseEntity<RelationshipDTO> blockFriend(@AuthenticationPrincipal JwtPrincipal principal,
+            @PathVariable UUID friendId) {
+
+        Profile profile = profileService.getProfileByEmail(principal.email());
+        Profile friend = profileService.getProfileById(friendId);
+
+        return ResponseEntity.ok(relationshipService.blockFriend(profile, friend));
+    }
+
     @PostMapping("/friends/{friendId}/remove")
     public ResponseEntity<ResponseDTO> rejectFriendRequest(@AuthenticationPrincipal JwtPrincipal principal,
             @PathVariable UUID friendId) {
@@ -74,7 +84,7 @@ public class RelationshipController {
 
         relationshipService.declineFriendRequest(profile, friend);
 
-        return ResponseEntity.ok(new ResponseDTO(HttpStatus.OK.toString(), "Friend request declined"));
+        return ResponseEntity.ok(new ResponseDTO(HttpStatus.OK.toString(), "Friend has been removed"));
     }
 
 }

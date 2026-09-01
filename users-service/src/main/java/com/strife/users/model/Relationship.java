@@ -57,6 +57,17 @@ public class Relationship {
         return relationship;
     }
 
+    public Profile getInitiatorProfile() {
+        if (firstFriend.getUserId().equals(statusInitiator)) {
+            return firstFriend;
+        }
+        if (secondFriend.getUserId().equals(statusInitiator)) {
+            return secondFriend;
+        }
+
+        throw new IllegalStateException("Initiator " + statusInitiator + " is not part of relationship " + id);
+    }
+
     public Profile otherFriend(UUID profileId) {
         if (firstFriend.getUserId().equals(profileId)) {
             return secondFriend;

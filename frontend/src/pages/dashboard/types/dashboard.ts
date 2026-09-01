@@ -50,13 +50,26 @@ export interface IDashBoard {
   friends: Record<FriendFilter, Friend[]>;
 }
 
-export type FriendFilter = "ACCEPTED" | "ALL" | "PENDING" | "BLOCKED";
+export type FriendFilter =
+  | "PENDING_FRIEND_REQUEST_SENT"
+  | "PENDING_FRIEND_REQUEST_RECEIVED"
+  | "ONLINE"
+  | "ALL"
+  | "BLOCKED";
 
 /** Onglets du dashboard : les filtres d'amis + le formulaire d'ajout. */
 export type DashboardTab = FriendFilter | "ADD_FRIEND";
 
+/** Statut réel stocké sur la relation côté back (RelationshipStatus). */
+export type RelationshipStatus =
+  | "PENDING"
+  | "ACCEPTED"
+  | "BLOCKED"
+  | "DENIED"
+  | "REMOVED";
+
 export interface Relationship {
   friend1: Friend;
   friend2: Friend;
-  status: FriendFilter;
+  status: RelationshipStatus;
 }

@@ -2,9 +2,10 @@ import { MdGroups } from "react-icons/md";
 import type { DashboardTab, FriendFilter } from "../types/dashboard";
 
 const filters: { value: FriendFilter; label: string }[] = [
-  { value: "ACCEPTED", label: "En ligne" },
+  { value: "ONLINE", label: "En ligne" },
   { value: "ALL", label: "Tous" },
-  { value: "PENDING", label: "En attente" },
+  { value: "PENDING_FRIEND_REQUEST_RECEIVED", label: "En attente" },
+  { value: "PENDING_FRIEND_REQUEST_SENT", label: "Envoyées" },
   { value: "BLOCKED", label: "Bloqués" },
 ];
 
@@ -46,7 +47,7 @@ function FriendsHeader({ activeTab, onTabChange }: FriendsHeaderProps) {
 
       <button
         type="button"
-        onClick={() => onTabChange(isAddingFriend ? "ACCEPTED" : "ADD_FRIEND")}
+        onClick={() => onTabChange(isAddingFriend ? "ONLINE" : "ADD_FRIEND")}
         aria-current={isAddingFriend ? "true" : undefined}
         className={`cursor-pointer rounded-sm px-2 py-1 text-[13px] font-medium transition-colors ${
           isAddingFriend

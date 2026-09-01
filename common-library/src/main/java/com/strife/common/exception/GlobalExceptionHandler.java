@@ -19,15 +19,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import com.strife.common.dto.ErrorResponseDTO;
 
-/**
- * Traduit les exceptions métier communes en {@link ErrorResponseDTO}.
- *
- * <p>
- * Enregistré automatiquement dans les services servlet (voir
- * {@code CommonWebAutoConfiguration}). Les exceptions liées à Spring Security
- * sont traitées séparément par {@link SecurityExceptionHandler}, pour que ce
- * handler-ci reste utilisable sans spring-security sur le classpath.
- */
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
@@ -49,6 +40,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<ErrorResponseDTO> handleRessourceNotFoundException(
             RessourceNotFoundException exception, WebRequest webRequest) {
         return buildResponse(HttpStatus.NOT_FOUND, exception.getMessage(), Map.of(), webRequest);
+    }
+
+    @ExceptionHandler(ActionNotAuthorizedException.class)
+    public ResponseEntity<ErrorResponseDTO> buildResponse(HttpStatus httpStatus, String message,
+            ActionNotAuthorizedException exception, WebRequest webRequest) {
+
+        return buildResponse(httpStatus, exception.getMessage(), Map.of(), webRequest);
     }
 
     @Override

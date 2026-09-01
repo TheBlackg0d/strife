@@ -2,15 +2,8 @@ package com.strife.users.dto;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import com.strife.users.model.RelationshipStatus;
+import com.strife.users.model.FriendListFilter;
 
-public class FriendStatusList extends HashMap<RelationshipStatus, List<ProfileDTO>> {
-
-    public static FriendStatusList of(Map<RelationshipStatus, List<ProfileDTO>> map) {
-        FriendStatusList friendStatusList = new FriendStatusList();
-        friendStatusList.putAll(map);
-        return friendStatusList;
-    }
+public class FriendStatusList extends HashMap<FriendListFilter, List<ProfileDTO>> {
 }

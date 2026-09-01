@@ -1,6 +1,8 @@
 import { useState, type FormEvent } from "react";
 import axios from "axios";
 import { sendFriendRequest } from "../api/dashboard";
+import { useMutation } from "@tanstack/react-query";
+import { queryClient } from "../../../main";
 
 type Feedback = { tone: "success" | "error"; message: string };
 
@@ -8,6 +10,28 @@ function AddFriendForm() {
   const [username, setUsername] = useState("");
   const [isSending, setIsSending] = useState(false);
   const [feedback, setFeedback] = useState<Feedback | null>(null);
+
+  const sendFriendRequestMutation = useMutation({
+    mutationFn: (username: string) => sendFriendRequest(username),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["friendList"] });
+      setFeedback({
+        tone: "success",
+        message: `Demande d'ami envoyée à ${trimmed}.`,
+      });
+      setUsername("");
+    },
+    onError: (error) => {
+      const message =
+        axios.isAxiosError(error) && error.response?.status === 404
+          ? `Hum, ce nom d'utilisateur n'existe pas. Vérifie l'orthographe.`
+          : "La demande n'a pas pu être envoyée. Réessaie plus tard.";
+      setFeedback({ tone: "error", message });
+    },
+    onSettled: () => {
+      setIsSending(false);
+    },
+  });
 
   const trimmed = username.trim();
   const canSubmit = trimmed.length > 0 && !isSending;
@@ -19,27 +43,12 @@ function AddFriendForm() {
     setIsSending(true);
     setFeedback(null);
 
-    try {
-      await sendFriendRequest(trimmed);
-      setFeedback({
-        tone: "success",
-        message: `Demande d'ami envoyée à ${trimmed}.`,
-      });
-      setUsername("");
-    } catch (error) {
-      const message =
-        axios.isAxiosError(error) && error.response?.status === 404
-          ? `Hum, ce nom d'utilisateur n'existe pas. Vérifie l'orthographe.`
-          : "La demande n'a pas pu être envoyée. Réessaie plus tard.";
-      setFeedback({ tone: "error", message });
-    } finally {
-      setIsSending(false);
-    }
+    await sendFriendRequestMutation.mutateAsync(trimmed);
   };
 
   return (
     <div className="flex-1 overflow-y-auto p-4 md:px-8">
-      <div className="max-w-[1127px]">
+      <div className="max-w-281.75">
         <h2 className="mb-2 text-[16px] font-bold uppercase text-on-surface">
           Ajouter
         </h2>
