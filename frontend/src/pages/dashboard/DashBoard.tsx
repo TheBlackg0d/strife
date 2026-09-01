@@ -31,7 +31,7 @@ function DashBoard() {
       {tab === "ADD_FRIEND" ? (
         <AddFriendForm />
       ) : (
-        <FriendList filter={tab} friends={friends?.[tab] ?? undefined} />
+        <FriendList filter={tab} friends={friends} />
       )}
     </>
   );
@@ -39,23 +39,26 @@ function DashBoard() {
 
 interface FriendListProps {
   filter: FriendFilter;
-  friends?: Friend[];
+  friends?: Record<FriendFilter, Friend[]>;
 }
 
 function FriendList({ filter, friends }: FriendListProps) {
   return (
     <div className="flex-1 overflow-y-auto p-4 md:px-8">
       <h2 className="mb-4 font-label text-xs font-bold text-outline">
-        {sectionTitles[filter]} — {friends?.length}
+        {sectionTitles[filter]} — {friends?.[filter].length}
       </h2>
 
-      {friends && friends.length > 0 ? (
+      {friends && friends?.[filter].length > 0 ? (
         <ul className="flex flex-col gap-2">
-          {friends.map((friend) => (
+          {friends?.[filter].map((friend) => (
             <FriendRow
               key={friend.id}
               friend={friend}
-              isInFriendRequestArea={filter === "PENDING"}
+              isInFriendRequestArea={
+                filter === "PENDING" ||
+                friends?.PENDING.some((f) => f.id === friend.id)
+              }
             />
           ))}
         </ul>
