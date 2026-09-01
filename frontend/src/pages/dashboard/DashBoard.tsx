@@ -22,8 +22,6 @@ const emptyMessages: Record<FriendFilter, string> = {
 
 function DashBoard() {
   const { data: friends } = useQuery(createFriendListQueryOptions());
-
-  console.log(friends);
   const [tab, setTab] = useState<DashboardTab>("ACCEPTED");
 
   return (
