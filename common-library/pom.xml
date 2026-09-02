@@ -16,12 +16,10 @@
     <description>Code partagé entre les services (contrats d'events, DTO d'erreur, exceptions, JWT). Voir common-library/README.md.</description>
 
     <dependencies>
-        <!--
-            Toutes les dépendances sont <optional> : common-library est une
-            bibliothèque, pas une application. Chaque service ne tire que ce
-            dont il a besoin, et les auto-configurations ci-dessous sont
-            conditionnées à la présence des classes correspondantes.
-        -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>

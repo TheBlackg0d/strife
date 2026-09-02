@@ -1,7 +1,7 @@
 import { MdHeadphones, MdMic, MdSettings } from "react-icons/md";
 import Avatar from "../../components/ui/Avatar";
 import IconButton from "../../components/ui/IconButton";
-import type { PresenceStatus } from "../../pages/dashboard/types/dashboard";
+import type { PresenceStatus } from "../../types/profile";
 
 interface UserPanelProps {
   username: string;

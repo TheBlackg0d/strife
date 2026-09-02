@@ -79,7 +79,10 @@ function SettingsModal({
           aria-label="Fermer les paramètres"
           className="group flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border-2 border-outline-variant text-on-surface-variant transition-colors hover:bg-surface-variant hover:text-on-surface"
         >
-          <MdClose size={20} className="transition-transform group-hover:scale-110" />
+          <MdClose
+            size={20}
+            className="transition-transform group-hover:scale-110"
+          />
         </button>
         <span className="font-label text-[10px] font-bold tracking-widest text-on-surface-variant">
           ESC

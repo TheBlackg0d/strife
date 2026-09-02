@@ -1,4 +1,5 @@
-import type { PresenceStatus } from "../../pages/dashboard/types/dashboard";
+import type { PresenceStatus } from "../../types/profile";
+
 
 /**
  * Surface the avatar sits on. The status dot punches a ring of that colour

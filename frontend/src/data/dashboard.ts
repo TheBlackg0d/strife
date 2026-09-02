@@ -1,21 +1,9 @@
-import {
-  MdCode,
-  MdGroups,
-  MdPlayArrow,
-  MdSmartToy,
-  MdTerminal,
-} from "react-icons/md";
+import { MdGroups, MdSmartToy, MdTerminal } from "react-icons/md";
 import type {
   Conversation,
   Friend,
   Guild,
 } from "../pages/dashboard/types/dashboard";
-
-/**
- * Placeholder content for the dashboard shell.
- * Replace each export with a react-query hook once the guild/friend
- * services are available behind the gateway.
- */
 
 export const guilds: Guild[] = [
   { id: "g1", name: "Neon Arcade" },
@@ -35,44 +23,31 @@ export const friends: Friend[] = [
   {
     id: "f1",
     username: "CyberNinja",
+    email: "cyber.ninja@example.com",
     tag: "#1337",
     statusPreference: "ONLINE",
-    activity: {
-      verb: "Joue à",
-      target: "Visual Studio Code",
-      icon: MdCode,
-      tone: "primary",
-    },
   },
   {
     id: "f2",
     username: "DesignArch",
+    email: "design.arch@example.com",
+    tag: "#42",
     statusPreference: "OFFLINE",
-    activity: { verb: "Mapping out the design system" },
   },
   {
     id: "f3",
     username: "DevExpert",
+    email: "dev.expert@example.com",
+
     statusPreference: "DO_NOT_DISTURB",
-    activity: {
-      verb: "Coding in",
-      target: "Rust",
-      icon: MdTerminal,
-      tone: "neutral",
-    },
   },
   {
     id: "f4",
     username: "MusicBot",
+    email: "music.bot@example.com",
     statusPreference: "ONLINE",
     isBot: true,
     icon: MdSmartToy,
-    activity: {
-      verb: "Listening to",
-      target: "Spotify",
-      icon: MdPlayArrow,
-      tone: "secondary",
-    },
   },
 ];
 

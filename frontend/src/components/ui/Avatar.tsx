@@ -1,6 +1,6 @@
 import type { IconType } from "react-icons";
-import type { PresenceStatus } from "../../pages/dashboard/types/dashboard";
 import StatusDot, { type RingSurface } from "./StatusDot";
+import type { PresenceStatus } from "../../types/profile";
 
 interface AvatarProps {
   name: string;

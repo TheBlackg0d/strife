@@ -4,13 +4,14 @@ import FriendRow from "./components/FriendRow";
 import FriendsHeader from "./components/FriendsHeader";
 import type { DashboardTab, Friend, FriendFilter } from "./types/dashboard";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import createFriendListQueryOptions from "./types/friend-list-query-option";
+
 import {
   acceptFriendRequest,
   blockFriend,
   removeFriend,
 } from "./api/dashboard";
 import { queryClient } from "../../main";
+import createFriendListQueryOptions from "./query-options/friend-list-query-option";
 
 const sectionTitles: Record<FriendFilter, string> = {
   ONLINE: "EN LIGNE",

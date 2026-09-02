@@ -1,11 +1,16 @@
 import { useState } from "react";
-import { Outlet, useNavigate, useRouteLoaderData } from "react-router";
+import { Outlet, useNavigate } from "react-router";
 import DirectMessageSidebar from "./components/DirectMessageSidebar";
 import GuildRail from "./components/GuildRail";
 import SettingsModal from "../pages/settings/SettingsModal";
 import { conversations, guilds, pendingRequestCount } from "../data/dashboard";
 import { logout } from "../auth/session";
-import type { ProtectedLoaderData } from "../router/routes";
+
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { createProfileQueryOptions } from "../query-options/profile-query-options";
+import { queryClient } from "../main";
+import type { ProfileFormValues } from "../types/settings";
+import { updateProfile } from "../api/profile";
 
 /** "ada.lovelace@strife.dev" -> "ada.lovelace" */
 function displayName(email: string): string {
@@ -13,7 +18,8 @@ function displayName(email: string): string {
 }
 
 export default function AppLayout() {
-  const data = useRouteLoaderData<ProtectedLoaderData>("protected");
+  const { data: profileData } = useQuery(createProfileQueryOptions());
+
   const navigate = useNavigate();
 
   const [activeGuildId, setActiveGuildId] = useState<string | undefined>();
@@ -22,13 +28,35 @@ export default function AppLayout() {
   >();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
-  const username = data ? displayName(data.account.email) : "Strife";
+  const emailUsername = profileData ? displayName(profileData.email) : "Strife";
 
-  async function handleLogout() {
-    await logout();
-    setIsSettingsOpen(false);
-    navigate("/login", { replace: true });
-  }
+  const username = profileData?.username ? profileData.username : emailUsername;
+
+  const updateProfileMutation = useMutation({
+    mutationFn: updateProfile,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: createProfileQueryOptions().queryKey,
+      });
+      setIsSettingsOpen(false);
+    },
+    onError: () => {},
+  });
+
+  const handleOnSaveProfile = async (values: ProfileFormValues) => {
+    updateProfileMutation.mutateAsync(values);
+  };
+
+  const logoutMutation = useMutation({
+    mutationFn: logout,
+    onSuccess: () => {
+      navigate("/login", { replace: true });
+    },
+  });
+
+  const handleLogout = async () => {
+    logoutMutation.mutateAsync();
+  };
 
   return (
     <div className="flex h-screen w-screen overflow-hidden">
@@ -58,9 +86,10 @@ export default function AppLayout() {
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
         onLogout={handleLogout}
+        onSaveProfile={handleOnSaveProfile}
         user={{
           username,
-          email: data?.account.email ?? "",
+          email: profileData?.email ?? "",
           status: "ONLINE",
         }}
       />

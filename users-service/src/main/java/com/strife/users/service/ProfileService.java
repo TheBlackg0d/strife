@@ -4,8 +4,10 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import com.strife.common.dto.UserDTO;
 import com.strife.common.exception.RessourceNotFoundException;
 import com.strife.common.security.JwtPrincipal;
+import com.strife.users.dto.ProfileDTO;
 import com.strife.users.model.DmPrivacy;
 import com.strife.users.model.Profile;
 import com.strife.users.model.StatusPreference;
@@ -48,6 +50,16 @@ public class ProfileService {
         newProfile.setUsername(user.username());
 
         return profileRepository.save(newProfile);
+    }
+
+    public Profile updateProfile(ProfileDTO profileDTO, UUID profileId) {
+        Profile profile = getProfileById(profileId);
+
+        profile.setUsername(profileDTO.username());
+        profile.setEmail(profileDTO.email());
+        profile.setBio(profileDTO.bio());
+
+        return profileRepository.save(profile);
     }
 
     public Profile findProfileByUsername(String username) {

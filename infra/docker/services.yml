@@ -35,6 +35,20 @@ services:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
+    # `docker compose watch` : le jar est construit hors image (voir Dockerfile),
+    # donc on ne reconstruit pas l'image a chaque changement — on copie le fat
+    # jar dans le conteneur et on redemarre la JVM (~2 s au lieu de ~40 s).
+    # Boucle de dev :
+    #   docker compose watch                                       # terminal 1
+    #   mvn -f ../../pom.xml package -pl auth-service -am -DskipTests
+    # Le Dockerfile reste surveille en `rebuild` : lui seul change l'image.
+    develop:
+      watch:
+        - action: sync+restart
+          path: ../../auth-service/target/auth-service-latest.jar
+          target: /app.jar
+        - action: rebuild
+          path: ../../auth-service/Dockerfile
 
   users-service:
     build:
@@ -64,6 +78,13 @@ services:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
+    develop:
+      watch:
+        - action: sync+restart
+          path: ../../users-service/target/users-service-latest.jar
+          target: /app.jar
+        - action: rebuild
+          path: ../../users-service/Dockerfile
 
   guild-service:
     build:
@@ -91,6 +112,13 @@ services:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
+    develop:
+      watch:
+        - action: sync+restart
+          path: ../../guild-service/target/guild-service-latest.jar
+          target: /app.jar
+        - action: rebuild
+          path: ../../guild-service/Dockerfile
 
   messaging-service:
     build:
@@ -118,6 +146,13 @@ services:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
+    develop:
+      watch:
+        - action: sync+restart
+          path: ../../messaging-service/target/messaging-service-latest.jar
+          target: /app.jar
+        - action: rebuild
+          path: ../../messaging-service/Dockerfile
 
   event-store-service:
     build:
@@ -145,6 +180,13 @@ services:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
+    develop:
+      watch:
+        - action: sync+restart
+          path: ../../event-store-service/target/event-store-service-latest.jar
+          target: /app.jar
+        - action: rebuild
+          path: ../../event-store-service/Dockerfile
 
   realtime-gateway:
     build:
@@ -175,6 +217,13 @@ services:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
+    develop:
+      watch:
+        - action: sync+restart
+          path: ../../realtime-gateway/target/realtime-gateway-latest.jar
+          target: /app.jar
+        - action: rebuild
+          path: ../../realtime-gateway/Dockerfile
 
   api-gateway:
     build:
@@ -202,6 +251,13 @@ services:
     depends_on:
       auth-service:
         condition: service_healthy
+    develop:
+      watch:
+        - action: sync+restart
+          path: ../../api-gateway/target/api-gateway-latest.jar
+          target: /app.jar
+        - action: rebuild
+          path: ../../api-gateway/Dockerfile
 
   frontend:
     build:

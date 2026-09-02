@@ -24,7 +24,9 @@ function ProfileCard({
       <div
         className="relative h-24 w-full bg-primary-container bg-cover bg-center"
         style={
-          user.bannerUrl ? { backgroundImage: `url(${user.bannerUrl})` } : undefined
+          user.bannerUrl
+            ? { backgroundImage: `url(${user.bannerUrl})` }
+            : undefined
         }
       >
         {!user.bannerUrl && (
@@ -65,9 +67,6 @@ function ProfileCard({
         <h2 className="text-[16px] font-bold text-on-surface">
           {user.username}
         </h2>
-        {user.tag && (
-          <p className="text-[14px] text-on-surface-variant">{user.tag}</p>
-        )}
       </div>
 
       <div className="mx-6 mb-6 flex flex-col gap-4 rounded-sm bg-surface-container-high p-4">
@@ -83,14 +82,6 @@ function ProfileCard({
           value={values.email}
           onChange={(value) => onChange("email", value)}
           autoComplete="email"
-        />
-        <SettingsField
-          label="Numéro de téléphone"
-          type="tel"
-          value={values.phone}
-          onChange={(value) => onChange("phone", value)}
-          placeholder="Saisir un numéro de téléphone"
-          autoComplete="tel"
         />
       </div>
     </div>

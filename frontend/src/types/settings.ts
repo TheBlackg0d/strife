@@ -1,11 +1,8 @@
-import type { PresenceStatus } from "../pages/dashboard/types/dashboard";
+import type { PresenceStatus } from "./profile";
 
-/** Identity shown and edited in the settings modal. */
 export interface SettingsUser {
   username: string;
   email: string;
-  /** Discriminator shown under the name, e.g. "alex.strife#0001". */
-  tag?: string;
   phone?: string;
   bio?: string;
   avatarUrl?: string;
@@ -17,7 +14,6 @@ export interface SettingsUser {
 export interface ProfileFormValues {
   username: string;
   email: string;
-  phone: string;
   bio: string;
 }
 
@@ -27,7 +23,6 @@ export interface PasswordFormValues {
   confirmPassword: string;
 }
 
-/** Contract every pane of the settings modal is rendered with. */
 export interface SettingsSectionProps {
   user: SettingsUser;
   onSaveProfile?: (values: ProfileFormValues) => void;

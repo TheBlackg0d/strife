@@ -5,8 +5,8 @@ import SidebarNavItem from "./SidebarNavItem";
 import UserPanel from "./UserPanel";
 import type {
   Conversation,
-  PresenceStatus,
 } from "../../pages/dashboard/types/dashboard";
+import type { PresenceStatus } from "../../types/profile";
 
 interface DirectMessageSidebarProps {
   conversations: Conversation[];

@@ -2,6 +2,7 @@ package com.strife.auth.service;
 
 import com.strife.auth.repository.AccountRepository;
 import com.strife.auth.repository.ProviderRepository;
+import com.strife.common.event.ProfileUpdatedEvent;
 import com.strife.common.exception.AuthenticationFailedException;
 import com.strife.common.exception.RessourceAlreadyExistException;
 import com.strife.common.exception.RessourceDoNotMatchException;
@@ -44,6 +45,14 @@ public class AccountService {
         account.setVersion(1L);
 
         return accountRepository.save(account);
+    }
+
+    public void updateAccount(ProfileUpdatedEvent userDTO) {
+        Account account = accountRepository.findById(userDTO.userId())
+                .orElseThrow(() -> new RessourceNotFoundException("Account not found"));
+        account.setEmail(userDTO.email());
+        account.setUsername(userDTO.username());
+        accountRepository.save(account);
     }
 
     public Account createAccount(RegisterDTO registerDTO) {

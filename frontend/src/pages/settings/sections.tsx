@@ -10,6 +10,7 @@ import {
 } from "react-icons/md";
 import PlaceholderSection from "./components/PlaceholderSection";
 import MyAccountSection from "./sections/MyAccountSection";
+import PrivacySection from "./sections/PrivacySection";
 import type {
   SettingsSectionId,
   SettingsSectionProps,
@@ -57,12 +58,7 @@ export const settingsNavGroups: SettingsNavGroup[] = [
         id: "privacy",
         label: "Confidentialité & sécurité",
         icon: MdSecurity,
-        Component: () => (
-          <PlaceholderSection
-            title="Confidentialité & sécurité"
-            description="Qui peut vous ajouter en ami, filtrage des messages privés et gestion des données. À venir."
-          />
-        ),
+        Component: PrivacySection,
       },
     ],
   },

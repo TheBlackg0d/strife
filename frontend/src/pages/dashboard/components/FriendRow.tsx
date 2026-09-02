@@ -12,7 +12,6 @@ import DropdownMenu, {
   type DropdownMenuItem,
 } from "../../../components/ui/DropdownMenu";
 import IconButton from "../../../components/ui/IconButton";
-import FriendActivity from "./FriendActivity";
 import type { Friend } from "../types/dashboard";
 
 interface FriendRowProps {
@@ -36,16 +35,7 @@ function FriendRow({
   isInFriendRequestArea,
   isBlocked,
 }: FriendRowProps) {
-  const {
-    id,
-    username,
-    tag,
-    statusPreference,
-    activity,
-    imageUrl,
-    icon,
-    isBot,
-  } = friend;
+  const { id, username, tag, statusPreference, imageUrl, icon, isBot } = friend;
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
@@ -106,7 +96,6 @@ function FriendRow({
               </span>
             )}
           </p>
-          {activity && <FriendActivity activity={activity} />}
         </div>
       </div>
 

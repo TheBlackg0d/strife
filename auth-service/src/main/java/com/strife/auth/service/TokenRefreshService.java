@@ -68,4 +68,24 @@ public class TokenRefreshService {
                 .build();
     }
 
+    public ResponseCookie clearRefreshTokenCookie() {
+        return ResponseCookie.from(cookieProperties.getName(), "")
+                .httpOnly(cookieProperties.isHttpOnly())
+                .secure(cookieProperties.isSecure())
+                .sameSite(cookieProperties.getSameSite())
+                .path("/")
+                .maxAge(0)
+                .build();
+    }
+
+    public void deleteRefreshToken(HttpServletRequest request) {
+        Cookie token = WebUtils.getCookie(request, cookieProperties.getName());
+
+        if (token == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Refresh token not found");
+        }
+
+        this.deleteToken(token.getValue());
+    }
+
 }

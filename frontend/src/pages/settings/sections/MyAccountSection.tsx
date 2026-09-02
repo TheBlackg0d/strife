@@ -1,28 +1,28 @@
 import { useState } from "react";
 import Button from "../../../components/ui/Button";
 import AboutMeSection from "../components/AboutMeSection";
-import PasswordSection from "../components/PasswordSection";
 import ProfileCard from "../components/ProfileCard";
 import type {
   ProfileFormValues,
   SettingsSectionProps,
   SettingsUser,
 } from "../../../types/settings";
+import { updateProfile } from "../../../api/profile";
+import { useMutation } from "@tanstack/react-query";
+import { queryClient } from "../../../main";
+import { createProfileQueryOptions } from "../../../query-options/profile-query-options";
 
 function toFormValues(user: SettingsUser): ProfileFormValues {
   return {
     username: user.username,
     email: user.email,
-    phone: user.phone ?? "",
     bio: user.bio ?? "",
   };
 }
 
-function MyAccountSection({
-  user,
-  onSaveProfile,
-  onUpdatePassword,
-}: SettingsSectionProps) {
+function MyAccountSection({ user, onSaveProfile }: SettingsSectionProps) {
+  const [genericError, setGenericError] = useState<string | null>(null);
+
   const initialValues = toFormValues(user);
   const [values, setValues] = useState<ProfileFormValues>(initialValues);
 
@@ -37,8 +37,6 @@ function MyAccountSection({
   return (
     <div className="flex flex-col gap-8">
       <ProfileCard user={user} values={values} onChange={update} />
-
-      <PasswordSection onUpdatePassword={onUpdatePassword} />
 
       <AboutMeSection
         value={values.bio}
@@ -60,6 +58,7 @@ function MyAccountSection({
         >
           Annuler
         </Button>
+        {genericError && <p className="text-sm text-red-500">{genericError}</p>}
       </div>
     </div>
   );

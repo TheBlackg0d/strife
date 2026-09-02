@@ -1,9 +1,18 @@
 # Stack complète Strife (dev local).
 #
+# Premier démarrage :
 #   1. mvn -f ../../pom.xml clean package -DskipTests   # produit les fat jars
 #   2. cp .env.example .env                             # secrets locaux
 #   3. docker compose build                             # construit les 8 images
 #   4. docker compose up -d
+#
+# Ensuite, boucle de dev — plus besoin de rebuild à la main :
+#   docker compose watch                                # laisser tourner
+#   mvn -f ../../pom.xml package -pl auth-service -am -DskipTests
+# `watch` détecte le nouveau jar, le copie dans le conteneur et redémarre la
+# JVM (voir les blocs `develop:` dans services.yml). Un `docker compose build`
+# reste nécessaire avant de publier : la synchro ne modifie que le conteneur
+# en cours, pas l'image. Le frontend n'est pas surveillé.
 #
 # Voir README.md dans ce dossier pour le détail.
 include:

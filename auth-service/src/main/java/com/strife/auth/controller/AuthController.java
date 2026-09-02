@@ -1,6 +1,7 @@
 package com.strife.auth.controller;
 
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,10 +19,10 @@ import com.strife.auth.dto.RegisterDTO;
 import com.strife.auth.dto.TokenDTO;
 import com.strife.auth.model.Account;
 import com.strife.auth.model.RedisRefreshToken;
+import com.strife.common.dto.ResponseDTO;
 import com.strife.common.dto.UserDTO;
 import com.strife.common.security.JwtUtility;
 import com.strife.auth.service.AccountService;
-import com.strife.auth.service.MessageService;
 import com.strife.auth.service.TokenRefreshService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -103,6 +104,13 @@ public class AuthController {
 
                 String token = jwtUtility.generateToken(email, userDTO);
                 return ResponseEntity.ok(new TokenDTO(token, new AccountDTO(account.getId(), email)));
+        }
+
+        @PostMapping("logout")
+        public ResponseEntity<ResponseDTO> logout(HttpServletRequest request, HttpServletResponse response) {
+                tokenRefreshService.deleteRefreshToken(request);
+                response.addHeader(HttpHeaders.SET_COOKIE, tokenRefreshService.clearRefreshTokenCookie().toString());
+                return ResponseEntity.ok(new ResponseDTO(HttpStatus.OK.toString(), "Logged out successfully"));
         }
 
 }
