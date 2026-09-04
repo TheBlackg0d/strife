@@ -60,6 +60,10 @@ public class AccountService {
             throw new RessourceAlreadyExistException("Email already exists", "email");
         }
 
+        if (accountRepository.existsByUsername(registerDTO.username())) {
+            throw new RessourceAlreadyExistException("Username already exists", "username");
+        }
+
         if (!registerDTO.password().equals(registerDTO.passwordConfirmation())) {
             throw new RessourceDoNotMatchException("Passwords do not match", "password");
         }
@@ -94,12 +98,16 @@ public class AccountService {
         Account account = accountRepository.findByEmail(email)
                 .orElseThrow(() -> new com.strife.common.exception.RessourceNotFoundException("Account not found"));
 
-        if (account.getPasswordHash() == null) {
-            throw new AuthenticationFailedException("Account has no password");
+        if (!changePasswordDTO.newPassword().equals(changePasswordDTO.confirmPassword())) {
+            throw new RessourceDoNotMatchException("Password do not match", "confirmPassword");
         }
 
-        if (!encoder.matches(changePasswordDTO.oldPassword(), account.getPasswordHash())) {
-            throw new AuthenticationFailedException("Old password is incorrect");
+        if (account.getPasswordHash() == null) {
+            throw new RessourceNotFoundException("Account has no password");
+        }
+
+        if (!encoder.matches(changePasswordDTO.currentPassword(), account.getPasswordHash())) {
+            throw new RessourceDoNotMatchException("Current password is incorrect", "currentPassword");
         }
 
         String hashedNewPassword = encoder.encode(changePasswordDTO.newPassword());

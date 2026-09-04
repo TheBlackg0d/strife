@@ -1,5 +1,4 @@
 import { useNavigate, useSearchParams } from "react-router";
-import { useMutation } from "@tanstack/react-query";
 import { PiSignIn } from "react-icons/pi";
 import AuthSection from "../../components/AuthSection";
 import AuthLink from "../../components/ui/AuthLink";
@@ -10,24 +9,34 @@ import Separator from "./components/Separator";
 import StrifeLogo from "../../components/ui/StrifeLogo";
 import SecondaryButton from "../../components/ui/SecondaryButton";
 import type { LoginCredential } from "../../auth/types/auth";
-import { login } from "../../auth/session";
-import { hasFieldErrors, toApiError } from "../../api/errors";
+import {
+  hasFieldErrors,
+  type ApiError,
+  type FieldErrors,
+} from "../../api/errors";
+import { useLoginMutation } from "../../services/auth-api";
+import { useEffect, useState } from "react";
+import useFieldError from "../../hook/use-field-error";
 
 export default function Login() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  const loginMutation = useMutation({
-    mutationFn: login,
-    onSuccess: () => {
+  const [loginMutation, { isSuccess, error, isLoading, isError }] =
+    useLoginMutation();
+
+  const { fieldErrors, apiError, setFieldErrors } = useFieldError(
+    isError,
+    error,
+  );
+
+  useEffect(() => {
+    if (isSuccess) {
       void navigate(searchParams.get("wanted") ?? "/", { replace: true });
-    },
-  });
+    }
+  }, [isSuccess, navigate, searchParams]);
 
-  const apiError = loginMutation.error ? toApiError(loginMutation.error) : null;
-  const fieldErrors = apiError?.fieldErrors ?? {};
-
-  const handleSubmit = (event: React.SubmitEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget);
@@ -35,8 +44,7 @@ export default function Login() {
       email: String(formData.get("email") ?? ""),
       password: String(formData.get("password") ?? ""),
     };
-
-    loginMutation.mutate(credential);
+    loginMutation(credential);
   };
 
   return (
@@ -46,7 +54,14 @@ export default function Login() {
         title="Welcome back"
         subtitle="We're so excited to have you back!"
       />
-      <form className="flex flex-col gap-4" onSubmit={handleSubmit} noValidate>
+      <form
+        className="flex flex-col gap-4"
+        onSubmit={handleSubmit}
+        noValidate
+        onBlur={() => {
+          setFieldErrors({});
+        }}
+      >
         {apiError && !hasFieldErrors(apiError) && (
           <p role="alert" className="text-red-400 text-sm">
             {apiError.message}
@@ -72,7 +87,7 @@ export default function Login() {
         <SubmitButton
           text="Log in"
           pendingText="Signing in..."
-          isPending={loginMutation.isPending}
+          isPending={isLoading}
         />
         <Separator />
       </form>

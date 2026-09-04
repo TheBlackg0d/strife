@@ -1,5 +1,5 @@
 package com.strife.auth.dto;
 
-public record ChangePasswordDTO(String oldPassword, String newPassword) {
+public record ChangePasswordDTO(String currentPassword, String newPassword, String confirmPassword) {
 
 }

@@ -91,8 +91,10 @@ public class AuthController {
 
                 RedisRefreshToken redisRefreshToken = tokenRefreshService.verifyRefreshToken(request);
 
+                String refreshToken = tokenRefreshService.generateRefreshToken(redisRefreshToken.getEmail());
+
                 ResponseCookie refreshTokenCookie = tokenRefreshService
-                                .generateRefreshTokenCookie(redisRefreshToken.getToken());
+                                .generateRefreshTokenCookie(refreshToken);
 
                 response.addHeader(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
 

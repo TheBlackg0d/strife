@@ -9,6 +9,7 @@ export interface Profile {
   imageUrl?: string;
   icon?: IconType;
   isBot?: boolean;
+  bio?: string;
 }
 
 export type PresenceStatus =

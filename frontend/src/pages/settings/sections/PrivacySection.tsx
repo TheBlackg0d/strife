@@ -1,11 +1,10 @@
 import PasswordSection from "../components/PasswordSection";
 import PlaceholderSection from "../components/PlaceholderSection";
-import type { SettingsSectionProps } from "../../../types/settings";
 
-function PrivacySection({ onUpdatePassword }: SettingsSectionProps) {
+function PrivacySection() {
   return (
     <div className="flex flex-col gap-8">
-      <PasswordSection onUpdatePassword={onUpdatePassword} />
+      <PasswordSection />
 
       <PlaceholderSection
         title="Confidentialité"

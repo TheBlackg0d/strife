@@ -3,6 +3,9 @@ import Button from "../../../components/ui/Button";
 import SettingsField from "./SettingsField";
 import SettingsSection from "./SettingsSection";
 import type { PasswordFormValues } from "../../../types/settings";
+import { useChangePasswordMutation } from "../../../services/account-api";
+import useFieldError from "../../../hook/use-field-error";
+import { hasFieldErrors } from "../../../api/errors";
 
 const emptyForm: PasswordFormValues = {
   currentPassword: "",
@@ -10,22 +13,19 @@ const emptyForm: PasswordFormValues = {
   confirmPassword: "",
 };
 
-interface PasswordSectionProps {
-  onUpdatePassword?: (values: PasswordFormValues) => void;
-  onEnableTwoFactor?: () => void;
-}
-
 /** Self-contained: the password form never leaves this component. */
-function PasswordSection({
-  onUpdatePassword,
-  onEnableTwoFactor,
-}: PasswordSectionProps) {
+function PasswordSection() {
   const [values, setValues] = useState<PasswordFormValues>(emptyForm);
-  const [error, setError] = useState<string>();
+  const [passwordChangeMutation, { error, isError }] =
+    useChangePasswordMutation();
+  const { fieldErrors, apiError } = useFieldError(isError, error);
+
+  const onUpdatePassword = (values: PasswordFormValues) => {
+    passwordChangeMutation(values);
+  };
 
   function update(field: keyof PasswordFormValues, value: string) {
     setValues((previous) => ({ ...previous, [field]: value }));
-    setError(undefined);
   }
 
   const isFilled =
@@ -34,11 +34,6 @@ function PasswordSection({
     values.confirmPassword !== "";
 
   function handleSubmit() {
-    if (values.newPassword !== values.confirmPassword) {
-      setError("Les mots de passe ne correspondent pas.");
-      return;
-    }
-
     onUpdatePassword?.(values);
     setValues(emptyForm);
   }
@@ -70,18 +65,27 @@ function PasswordSection({
             onChange={(value) => update("confirmPassword", value)}
             placeholder="Confirmer le nouveau mot de passe"
             autoComplete="new-password"
-            error={error}
+            error={fieldErrors?.confirmPassword}
           />
 
+          {apiError && !hasFieldErrors(apiError) && (
+            <p role="alert" className="text-red-400 text-sm">
+              {apiError.message}
+            </p>
+          )}
+
           <div className="mt-2 flex items-center gap-4">
-            <Button onClick={handleSubmit} disabled={!isFilled} className="px-6">
+            <Button
+              onClick={handleSubmit}
+              disabled={!isFilled}
+              className="px-6"
+            >
               Mettre à jour le mot de passe
             </Button>
             <Button
               variant="ghost"
               onClick={() => {
                 setValues(emptyForm);
-                setError(undefined);
               }}
               disabled={!isFilled}
             >
@@ -89,14 +93,6 @@ function PasswordSection({
             </Button>
           </div>
         </div>
-
-        <p className="max-w-lg text-[14px] text-on-surface-variant">
-          Sécurisez votre compte avec l'authentification à deux facteurs. Nous
-          recommandons une application d'authentification.
-        </p>
-        <Button variant="neutral" onClick={onEnableTwoFactor} className="w-fit">
-          Activer l'authentification à deux facteurs
-        </Button>
       </div>
     </SettingsSection>
   );

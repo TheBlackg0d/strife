@@ -4,6 +4,7 @@ import java.security.Principal;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticatedPrincipal;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,7 +26,7 @@ public class AccountController {
 
     @PostMapping("/change-password")
     public ResponseEntity<ResponseDTO> changePassword(@RequestBody ChangePasswordDTO changePasswordDTO,
-            JwtPrincipal authenticatedPrincipal) {
+            @AuthenticationPrincipal JwtPrincipal authenticatedPrincipal) {
         accountService.changePassword(authenticatedPrincipal.getName(), changePasswordDTO);
         return ResponseEntity.ok(new ResponseDTO("200", "Password changed successfully"));
     }

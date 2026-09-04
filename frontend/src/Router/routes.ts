@@ -7,10 +7,6 @@ import RootLayout from "../layout/RootLayout";
 import { authMiddleware, loggedInMiddleware } from "../auth/authMiddleware";
 import AppLayout from "../layout/AppLayout";
 
-import { queryClient } from "../main";
-import { createProfileQueryOptions } from "../query-options/profile-query-options";
-import createFriendListQueryOptions from "../pages/dashboard/query-options/friend-list-query-option";
-
 const router = createBrowserRouter([
   {
     id: "root",
@@ -30,13 +26,10 @@ const router = createBrowserRouter([
       {
         id: "protected",
         middleware: [authMiddleware],
-        loader: () => queryClient.query(createProfileQueryOptions()),
-
         Component: AppLayout,
         children: [
           {
             path: "/",
-            loader: () => queryClient.query(createFriendListQueryOptions()),
             Component: DashBoard,
           },
         ],

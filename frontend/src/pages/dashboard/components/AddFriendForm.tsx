@@ -1,8 +1,7 @@
-import { useState, type FormEvent } from "react";
-import axios from "axios";
-import { sendFriendRequest } from "../api/dashboard";
-import { useMutation } from "@tanstack/react-query";
-import { queryClient } from "../../../main";
+import { useState, type SubmitEvent } from "react";
+import { useSendFriendRequestMutation } from "../../../services/friend-api";
+import { toApiError, type ApiError } from "../../../api/errors";
+import type { FetchBaseQueryError } from "@reduxjs/toolkit/query/react";
 
 type Feedback = { tone: "success" | "error"; message: string };
 
@@ -10,40 +9,31 @@ function AddFriendForm() {
   const [username, setUsername] = useState("");
   const [isSending, setIsSending] = useState(false);
   const [feedback, setFeedback] = useState<Feedback | null>(null);
+  const [sendFriendRequest] = useSendFriendRequestMutation();
 
-  const sendFriendRequestMutation = useMutation({
-    mutationFn: (username: string) => sendFriendRequest(username),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["friendList"] });
-      setFeedback({
-        tone: "success",
-        message: `Demande d'ami envoyée à ${trimmed}.`,
-      });
-      setUsername("");
-    },
-    onError: (error) => {
-      const message =
-        axios.isAxiosError(error) && error.response?.status === 404
-          ? `Hum, ce nom d'utilisateur n'existe pas. Vérifie l'orthographe.`
-          : "La demande n'a pas pu être envoyée. Réessaie plus tard.";
-      setFeedback({ tone: "error", message });
-    },
-    onSettled: () => {
+  const handleOnSendFriendRequest = async () => {
+    try {
+      await sendFriendRequest(username).unwrap();
+    } catch (error: any) {
+      console.log(error.data);
+      const apiError: ApiError = error?.data;
+      setFeedback({ tone: "error", message: apiError.message });
+    } finally {
       setIsSending(false);
-    },
-  });
+    }
+  };
 
   const trimmed = username.trim();
   const canSubmit = trimmed.length > 0 && !isSending;
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!canSubmit) return;
 
     setIsSending(true);
     setFeedback(null);
 
-    await sendFriendRequestMutation.mutateAsync(trimmed);
+    await handleOnSendFriendRequest();
   };
 
   return (

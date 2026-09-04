@@ -3,42 +3,34 @@ import { MdClose } from "react-icons/md";
 import Modal from "../../components/ui/Modal";
 import SettingsSidebar from "./components/SettingsSidebar";
 import { getSection } from "./sections";
-import type {
-  PasswordFormValues,
-  ProfileFormValues,
-  SettingsSectionId,
-  SettingsUser,
-} from "../../types/settings";
+import type { SettingsSectionId } from "../../types/settings";
+import { useLogoutMutation } from "../../services/auth-api";
+import { useNavigate } from "react-router";
 
 interface SettingsModalProps {
   isOpen: boolean;
   onClose: () => void;
-  user: SettingsUser;
-  /** Which pane opens first; the modal owns navigation from there. */
   initialSection?: SettingsSectionId;
-  onLogout?: () => void;
-  onSaveProfile?: (values: ProfileFormValues) => void;
-  onUpdatePassword?: (values: PasswordFormValues) => void;
 }
 
-/**
- * Full-screen user settings, driven by the registry in `sections.tsx`:
- * 240px nav + fluid content pane, same three-plane depth as the app shell.
- */
 function SettingsModal({
   isOpen,
   onClose,
-  user,
   initialSection = "account",
-  onLogout,
-  onSaveProfile,
-  onUpdatePassword,
 }: SettingsModalProps) {
   const [activeSection, setActiveSection] =
     useState<SettingsSectionId>(initialSection);
   const headingId = useId();
+  const navigate = useNavigate();
+  const [logout] = useLogoutMutation();
 
   const { label, Component } = getSection(activeSection);
+
+  const onLogout = async () => {
+    await logout();
+    navigate("/login");
+    onClose();
+  };
 
   return (
     <Modal
@@ -64,11 +56,7 @@ function SettingsModal({
         </div>
 
         <div className="max-w-3xl px-10">
-          <Component
-            user={user}
-            onSaveProfile={onSaveProfile}
-            onUpdatePassword={onUpdatePassword}
-          />
+          <Component />
         </div>
       </main>
 

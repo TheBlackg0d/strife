@@ -11,17 +11,14 @@ import {
 import PlaceholderSection from "./components/PlaceholderSection";
 import MyAccountSection from "./sections/MyAccountSection";
 import PrivacySection from "./sections/PrivacySection";
-import type {
-  SettingsSectionId,
-  SettingsSectionProps,
-} from "../../types/settings";
+import type { SettingsSectionId } from "../../types/settings";
 
 export interface SettingsSectionEntry {
   id: SettingsSectionId;
   /** Nav label, also used as the modal heading. */
   label: string;
   icon: IconType;
-  Component: ComponentType<SettingsSectionProps>;
+  Component: ComponentType;
 }
 
 export interface SettingsNavGroup {

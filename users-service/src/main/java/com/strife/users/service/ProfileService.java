@@ -64,6 +64,7 @@ public class ProfileService {
 
     public Profile findProfileByUsername(String username) {
         return profileRepository.findByUsername(username)
-                .orElseThrow(() -> new RessourceNotFoundException("Profile not found"));
+                .orElseThrow(() -> new RessourceNotFoundException(
+                        "Hum, ce nom d'utilisateur n'existe pas. Vérifie l'orthographe."));
     }
 }

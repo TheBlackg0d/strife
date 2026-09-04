@@ -51,6 +51,10 @@ export function hasFieldErrors(error: ApiError | null): boolean {
   return error !== null && Object.keys(error.fieldErrors).length > 0;
 }
 
+export function convertToApiError(error: any): ApiError {
+  return error && "data" in error && (error?.data as any);
+}
+
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }

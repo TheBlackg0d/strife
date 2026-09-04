@@ -23,12 +23,6 @@ export interface PasswordFormValues {
   confirmPassword: string;
 }
 
-export interface SettingsSectionProps {
-  user: SettingsUser;
-  onSaveProfile?: (values: ProfileFormValues) => void;
-  onUpdatePassword?: (values: PasswordFormValues) => void;
-}
-
 export type SettingsSectionId =
   | "account"
   | "profiles"

@@ -3,14 +3,13 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import { RouterProvider } from "react-router";
 import router from "./router/routes.ts";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-
-export const queryClient = new QueryClient();
+import { Provider } from "react-redux";
+import { store } from "./store/store.ts";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <QueryClientProvider client={queryClient}>
+    <Provider store={store}>
       <RouterProvider router={router} />
-    </QueryClientProvider>
+    </Provider>
   </StrictMode>,
 );

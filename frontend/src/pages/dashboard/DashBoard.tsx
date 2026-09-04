@@ -3,15 +3,14 @@ import AddFriendForm from "./components/AddFriendForm";
 import FriendRow from "./components/FriendRow";
 import FriendsHeader from "./components/FriendsHeader";
 import type { DashboardTab, Friend, FriendFilter } from "./types/dashboard";
-import { useMutation, useQuery } from "@tanstack/react-query";
 
-import {
-  acceptFriendRequest,
-  blockFriend,
-  removeFriend,
-} from "./api/dashboard";
-import { queryClient } from "../../main";
 import createFriendListQueryOptions from "./query-options/friend-list-query-option";
+import {
+  useAcceptFriendRequestMutation,
+  useBlockFriendMutation,
+  useGetFriendsQuery,
+  useRemoveFriendMutation,
+} from "../../services/friend-api";
 
 const sectionTitles: Record<FriendFilter, string> = {
   ONLINE: "EN LIGNE",
@@ -30,8 +29,12 @@ const emptyMessages: Record<FriendFilter, string> = {
 };
 
 function DashBoard() {
-  const { data: friends } = useQuery(createFriendListQueryOptions());
+  const { data: friends } = useGetFriendsQuery();
   const [tab, setTab] = useState<DashboardTab>("ONLINE");
+
+  if (!friends) {
+    return null;
+  }
 
   return (
     <>
@@ -52,25 +55,9 @@ interface FriendListProps {
 }
 
 function FriendList({ filter, friends }: FriendListProps) {
-  const invalidateFriendList = () =>
-    queryClient.invalidateQueries({
-      queryKey: createFriendListQueryOptions().queryKey,
-    });
-
-  const acceptFriendRequestMutation = useMutation({
-    mutationFn: acceptFriendRequest,
-    onSuccess: invalidateFriendList,
-  });
-
-  const removeFriendMutation = useMutation({
-    mutationFn: removeFriend,
-    onSuccess: invalidateFriendList,
-  });
-
-  const blockFriendMutation = useMutation({
-    mutationFn: blockFriend,
-    onSuccess: invalidateFriendList,
-  });
+  const [acceptFriendRequestMutation] = useAcceptFriendRequestMutation();
+  const [removeFriendMutation] = useRemoveFriendMutation();
+  const [blockFriendMutation] = useBlockFriendMutation();
 
   const visibleFriends = friends?.[filter] ?? [];
 
@@ -90,15 +77,11 @@ function FriendList({ filter, friends }: FriendListProps) {
                 filter === "PENDING_FRIEND_REQUEST_RECEIVED"
               }
               isBlocked={filter === "BLOCKED"}
-              onRemoveFriend={(friendId) =>
-                removeFriendMutation.mutate(friendId)
-              }
-              onUnblockFriend={(friendId) =>
-                removeFriendMutation.mutate(friendId)
-              }
-              onBlockFriend={(friendId) => blockFriendMutation.mutate(friendId)}
+              onRemoveFriend={(friendId) => removeFriendMutation(friendId)}
+              onUnblockFriend={(friendId) => removeFriendMutation(friendId)}
+              onBlockFriend={(friendId) => blockFriendMutation(friendId)}
               onAcceptFriendRequest={(friendId) =>
-                acceptFriendRequestMutation.mutate(friendId)
+                acceptFriendRequestMutation(friendId)
               }
             />
           ))}

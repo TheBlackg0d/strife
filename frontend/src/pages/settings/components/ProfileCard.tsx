@@ -1,17 +1,17 @@
 import { MdAddAPhoto, MdEdit } from "react-icons/md";
 import Avatar from "../../../components/ui/Avatar";
 import SettingsField from "./SettingsField";
-import type { ProfileFormValues, SettingsUser } from "../../../types/settings";
+import type { ProfileFormValues } from "../../../types/settings";
+import type { Profile } from "../../../types/profile";
 
 interface ProfileCardProps {
-  user: SettingsUser;
+  user: Profile;
   values: ProfileFormValues;
   onChange: (field: keyof ProfileFormValues, value: string) => void;
   onChangeBanner?: () => void;
   onChangeAvatar?: () => void;
 }
 
-/** Banner + avatar + the identity fields of "Mon compte". */
 function ProfileCard({
   user,
   values,
@@ -21,17 +21,7 @@ function ProfileCard({
 }: ProfileCardProps) {
   return (
     <div className="overflow-hidden rounded-lg bg-surface-container-lowest">
-      <div
-        className="relative h-24 w-full bg-primary-container bg-cover bg-center"
-        style={
-          user.bannerUrl
-            ? { backgroundImage: `url(${user.bannerUrl})` }
-            : undefined
-        }
-      >
-        {!user.bannerUrl && (
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,white_1px,transparent_0)] opacity-20 [background-size:16px_16px]" />
-        )}
+      <div className="relative h-24 w-full bg-primary-container bg-cover bg-center">
         <button
           type="button"
           onClick={onChangeBanner}
@@ -47,8 +37,8 @@ function ProfileCard({
           <div className="group relative">
             <Avatar
               name={user.username}
-              imageUrl={user.avatarUrl}
-              status={user.status}
+              imageUrl={user.imageUrl}
+              status={user.statusPreference}
               size={80}
               ring="surface-container-lowest"
               surfaceClassName="bg-primary-container text-on-primary-container"
