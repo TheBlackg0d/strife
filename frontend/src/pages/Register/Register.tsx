@@ -1,6 +1,5 @@
-import { useState } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router";
-import { useMutation } from "@tanstack/react-query";
 import FormInput from "../../components/ui/FormInput";
 import HeaderRegister from "../../components/ui/Header";
 import SubmitButton from "../../components/ui/SubmitButton";
@@ -8,28 +7,25 @@ import AuthLink from "../../components/ui/AuthLink";
 import CheckboxInput from "../../components/ui/FormCheckboxInput";
 import AuthSection from "../../components/AuthSection";
 import type { RegisterCredential } from "../../auth/types/auth";
-import { register } from "../../auth/session";
-import { hasFieldErrors, toApiError, type FieldErrors } from "../../api/errors";
+import { hasFieldErrors, type FieldErrors } from "../../api/errors";
+import { useRegisterMutation } from "../../services/auth-api";
+import useFieldError from "../../hook/use-field-error";
 
 function Register() {
   const navigate = useNavigate();
-  const [localErrors, setLocalErrors] = useState<FieldErrors>({});
 
-  const registerMutation = useMutation({
-    mutationFn: register,
-    onSuccess: () => {
-      void navigate("/", { replace: true });
-    },
-  });
+  const [registerMutation, { isError, error, isLoading, isSuccess }] =
+    useRegisterMutation();
+  const { apiError, fieldErrors, setFieldErrors } = useFieldError(
+    isError,
+    error,
+  );
 
-  const apiError = registerMutation.error
-    ? toApiError(registerMutation.error)
-    : null;
-
-  const fieldErrors: FieldErrors = {
-    ...apiError?.fieldErrors,
-    ...localErrors,
-  };
+  useEffect(() => {
+    if (isSuccess) {
+      navigate("/login");
+    }
+  }, [isSuccess, navigate]);
 
   const handleSubmit = (event: React.SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -52,13 +48,12 @@ function Register() {
       errors.terms = "You must accept the terms and conditions";
     }
 
-    setLocalErrors(errors);
-
     if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
       return;
     }
 
-    registerMutation.mutate(credential);
+    registerMutation(credential);
   };
 
   return (
@@ -68,7 +63,7 @@ function Register() {
         className="flex flex-col gap-4"
         onSubmit={handleSubmit}
         noValidate
-        onBlur={() => setLocalErrors({})}
+        onBlur={() => setFieldErrors({})}
       >
         {apiError && !hasFieldErrors(apiError) && (
           <p role="alert" className="text-red-400 text-sm">
@@ -113,7 +108,7 @@ function Register() {
           <SubmitButton
             text="Register"
             pendingText="Creating account..."
-            isPending={registerMutation.isPending}
+            isPending={isLoading}
           />
           <AuthLink linkText="Already have an account?" linkUrl="/login" />
         </div>

@@ -25,7 +25,7 @@ public class userEventConsumer {
     Consumer<AccountRegisteredEvent> createProfileConsumer() {
         return event -> {
             log.info("Received event: {}", event);
-            JwtPrincipal principal = new JwtPrincipal(event.userId(), event.username(), event.email());
+            JwtPrincipal principal = new JwtPrincipal(event.userId(), event.email(), event.username());
             profileService.createProfile(principal);
         };
     }
