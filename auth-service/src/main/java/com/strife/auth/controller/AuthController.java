@@ -17,10 +17,12 @@ import com.strife.auth.dto.AccountDTO;
 import com.strife.auth.dto.LoginDTO;
 import com.strife.auth.dto.RegisterDTO;
 import com.strife.auth.dto.TokenDTO;
+import com.strife.auth.events.AccountEventPublisher;
 import com.strife.auth.model.Account;
 import com.strife.auth.model.RedisRefreshToken;
 import com.strife.common.dto.ResponseDTO;
 import com.strife.common.dto.UserDTO;
+import com.strife.common.event.AccountRegisteredEvent;
 import com.strife.common.security.JwtUtility;
 import com.strife.auth.service.AccountService;
 import com.strife.auth.service.TokenRefreshService;
@@ -43,6 +45,8 @@ public class AuthController {
         private final TokenRefreshService tokenRefreshService;
 
         private final JwtUtility jwtUtility;
+
+        private final AccountEventPublisher accountEventPublisher;
 
         @PostMapping("/login")
         public ResponseEntity<TokenDTO> login(@Valid @RequestBody LoginDTO loginDTO, HttpServletResponse response) {
@@ -79,9 +83,10 @@ public class AuthController {
                 response.addHeader(HttpHeaders.SET_COOKIE,
                                 tokenRefreshService.generateRefreshTokenCookie(refreshToken).toString());
 
-                // messageService.sendMessage(UserDTO.fromEntity(account,
-                // registerDTO.username()),
-                // ACCOUNT_CREATED_EVENT_ROUTING_KEY);
+                AccountRegisteredEvent accountRegisteredEvent = new AccountRegisteredEvent(account.getId(),
+                                account.getUsername(), account.getEmail(), account.getVersion());
+
+                accountEventPublisher.publishAccountRegisteredEvent(accountRegisteredEvent);
                 return ResponseEntity
                                 .ok(new TokenDTO(accessToken, new AccountDTO(account.getId(), account.getEmail())));
         }

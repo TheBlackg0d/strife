@@ -1,5 +1,6 @@
 package com.strife.users.controller;
 
+import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -9,9 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.strife.common.event.ProfileUpdatedEvent;
 import com.strife.common.security.JwtPrincipal;
-import com.strife.common.services.MessageService;
-import com.strife.users.config.RabbitMqConfig;
 import com.strife.users.dto.ProfileDTO;
+import com.strife.users.event.publisher.ProfileEventPublisher;
 import com.strife.users.service.ProfileService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -25,11 +25,11 @@ public class ProfileController {
 
     private final ProfileService profileService;
 
-    private final MessageService messageService;
+    private final ProfileEventPublisher profileEventPublisher;
 
-    public ProfileController(ProfileService profileService, MessageService messageService) {
+    public ProfileController(ProfileService profileService, ProfileEventPublisher profileEventPublisher) {
         this.profileService = profileService;
-        this.messageService = messageService;
+        this.profileEventPublisher = profileEventPublisher;
     }
 
     @GetMapping
@@ -46,7 +46,7 @@ public class ProfileController {
 
         ProfileUpdatedEvent event = new ProfileUpdatedEvent(profileDTO.id(), profileDTO.username(), profileDTO.email());
 
-        messageService.sendMessage(event, "user.profile.updated", RabbitMqConfig.EXCHANGE);
+        profileEventPublisher.publishProfileUpdatedEvent(event);
         return ResponseEntity.ok(profileDTO);
     }
 }

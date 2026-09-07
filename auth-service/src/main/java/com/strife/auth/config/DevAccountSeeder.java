@@ -7,30 +7,20 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import com.strife.auth.dto.RegisterDTO;
+import com.strife.auth.events.AccountEventPublisher;
 import com.strife.auth.model.Account;
 import com.strife.auth.service.AccountService;
+import com.strife.common.event.AccountRegisteredEvent;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * Jeu de comptes de dev, créé au démarrage en passant par
- * {@link AccountService#createAccount(RegisterDTO)} — donc par le même chemin
- * qu'une inscription réelle, contrairement aux {@code INSERT} Liquibase qu'il
- * remplace. C'est ce qui permettra de publier {@code auth.account.registered}
- * sur ces comptes le jour où l'event sera branché (ADR-0014).
- *
- * <p>
- * Inactif par défaut : activer avec {@code STRIFE_SEED_ENABLED=true}. Le runner
- * est idempotent, il ignore les comptes dont l'email existe déjà.
- */
 @Component
 @ConditionalOnProperty(name = "strife.seed.enabled", havingValue = "true")
 @AllArgsConstructor
 @Slf4j
 public class DevAccountSeeder implements CommandLineRunner {
 
-    /** Mot de passe commun à tous les comptes de dev. */
     private static final String SEED_PASSWORD = "Password123!";
 
     private static final String EMAIL_DOMAIN = "@strife.test";
@@ -60,6 +50,8 @@ public class DevAccountSeeder implements CommandLineRunner {
 
     private final AccountService accountService;
 
+    private AccountEventPublisher accountEventPublisher;
+
     @Override
     public void run(String... args) {
         int created = 0;
@@ -73,6 +65,14 @@ public class DevAccountSeeder implements CommandLineRunner {
 
             Account account = accountService.createAccount(
                     new RegisterDTO(email, SEED_PASSWORD, SEED_PASSWORD, username));
+
+            AccountRegisteredEvent event = new AccountRegisteredEvent(
+                    account.getId(),
+                    account.getUsername(),
+                    account.getEmail(),
+                    account.getVersion());
+
+            accountEventPublisher.publishAccountRegisteredEvent(event);
 
             log.debug("Compte de dev créé : {} ({})", account.getUsername(), account.getId());
             created++;

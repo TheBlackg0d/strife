@@ -13,12 +13,31 @@ spring:
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml
     enabled: true
-    contexts: ${LIQUIBASE_CONTEXTS:default}
   rabbitmq:
     host: localhost
     port: 5672
     username: strife
     password: strife
+  cloud:
+    function:
+      definition: createProfileConsumer
+    stream:
+      bindings:
+        profileUpdatedEvent-out-0:
+          destination: user.events
+        createProfileConsumer-in-0:
+          destination: account.events
+          group: ${spring.application.name}
+      rabbit:
+        bindings:
+          profileUpdatedEvent-out-0:
+            producer:
+              exchangeType: topic
+              routing-key-expression: headers['routingKey']
+          createProfileConsumer-in-0:
+            consumer:
+              exchangeType: topic
+              binding-routing-key: auth.account.registered
 server:
   port: 8082
 

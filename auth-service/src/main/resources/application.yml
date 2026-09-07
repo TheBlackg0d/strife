@@ -21,6 +21,27 @@ spring:
             client-id: ${GOOGLE_CLIENT_ID}
             client-secret: ${GOOGLE_CLIENT_SECRET}
             scope: email, profile
+  cloud:
+    function:
+      definition: profileUpdatedEventConsumer
+    stream:
+      bindings:
+        profileUpdatedEventConsumer-in-0:
+          destination: user.events
+          group: ${spring.application.name}
+        accountDispatcher-out-0:
+          destination: account.events
+      rabbit:
+        bindings:
+          accountDispatcher-out-0:
+            producer:
+              exchangeType: topic
+              routingKeyExpression: headers['routingKey']
+          profileUpdatedEventConsumer-in-0:
+            consumer:
+              exchangeType: topic
+              bindingRoutingKey: user.profile.updated
+
   rabbitmq:
     host: localhost
     port: 5672

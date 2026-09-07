@@ -5,6 +5,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 import com.strife.common.dto.UserDTO;
+import com.strife.common.event.AccountRegisteredEvent;
 import com.strife.common.exception.RessourceNotFoundException;
 import com.strife.common.security.JwtPrincipal;
 import com.strife.users.dto.ProfileDTO;

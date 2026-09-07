@@ -8,7 +8,5 @@
     <include file="db/changelog/changes/001-create-profile-table.xml"/>
     <include file="db/changelog/changes/002-create-relationship-table.xml"/>
     <include file="db/changelog/changes/003-drop-discriminator-from-profile.xml"/>
-    <!-- Jeu de donnees de dev, ignore tant que LIQUIBASE_CONTEXTS ne vaut pas "seed". -->
-    <include file="db/changelog/changes/004-seed-dev-profiles.xml"/>
 
 </databaseChangeLog>

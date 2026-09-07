@@ -6,11 +6,13 @@ import RootLayout from "../layout/RootLayout";
 
 import { authMiddleware, loggedInMiddleware } from "../auth/authMiddleware";
 import AppLayout from "../layout/AppLayout";
+import RootErrorBoundary, { NotFoundPage } from "../pages/error/ErrorPage";
 
 const router = createBrowserRouter([
   {
     id: "root",
     path: "/",
+    ErrorBoundary: RootErrorBoundary,
     Component: RootLayout,
     children: [
       {
@@ -33,6 +35,10 @@ const router = createBrowserRouter([
             Component: DashBoard,
           },
         ],
+      },
+      {
+        path: "*",
+        Component: NotFoundPage,
       },
     ],
   },

@@ -3,13 +3,13 @@ package com.strife.auth.service;
 import com.strife.auth.repository.AccountRepository;
 import com.strife.auth.repository.ProviderRepository;
 import com.strife.common.event.ProfileUpdatedEvent;
-import com.strife.common.exception.AuthenticationFailedException;
 import com.strife.common.exception.RessourceAlreadyExistException;
 import com.strife.common.exception.RessourceDoNotMatchException;
 import com.strife.common.exception.RessourceNotFoundException;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.cloud.stream.function.StreamBridge;
 
 import com.strife.auth.dto.ChangePasswordDTO;
 import com.strife.auth.dto.RegisterDTO;
@@ -27,6 +27,8 @@ public class AccountService {
     private final ProviderRepository providerRepository;
 
     private final PasswordEncoder encoder;
+
+    private final StreamBridge StreamBridge;
 
     public boolean existsByEmail(String email) {
         return accountRepository.existsByEmail(email);
