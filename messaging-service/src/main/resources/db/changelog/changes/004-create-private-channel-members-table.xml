@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="004-create-private-channel-members-table" author="Moncles Junior Herisse">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="private_channel_members"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="private_channel_members">
+            <column name="member_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="private_channel_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addPrimaryKey
+                tableName="private_channel_members"
+                columnNames="member_id, private_channel_id"
+                constraintName="pk_private_channel_members"/>
+
+        <addForeignKeyConstraint
+                baseTableName="private_channel_members"
+                baseColumnNames="member_id"
+                constraintName="fk_private_channel_members_member"
+                referencedTableName="members"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint
+                baseTableName="private_channel_members"
+                baseColumnNames="private_channel_id"
+                constraintName="fk_private_channel_members_private_channel"
+                referencedTableName="private_channels"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+
+        <createIndex tableName="private_channel_members" indexName="idx_private_channel_members_private_channel">
+            <column name="private_channel_id"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

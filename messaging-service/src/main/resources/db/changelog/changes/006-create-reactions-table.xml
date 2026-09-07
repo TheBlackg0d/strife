@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="006-create-reactions-table" author="Moncles Junior Herisse">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="reactions"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="reactions">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" primaryKeyName="pk_reactions" nullable="false"/>
+            </column>
+            <column name="message_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="member_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="emoji" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint
+                baseTableName="reactions"
+                baseColumnNames="message_id"
+                constraintName="fk_reaction_message"
+                referencedTableName="messages"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint
+                baseTableName="reactions"
+                baseColumnNames="member_id"
+                constraintName="fk_reaction_member"
+                referencedTableName="members"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+        <addUniqueConstraint
+                tableName="reactions"
+                columnNames="message_id, member_id, emoji"
+                constraintName="reaction_unique"/>
+        <createIndex tableName="reactions" indexName="idx_reaction_message">
+            <column name="message_id"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

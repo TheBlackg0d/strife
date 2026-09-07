@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="005-create-messages-table" author="Moncles Junior Herisse">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="messages"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="messages">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" primaryKeyName="pk_messages" nullable="false"/>
+            </column>
+            <column name="sender_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="content" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="media" type="TEXT"/>
+            <column name="timestamp" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="edited_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="channel_id" type="uuid"/>
+            <column name="private_channel_id" type="uuid"/>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="messages"
+                baseColumnNames="sender_id"
+                constraintName="fk_message_sender"
+                referencedTableName="members"
+                referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint
+                baseTableName="messages"
+                baseColumnNames="channel_id"
+                constraintName="fk_message_channel"
+                referencedTableName="channels"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint
+                baseTableName="messages"
+                baseColumnNames="private_channel_id"
+                constraintName="fk_message_private_channel"
+                referencedTableName="private_channels"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+        <createIndex tableName="messages" indexName="idx_message_channel">
+            <column name="channel_id"/>
+            <column name="timestamp" descending="true"/>
+        </createIndex>
+
+        <createIndex tableName="messages" indexName="idx_message_private_channel">
+            <column name="private_channel_id"/>
+            <column name="timestamp" descending="true"/>
+        </createIndex>
+
+    </changeSet>
+
+    <changeSet id="005b-add-message-scope-check" author="Moncles Junior Herisse">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sqlCheck expectedResult="1">
+                    SELECT count(*) FROM pg_constraint WHERE conname = 'ck_message_scope'
+                </sqlCheck>
+            </not>
+        </preConditions>
+
+        <sql>
+            ALTER TABLE messages
+            ADD CONSTRAINT ck_message_scope
+            CHECK ((channel_id IS NOT NULL) &lt;&gt; (private_channel_id IS NOT NULL))
+        </sql>
+        <rollback>
+            <sql>ALTER TABLE messages DROP CONSTRAINT ck_message_scope</sql>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
