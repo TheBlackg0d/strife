@@ -160,46 +160,68 @@ Clé primaire composite sur (`member_id`, `role_id`) — un membre peut avoir pl
 | Champ | Type | Notes |
 |---|---|---|
 | `id` | UUID | Format Snowflake (encodage timestamp + séquence, façon Discord/Twitter) à explorer plus tard comme alternative — changerait juste le type/la génération de cet id. |
-| `sender_id` | UUID | Référence Auth/Users. |
-| `content` | String | |
-| `media` | String, nullable | |
+| `sender_id` | UUID (FK → Member) | Pointe la copie locale répliquée, pas directement l'id Auth/Users — l'id d'origine reste disponible via `Member.user_id`. |
+| `content` | text | |
+| `media` | text, nullable | |
 | `timestamp` | timestamp | |
 | `edited_at` | timestamp, nullable | |
+| `channel_id` | UUID (FK → Channel), nullable | Renseigné si le message est posté dans un channel de guilde. Pointe la copie locale répliquée depuis Guild, pas la table de Guild — la FK est donc bien réelle, mais locale. Indexé (lecture principale : l'historique d'un channel). |
+| `private_channel_id` | UUID (FK → PrivateChannel), nullable | Renseigné si le message est un DM. Vraie FK — local à Messaging. Indexé. |
 
-### ChannelMessage
+Contrainte CHECK : exactement une des deux colonnes de rattachement est renseignée — `(channel_id IS NOT NULL) <> (private_channel_id IS NOT NULL)`. Un message appartient soit à un channel de guilde, soit à une conversation privée, jamais aux deux ni à aucun des deux.
+
+**Note de design — pourquoi le rattachement est sur `Message` et pas dans des tables de liaison** : une version précédente de ce document décrivait deux tables `ChannelMessage (channel_id, message_id)` et `PrivateMessage (private_channel_id, message_id)`. Elles ont été repliées dans `Message`, pour trois raisons. (1) La cardinalité réelle est 1-N, pas N-N : un message appartient à exactement un channel, donc chacune de ces tables n'aurait jamais contenu qu'un seul rang par message — elles ne normalisaient rien. (2) L'invariant "channel OU DM, pas les deux" n'est pas exprimable tant que les deux rattachements vivent dans des tables séparées ; réunis sur `Message`, c'est une simple contrainte CHECK au lieu d'une règle applicative qu'on peut oublier. (3) Lire l'historique d'un channel devient une requête indexée sur `messages`, sans jointure.
+
+Modéliser ça en N-N (message ↔ channel) a été écarté pour la même raison : ça autoriserait explicitement le cas qu'on veut interdire — un même message rattaché à deux channels, voire à un channel de guilde et à un DM en même temps.
+
+### Channel
+
+Copie locale répliquée depuis Guild ([ADR-0003](../adr/0003-database-per-service-event-carried-state.md)) — Messaging ne lit jamais la base de Guild. Comme la copie est locale, `Message.channel_id` peut porter une vraie FK vers cette table.
 
 | Champ | Type | Notes |
 |---|---|---|
-| `channel_id` | UUID | Référence externe vers Guild — pas de vraie contrainte FK possible (bases de données séparées), juste une valeur stockée. |
-| `message_id` | UUID (FK → Message) | |
+| `id` | UUID (PK) | Vient de Guild — jamais généré localement. |
+| `name` | String | Copie en lecture seule. |
+| `version` | integer | Version publiée par Guild, pour la réconciliation ([ADR-0006](../adr/0006-entity-versioning-for-reconciliation.md)). |
+
+### Member
+
+Copie locale répliquée des utilisateurs connus de Messaging — auteurs de messages et participants aux conversations privées.
+
+| Champ | Type | Notes |
+|---|---|---|
+| `id` | UUID (PK) | Id local de la copie. |
+| `user_id` | UUID, unique | = l'id Auth/Users. |
+| `username` | String | Copie en lecture seule, répliquée depuis les events de Users. |
+| `version` | integer | Pour la réconciliation ([ADR-0006](../adr/0006-entity-versioning-for-reconciliation.md)). |
 
 ### PrivateChannel
+
+Conversation privée entre **deux personnes ou plus** (DM de groupe).
 
 | Champ | Type | Notes |
 |---|---|---|
 | `id` | UUID (PK) | |
-| `participant_1_id` | UUID | Ordre canonique — toujours le plus petit UUID. |
-| `participant_2_id` | UUID | Toujours le plus grand UUID. |
+| `channel_name` | String, nullable | Nom donné à une conversation de groupe ; sans objet pour un DM à deux. |
 
-Contrainte d'unicité sur (`participant_1_id`, `participant_2_id`).
+Les participants sont portés par une table de jointure `private_channel_members` (`member_id`, `private_channel_id`) — relation N-N avec `Member`, dont le côté propriétaire est `Member.privateChannels`.
 
-### PrivateMessage
+**Note de design — pourquoi pas `participant_1_id` / `participant_2_id`** : une version précédente de ce document figeait deux colonnes de participants en ordre canonique, avec une contrainte d'unicité sur la paire. Ce modèle a été abandonné au profit d'une liste de membres, pour ouvrir la porte aux DM de groupe sans migration ultérieure.
 
-| Champ | Type | Notes |
-|---|---|---|
-| `private_channel_id` | UUID (FK → PrivateChannel) | Vraie FK — local à Messaging. |
-| `message_id` | UUID (FK → Message) | |
+Le coût de ce choix est réel et doit être compensé applicativement : **une table de jointure ne peut pas exprimer "une seule conversation par ensemble de participants"**. Rien en base n'empêche donc deux `PrivateChannel` distincts entre les deux mêmes personnes. Or le démarrage d'un DM se fait par recherche-ou-création paresseuse au premier message (voir `functionalities.md`) — c'est exactement l'opération qui a besoin de cette garantie. Elle doit être tenue dans le service (recherche du channel existant avant création, idéalement sous transaction sérialisée ou avec un index d'unicité dédié sur une signature de l'ensemble des participants).
 
 ### Reaction
 
 | Champ | Type | Notes |
 |---|---|---|
-| `reaction_id` | UUID (PK) | |
-| `message_id` | UUID (FK → Message) | |
-| `user_id` | UUID | Référence Auth/Users (pas `member_id` — une réaction doit fonctionner autant sur un message de channel que sur un DM, où il n'y a aucun concept de membre de guilde). |
+| `id` | UUID (PK) | |
+| `message_id` | UUID (FK → Message) | Vraie FK, locale. Supprimer un message supprime ses réactions (cascade). |
+| `member_id` | UUID (FK → Member) | Pointe la copie locale répliquée ; l'id Auth/Users reste accessible via `Member.user_id`. |
 | `emoji` | String | |
 
-Contrainte d'unicité sur (`user_id`, `message_id`, `emoji`).
+Contrainte d'unicité sur (`message_id`, `member_id`, `emoji`).
+
+**Note de design — `member_id` plutôt que `user_id`** : une version précédente de ce document imposait `user_id` en argumentant qu'une réaction doit marcher aussi bien sur un message de channel que sur un DM, « où il n'y a aucun concept de membre de guilde ». Cet argument est tombé avec la refonte de `Member` : ce n'est plus un membre de guilde mais la copie locale d'un utilisateur connu de Messaging, valable dans les deux contextes — c'est déjà ce que référence `Message.sender_id`. Passer par `Member` donne en prime une vraie FK et évite de stocker deux fois la même identité sous deux formes différentes.
 
 **À préciser à l'implémentation (pas figé maintenant)** : la forme exacte des copies locales répliquées — permissions par membre/channel depuis Guild (event-carried state transfer), et `dm_privacy`/statut de blocage depuis Users, pour les vérifications avant d'accepter un message.
 

@@ -13,11 +13,6 @@ spring:
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml
     enabled: true
-    # Sans contexte explicite Liquibase joue TOUS les changeSets, y compris
-    # ceux marques context="seed" : la valeur par defaut "default" est donc
-    # ce qui garde le jeu de donnees de dev hors de la base.
-    # Pour le charger : LIQUIBASE_CONTEXTS=seed.
-    contexts: ${LIQUIBASE_CONTEXTS:default}
   security:
     oauth2:
       client:
@@ -40,6 +35,11 @@ management:
     web:
       exposure:
         include: health,info
+strife:
+  seed:
+    # Comptes de dev crees au demarrage par DevAccountSeeder.
+    enabled: ${STRIFE_SEED_ENABLED:false}
+
 jwt:
   secret: ${JWT_SECRET}
   expiration: 300000
@@ -47,8 +47,6 @@ jwt:
     expiration: 604800
 
 cookie:
-  # Secure exige HTTPS : le navigateur jette silencieusement le cookie en
-  # http://localhost. Passer COOKIE_SECURE=true (et same-site=none) en prod.
   secure: ${COOKIE_SECURE:false}
   http-only: true
   same-site: ${COOKIE_SAME_SITE:Lax}

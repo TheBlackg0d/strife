@@ -1,6 +1,24 @@
 spring:
   application:
     name: messaging-service
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/messaging_db
+    username: strife
+    password: strife
+    driverClassName: org.postgresql.Driver
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.xml
+    enabled: true
+    contexts: ${LIQUIBASE_CONTEXTS:default}
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: strife
+    password: strife
 
 server:
   port: 8084
@@ -10,8 +28,5 @@ management:
     web:
       exposure:
         include: health,info
-
-# TODO au fur et à mesure que tu construis ce service :
-#   - spring.datasource.* (si ce service a sa propre base de données — voir doc/architecture/services-overview.md)
-#   - spring.rabbitmq.* (host/port/credentials — voir docker-compose.yml à la racine)
-#   - toute autre config spécifique à ce service
+jwt:
+  secret: ${JWT_SECRET}

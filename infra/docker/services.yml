@@ -12,10 +12,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/auth_db
       SPRING_DATA_REDIS_HOST: redis
       SPRING_DATA_REDIS_PORT: 6379
-      # LIQUIBASE_CONTEXTS=seed charge les comptes de demo (voir le changeSet
-      # 004-seed-dev-accounts). Doit valoir la meme chose pour users-service,
-      # sinon on aurait des comptes sans profil.
-      LIQUIBASE_CONTEXTS: ${LIQUIBASE_CONTEXTS:-default}
+      STRIFE_SEED_ENABLED: ${STRIFE_SEED_ENABLED:-false}
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-dummy-client-id}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-dummy-client-secret}
     healthcheck:
@@ -35,13 +32,6 @@ services:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
-    # `docker compose watch` : le jar est construit hors image (voir Dockerfile),
-    # donc on ne reconstruit pas l'image a chaque changement — on copie le fat
-    # jar dans le conteneur et on redemarre la JVM (~2 s au lieu de ~40 s).
-    # Boucle de dev :
-    #   docker compose watch                                       # terminal 1
-    #   mvn -f ../../pom.xml package -pl auth-service -am -DskipTests
-    # Le Dockerfile reste surveille en `rebuild` : lui seul change l'image.
     develop:
       watch:
         - action: sync+restart
@@ -61,7 +51,6 @@ services:
       service: microservice-db-config
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/users_db
-      # Voir auth-service : les deux services doivent partager la meme valeur.
       LIQUIBASE_CONTEXTS: ${LIQUIBASE_CONTEXTS:-default}
     healthcheck:
       test:
