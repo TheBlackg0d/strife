@@ -1,7 +1,6 @@
 package com.strife.users.event.publisher;
 
 import org.springframework.cloud.stream.function.StreamBridge;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.strife.common.event.Publisher;
@@ -16,13 +15,11 @@ public class RelationshipPublisher extends Publisher {
         super(streamBridge);
     }
 
-    @Bean
-    void publishFriendAddedEvent(RelationshipChangeEvent event) {
+    public void publishFriendAddedEvent(RelationshipChangeEvent event) {
         this.publish(BINDING, "user.relationship.added", event);
     }
 
-    @Bean
-    void publishFriendRemovedEvent(RelationshipChangeEvent event) {
+    public void publishFriendRemovedEvent(RelationshipChangeEvent event) {
         this.publish(BINDING, "user.relationship.removed", event);
     }
 

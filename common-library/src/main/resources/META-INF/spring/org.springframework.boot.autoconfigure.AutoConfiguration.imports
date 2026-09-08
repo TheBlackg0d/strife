@@ -1,4 +1,4 @@
 com.strife.common.autoconfigure.CommonWebAutoConfiguration
 com.strife.common.autoconfigure.CommonJwtAutoConfiguration
 com.strife.common.autoconfigure.CommonSecurityAutoConfiguration
-com.strife.common.autoconfigure.CommonMessagingAutoConfiguration
+

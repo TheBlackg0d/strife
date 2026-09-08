@@ -3,6 +3,7 @@ package com.strife.messaging.service;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.strife.common.event.RelationshipChangeEvent;
 import com.strife.common.exception.RessourceNotFoundException;
@@ -10,8 +11,6 @@ import com.strife.common.model.RelationshipStatus;
 import com.strife.messaging.dto.UserDTO;
 import com.strife.messaging.model.User;
 import com.strife.messaging.repository.UserRepository;
-
-import jakarta.transaction.Transactional;
 
 @Service
 public class UserService {
@@ -33,7 +32,6 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    @Transactional
     public void deleteFriendship(UUID userId, UUID friendId) {
         User user = getUser(userId);
         User friend = getUser(friendId);
@@ -41,7 +39,6 @@ public class UserService {
         userRepository.save(user);
     }
 
-    @Transactional
     public void addFriendship(UUID userId, UUID friendId) {
         User user = getUser(userId);
         User friend = getUser(friendId);
@@ -49,6 +46,7 @@ public class UserService {
         userRepository.save(user);
     }
 
+    @Transactional
     public void updateFriendship(RelationshipChangeEvent event) {
 
         if (event.type().equals(RelationshipStatus.BLOCKED) || event.type().equals(RelationshipStatus.REMOVED)) {

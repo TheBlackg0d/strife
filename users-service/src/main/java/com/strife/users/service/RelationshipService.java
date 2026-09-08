@@ -51,6 +51,11 @@ public class RelationshipService {
             if (relationship.getStatus().equals(RelationshipStatus.BLOCKED)) {
                 throw new ActionNotAuthorizedException("You were blocked by this user. Cannot send friend request");
             }
+
+            if (relationship.getStatus().equals(RelationshipStatus.PENDING)) {
+                return RelationshipDTO.fromEntity(relationship);
+            }
+
         }
 
         relationship = Relationship.of(profile, friend, RelationshipStatus.PENDING, profile.getUserId());

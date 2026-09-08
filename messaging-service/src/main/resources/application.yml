@@ -24,7 +24,7 @@ spring:
     stream:
       bindings:
         accountCreatedEventConsumer-in-0:
-          destination: auth.events
+          destination: account.events
           group: ${spring.application.name}
         relationshipChangeEventConsumer-in-0:
           destination: user.events

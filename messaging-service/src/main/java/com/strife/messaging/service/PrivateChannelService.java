@@ -5,8 +5,8 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
-import com.strife.common.event.RelationshipChangeEvent;
 import com.strife.common.exception.ActionNotAuthorizedException;
+import com.strife.common.exception.RessourceDoNotMatchException;
 import com.strife.common.model.DmPrivacy;
 import com.strife.messaging.dto.PrivateChannelRequest;
 import com.strife.messaging.model.PrivateChannel;
@@ -24,10 +24,6 @@ public class PrivateChannelService {
     public PrivateChannelService(PrivateChannelRepository channelRepository, UserService userService) {
         this.channelRepository = channelRepository;
         this.userService = userService;
-    }
-
-    public List<PrivateChannel> getPrivateChannelsForUser(UUID userId) {
-        return channelRepository.findByUsers_Id(userId);
     }
 
     @Transactional
