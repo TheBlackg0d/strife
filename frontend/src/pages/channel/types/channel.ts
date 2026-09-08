@@ -1,32 +1,31 @@
-export interface Member {
-  userId: string;
+export interface User {
+  id: string;
   username: string;
 }
 
 export interface Message {
   id: string;
   content: string;
-  sender: Member;
+  sender: User;
   timestamp: string;
 }
 
 export interface PrivateChannel {
   id: string;
   channelName: string;
-  member: Member[];
+  users: User[];
 }
 
 /** Above two members a private channel is a group: it gets a member list. */
 export function isGroupChannel(channel: PrivateChannel): boolean {
-  return channel.member.length > 2;
+  return channel.users.length > 2;
 }
 
-export function otherMember(
+export function otherUser(
   channel: PrivateChannel,
   currentUserId?: string,
-): Member | undefined {
+): User | undefined {
   return (
-    channel.member.find((member) => member.userId !== currentUserId) ??
-    channel.member[0]
+    channel.users.find((user) => user.id !== currentUserId) ?? channel.users[0]
   );
 }

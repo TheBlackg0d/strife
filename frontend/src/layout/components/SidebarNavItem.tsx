@@ -4,7 +4,6 @@ interface SidebarNavItemProps {
   icon: IconType;
   label: string;
   isActive?: boolean;
-  /** Unread count; hidden when 0 or undefined. */
   badge?: number;
   onClick?: () => void;
 }

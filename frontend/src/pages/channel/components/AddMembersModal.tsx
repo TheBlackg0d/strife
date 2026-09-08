@@ -4,18 +4,16 @@ import Avatar from "../../../components/ui/Avatar";
 import IconButton from "../../../components/ui/IconButton";
 import Modal from "../../../components/ui/Modal";
 import { useGetFriendsQuery } from "../../../services/friend-api";
-import type { Member } from "../types/channel";
+import type { User } from "../types/channel";
 
 interface AddMembersModalProps {
   isOpen: boolean;
   channelName: string;
-  /** Members already in the channel, filtered out of the pick list. */
-  currentMembers: Member[];
+  currentMembers: User[];
   onClose: () => void;
-  onAddMembers: (members: Member[]) => void;
+  onAddMembers: (members: User[]) => void;
 }
 
-/** Friend picker for "Inviter dans le groupe privé". */
 function AddMembersModal({
   isOpen,
   channelName,
@@ -27,7 +25,7 @@ function AddMembersModal({
   const [search, setSearch] = useState("");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
-  const memberIds = new Set(currentMembers.map((member) => member.userId));
+  const memberIds = new Set(currentMembers.map((member) => member.id));
   const query = search.trim().toLowerCase();
 
   const candidates = (friends?.ALL ?? []).filter(
@@ -53,8 +51,8 @@ function AddMembersModal({
   const handleSubmit = () => {
     const invited = candidates
       .filter((friend) => selectedIds.includes(friend.id))
-      .map<Member>((friend) => ({
-        userId: friend.id,
+      .map<User>((friend) => ({
+        id: friend.id,
         username: friend.username,
       }));
 

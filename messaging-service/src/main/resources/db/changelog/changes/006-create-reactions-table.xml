@@ -19,7 +19,7 @@
             <column name="message_id" type="uuid">
                 <constraints nullable="false"/>
             </column>
-            <column name="member_id" type="uuid">
+            <column name="user_id" type="uuid">
                 <constraints nullable="false"/>
             </column>
             <column name="emoji" type="VARCHAR(255)">
@@ -36,14 +36,14 @@
 
         <addForeignKeyConstraint
                 baseTableName="reactions"
-                baseColumnNames="member_id"
-                constraintName="fk_reaction_member"
-                referencedTableName="members"
+                baseColumnNames="user_id"
+                constraintName="fk_reaction_user"
+                referencedTableName="users"
                 referencedColumnNames="id"
                 onDelete="CASCADE"/>
         <addUniqueConstraint
                 tableName="reactions"
-                columnNames="message_id, member_id, emoji"
+                columnNames="message_id, user_id, emoji"
                 constraintName="reaction_unique"/>
         <createIndex tableName="reactions" indexName="idx_reaction_message">
             <column name="message_id"/>

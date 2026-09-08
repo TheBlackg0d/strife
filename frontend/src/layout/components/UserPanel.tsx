@@ -20,7 +20,6 @@ const statusLabel: Record<PresenceStatus, string> = {
   INVISIBLE: "Invisible",
 };
 
-/** Pinned to the bottom of the DM sidebar; never scrolls. */
 function UserPanel({
   username,
   status = "ONLINE",

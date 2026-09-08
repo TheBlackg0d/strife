@@ -28,6 +28,12 @@ public class PrivateChannel {
 
     private String channelName;
 
+    private boolean showChannel;
+
     @ManyToMany(mappedBy = "privateChannels", fetch = FetchType.LAZY)
-    private List<Member> members = new ArrayList<>();
+    private List<User> members = new ArrayList<>();
+
+    public void addUser(User user) {
+        members.add(user);
+    }
 }

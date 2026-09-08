@@ -9,6 +9,6 @@ import com.strife.messaging.model.PrivateChannel;
 
 public interface PrivateChannelRepository extends JpaRepository<PrivateChannel, UUID> {
 
-    /** Traversée explicite members -> userId (underscore = séparateur de propriété Spring Data). */
-    List<PrivateChannel> findByMembers_UserId(UUID userId);
+    /** Traversée explicite users -> id (underscore = séparateur de propriété Spring Data). */
+    List<PrivateChannel> findByUsers_Id(UUID userId);
 }

@@ -1,9 +1,9 @@
 import { MdGroupAdd } from "react-icons/md";
 import MemberRow from "./MemberRow";
-import type { Member } from "../types/channel";
+import type { User } from "../types/channel";
 
 interface MemberListPanelProps {
-  members: Member[];
+  members: User[];
   currentUserId?: string;
   onAddMembers: () => void;
 }
@@ -26,9 +26,9 @@ function MemberListPanel({
         <ul className="flex flex-col gap-0.5">
           {members.map((member) => (
             <MemberRow
-              key={member.userId}
+              key={member.id}
               member={member}
-              isCurrentUser={member.userId === currentUserId}
+              isCurrentUser={member.id === currentUserId}
             />
           ))}
         </ul>

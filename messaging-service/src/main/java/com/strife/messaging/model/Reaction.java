@@ -19,7 +19,7 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "reactions", uniqueConstraints = {
-        @UniqueConstraint(name = "reaction_unique", columnNames = { "message_id", "member_id", "emoji" })
+        @UniqueConstraint(name = "reaction_unique", columnNames = { "message_id", "user_id", "emoji" })
 })
 @Getter
 @Setter
@@ -35,8 +35,8 @@ public class Reaction {
     private Message message;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "member_id", nullable = false, foreignKey = @ForeignKey(name = "fk_reaction_member"))
-    private Member member;
+    @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(name = "fk_reaction_user"))
+    private User user;
 
     @Column(nullable = false)
     private String emoji;

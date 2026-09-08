@@ -1,4 +1,4 @@
-package com.strife.users.model;
+package com.strife.common.model;
 
 public enum RelationshipStatus {
     PENDING,

@@ -1,7 +1,7 @@
 import Avatar from "../../../components/ui/Avatar";
 import { useGetFriendsQuery } from "../../../services/friend-api";
 import type { PresenceStatus } from "../../../types/profile";
-import type { Member } from "../types/channel";
+import type { User } from "../types/channel";
 
 const statusLabel: Record<PresenceStatus, string> = {
   ONLINE: "En ligne",
@@ -12,20 +12,15 @@ const statusLabel: Record<PresenceStatus, string> = {
 };
 
 interface UserProfilePanelProps {
-  member: Member;
+  member: User;
 }
 
-/**
- * Right pane of a two-person private channel. The channel DTO only carries
- * the id and the username, so the richer profile fields are looked up in the
- * friend list and simply omitted when the member isn't a friend.
- */
 function UserProfilePanel({ member }: UserProfilePanelProps) {
   const { data: friends } = useGetFriendsQuery();
 
   const profile = (friends?.ALL ?? []).find(
     (friend) =>
-      friend.id === member.userId || friend.username === member.username,
+      friend.id === member.id || friend.username === member.username,
   );
 
   return (

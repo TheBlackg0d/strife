@@ -39,7 +39,7 @@ public class Message {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "sender_id", nullable = false, foreignKey = @ForeignKey(name = "fk_message_sender"))
-    private Member sender;
+    private User sender;
 
     @Column(nullable = false, columnDefinition = "text")
     private String content;
@@ -60,7 +60,6 @@ public class Message {
     @JoinColumn(name = "private_channel_id", foreignKey = @ForeignKey(name = "fk_message_private_channel"))
     private PrivateChannel privateChannel;
 
-    /** Les réactions appartiennent au message : le supprimer les supprime avec lui. */
     @OneToMany(mappedBy = "message", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Reaction> reactions = new ArrayList<>();
 }

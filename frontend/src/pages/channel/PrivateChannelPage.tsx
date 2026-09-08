@@ -2,11 +2,6 @@ import { useParams } from "react-router";
 import PrivateChannelView from "./components/PrivateChannelView";
 import { channelMessages, privateChannels } from "../../data/channels";
 
-/**
- * Private channel route. Two members means a DM — the right pane shows the
- * other user's profile; beyond two it is a group and the right pane becomes
- * the member list with its invite button.
- */
 function PrivateChannelPage() {
   const { channelId } = useParams();
   const channel = privateChannels.find(({ id }) => id === channelId);

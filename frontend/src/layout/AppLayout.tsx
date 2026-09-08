@@ -16,7 +16,6 @@ export default function AppLayout() {
   const { data: profileData } = useGetProfileQuery();
 
   const navigate = useNavigate();
-  // The open conversation lives in the URL, so a channel is linkable.
   const channelMatch = useMatch("/channels/:channelId");
   const activeConversationId = channelMatch?.params.channelId;
 

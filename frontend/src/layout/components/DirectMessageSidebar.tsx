@@ -3,9 +3,7 @@ import DmListItem from "./DmListItem";
 import SectionHeader from "./SectionHeader";
 import SidebarNavItem from "./SidebarNavItem";
 import UserPanel from "./UserPanel";
-import type {
-  Conversation,
-} from "../../pages/dashboard/types/dashboard";
+import type { Conversation } from "../../pages/dashboard/types/dashboard";
 import type { PresenceStatus } from "../../types/profile";
 
 interface DirectMessageSidebarProps {
@@ -13,7 +11,6 @@ interface DirectMessageSidebarProps {
   currentUsername: string;
   currentUserStatus?: PresenceStatus;
   activeConversationId?: string;
-  /** "friends" | "requests" — which top-level view is open. */
   activeView?: "friends" | "requests";
   pendingRequestCount?: number;
   onSelectConversation?: (conversationId: string) => void;
@@ -24,7 +21,6 @@ interface DirectMessageSidebarProps {
   onOpenSettings?: () => void;
 }
 
-/** Level 2 surface: contextual navigation for the home view. */
 function DirectMessageSidebar({
   conversations,
   currentUsername,

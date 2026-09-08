@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <!-- Réplique locale du graphe d'amitié : users-service reste la source de
+         vérité (relationship), messaging n'en garde qu'une copie alimentée par
+         RelationshipChangeEvent, pour ne pas appeler users-service à chaque DM. -->
+    <changeSet id="007-create-user-friends-table" author="Moncles Junior Herisse">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="user_friends"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="user_friends">
+            <column name="user_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="friend_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey
+                tableName="user_friends"
+                columnNames="user_id, friend_id"
+                constraintName="pk_user_friends"/>
+
+        <addForeignKeyConstraint
+                baseTableName="user_friends"
+                baseColumnNames="user_id"
+                constraintName="fk_user_friends_user"
+                referencedTableName="users"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint
+                baseTableName="user_friends"
+                baseColumnNames="friend_id"
+                constraintName="fk_user_friends_friend"
+                referencedTableName="users"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+
+        <!-- L'amitié se lit dans les deux sens : la PK couvre user_id, il faut
+             un index dédié pour la traversée inverse. -->
+        <createIndex tableName="user_friends" indexName="idx_user_friends_friend">
+            <column name="friend_id"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

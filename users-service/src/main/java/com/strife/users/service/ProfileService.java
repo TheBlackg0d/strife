@@ -7,9 +7,10 @@ import org.springframework.stereotype.Service;
 import com.strife.common.dto.UserDTO;
 import com.strife.common.event.AccountRegisteredEvent;
 import com.strife.common.exception.RessourceNotFoundException;
+import com.strife.common.model.DmPrivacy;
 import com.strife.common.security.JwtPrincipal;
+
 import com.strife.users.dto.ProfileDTO;
-import com.strife.users.model.DmPrivacy;
 import com.strife.users.model.Profile;
 import com.strife.users.model.StatusPreference;
 import com.strife.users.repository.ProfileRepository;
@@ -45,7 +46,7 @@ public class ProfileService {
         newProfile.setAvatar(null);
         newProfile.setBio(null);
         newProfile.setStatusPreference(StatusPreference.ONLINE);
-        newProfile.setDmPrivacy(DmPrivacy.EVERYONE);
+        newProfile.setDmPrivacy(DmPrivacy.FRIENDS);
         newProfile.setVersion(1l);
 
         newProfile.setUsername(user.username());

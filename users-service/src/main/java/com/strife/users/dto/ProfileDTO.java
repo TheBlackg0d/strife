@@ -2,7 +2,7 @@ package com.strife.users.dto;
 
 import java.util.UUID;
 
-import com.strife.users.model.DmPrivacy;
+import com.strife.common.model.DmPrivacy;
 import com.strife.users.model.Profile;
 import com.strife.users.model.StatusPreference;
 

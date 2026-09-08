@@ -56,7 +56,7 @@ function MessageRow({ message, isGrouped }: MessageRowProps) {
           </div>
         )}
 
-        <p className="text-[15px] leading-[22px] break-words whitespace-pre-wrap text-on-surface">
+        <p className="text-[15px] leading-5.5 wrap-break-word whitespace-pre-wrap text-on-surface">
           {content}
         </p>
       </div>

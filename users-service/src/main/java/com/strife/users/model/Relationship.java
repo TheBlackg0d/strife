@@ -2,6 +2,8 @@ package com.strife.users.model;
 
 import java.util.UUID;
 
+import com.strife.common.model.RelationshipStatus;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;

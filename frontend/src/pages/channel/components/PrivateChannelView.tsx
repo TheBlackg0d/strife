@@ -8,8 +8,8 @@ import UserProfilePanel from "./UserProfilePanel";
 import { currentUserId } from "../../../data/channels";
 import {
   isGroupChannel,
-  otherMember,
-  type Member,
+  otherUser,
+  type User,
   type Message,
   type PrivateChannel,
 } from "../types/channel";
@@ -19,11 +19,6 @@ interface PrivateChannelViewProps {
   initialMessages: Message[];
 }
 
-/**
- * Mounted with the channel id as `key`, so switching conversations gives it a
- * fresh draft, roster and message list. Both stay local until the messaging
- * endpoints are wired to the frontend.
- */
 function PrivateChannelView({
   initialChannel,
   initialMessages,
@@ -34,7 +29,7 @@ function PrivateChannelView({
   const [isAddMembersOpen, setIsAddMembersOpen] = useState(false);
 
   const isGroup = isGroupChannel(channel);
-  const peer = otherMember(channel, currentUserId);
+  const peer = otherUser(channel, currentUserId);
   const title = isGroup
     ? channel.channelName
     : (peer?.username ?? channel.channelName);
@@ -45,16 +40,16 @@ function PrivateChannelView({
       {
         id: crypto.randomUUID(),
         content,
-        sender: { userId: currentUserId, username: "UserOne" },
+        sender: { id: currentUserId, username: "UserOne" },
         timestamp: new Date().toISOString(),
       },
     ]);
   };
 
-  const handleAddMembers = (invited: Member[]) => {
+  const handleAddMembers = (invited: User[]) => {
     setChannel((previous) => ({
       ...previous,
-      member: [...previous.member, ...invited],
+      users: [...previous.users, ...invited],
     }));
   };
 
@@ -63,7 +58,7 @@ function PrivateChannelView({
       <ChannelHeader
         title={title}
         isGroup={isGroup}
-        memberCount={channel.member.length}
+        memberCount={channel.users.length}
         isSidePanelOpen={isSidePanelOpen}
         onToggleSidePanel={() => setIsSidePanelOpen((open) => !open)}
         onAddMembers={() => setIsAddMembersOpen(true)}
@@ -87,7 +82,7 @@ function PrivateChannelView({
         {isSidePanelOpen &&
           (isGroup ? (
             <MemberListPanel
-              members={channel.member}
+              members={channel.users}
               currentUserId={currentUserId}
               onAddMembers={() => setIsAddMembersOpen(true)}
             />
@@ -99,7 +94,7 @@ function PrivateChannelView({
       <AddMembersModal
         isOpen={isAddMembersOpen}
         channelName={title}
-        currentMembers={channel.member}
+        currentMembers={channel.users}
         onClose={() => setIsAddMembersOpen(false)}
         onAddMembers={handleAddMembers}
       />

@@ -25,6 +25,8 @@ spring:
       bindings:
         profileUpdatedEvent-out-0:
           destination: user.events
+        relationshipDispatcher-out-0:
+          destination: user.events
         createProfileConsumer-in-0:
           destination: account.events
           group: ${spring.application.name}
@@ -32,11 +34,15 @@ spring:
         bindings:
           profileUpdatedEvent-out-0:
             producer:
-              exchangeType: topic
+              exchange-type: topic
+              routing-key-expression: headers['routingKey']
+          relationshipDispatcher-out-0:
+            producer:
+              exchange-type: topic
               routing-key-expression: headers['routingKey']
           createProfileConsumer-in-0:
             consumer:
-              exchangeType: topic
+              exchange-type: topic
               binding-routing-key: auth.account.registered
 server:
   port: 8082

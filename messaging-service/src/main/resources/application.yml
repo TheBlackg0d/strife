@@ -18,6 +18,27 @@ spring:
     port: 5672
     username: strife
     password: strife
+  cloud:
+    function:
+      definition: accountCreatedEventConsumer;relationshipChangeEventConsumer
+    stream:
+      bindings:
+        accountCreatedEventConsumer-in-0:
+          destination: auth.events
+          group: ${spring.application.name}
+        relationshipChangeEventConsumer-in-0:
+          destination: user.events
+          group: ${spring.application.name}
+      rabbit:
+        bindings:
+          accountCreatedEventConsumer-in-0:
+            consumer:
+              exchange-type: topic
+              binding-routing-key: auth.account.registered
+          relationshipChangeEventConsumer-in-0:
+            consumer:
+              exchange-type: topic
+              binding-routing-key: user.relationship.*
 
 server:
   port: 8084

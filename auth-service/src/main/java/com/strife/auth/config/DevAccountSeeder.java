@@ -26,6 +26,7 @@ public class DevAccountSeeder implements CommandLineRunner {
     private static final String EMAIL_DOMAIN = "@strife.test";
 
     private static final List<String> SEED_USERNAMES = List.of(
+            "theblackg0d",
             "dev",
             "lunarfox",
             "pixelmancer",

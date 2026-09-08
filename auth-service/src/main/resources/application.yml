@@ -35,12 +35,12 @@ spring:
         bindings:
           accountDispatcher-out-0:
             producer:
-              exchangeType: topic
-              routingKeyExpression: headers['routingKey']
+              exchange-type: topic
+              routing-key-expression: headers['routingKey']
           profileUpdatedEventConsumer-in-0:
             consumer:
-              exchangeType: topic
-              bindingRoutingKey: user.profile.updated
+              exchange-type: topic
+              binding-routing-key: user.profile.updated
 
   rabbitmq:
     host: localhost

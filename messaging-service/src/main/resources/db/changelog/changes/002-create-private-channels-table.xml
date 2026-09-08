@@ -17,6 +17,10 @@
                 <constraints primaryKey="true" primaryKeyName="pk_private_channels" nullable="false"/>
             </column>
             <column name="channel_name" type="VARCHAR(255)"/>
+            <!-- boolean primitif côté entité : jamais null, d'où le NOT NULL. -->
+            <column name="show_channel" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
     </changeSet>
 

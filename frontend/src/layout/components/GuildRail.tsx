@@ -4,14 +4,12 @@ import type { Guild } from "../../pages/dashboard/types/dashboard";
 
 interface GuildRailProps {
   guilds: Guild[];
-  /** Guild id currently open, or undefined while on the home/DM view. */
   activeGuildId?: string;
   onSelectGuild?: (guildId: string) => void;
   onSelectHome?: () => void;
   onCreateGuild?: () => void;
 }
 
-/** Level 1 surface: global navigation between home and the user's guilds. */
 function GuildRail({
   guilds,
   activeGuildId,

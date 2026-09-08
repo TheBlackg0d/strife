@@ -4,7 +4,7 @@ import { baseQueryWithAuth } from "./base-query-with-auth";
 export const strifeApi = createApi({
   reducerPath: "strifeApi",
   baseQuery: baseQueryWithAuth,
-  tagTypes: ["Profile", "Friends", "Account"],
+  tagTypes: ["Profile", "Friends", "Account", "Channels", "PrivateChannels"],
   endpoints: () => ({}),
 });
 

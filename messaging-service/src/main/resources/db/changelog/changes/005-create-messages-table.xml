@@ -35,7 +35,7 @@
                 baseTableName="messages"
                 baseColumnNames="sender_id"
                 constraintName="fk_message_sender"
-                referencedTableName="members"
+                referencedTableName="users"
                 referencedColumnNames="id"/>
 
         <addForeignKeyConstraint

@@ -1,27 +1,27 @@
 import type {
-  Member,
+  User,
   Message,
   PrivateChannel,
 } from "../pages/channel/types/channel";
 
 export const currentUserId = "u0";
 
-const userOne: Member = { userId: currentUserId, username: "UserOne" };
-const cyberNinja: Member = { userId: "u1", username: "CyberNinja" };
-const designArch: Member = { userId: "u2", username: "DesignArch" };
-const devExpert: Member = { userId: "u3", username: "DevExpert" };
-const auramemnon: Member = { userId: "u4", username: "Auramemnon" };
-const theAlgerian: Member = { userId: "u5", username: "TheAlgerianDev" };
+const userOne: User = { id: currentUserId, username: "UserOne" };
+const cyberNinja: User = { id: "u1", username: "CyberNinja" };
+const designArch: User = { id: "u2", username: "DesignArch" };
+const devExpert: User = { id: "u3", username: "DevExpert" };
+const auramemnon: User = { id: "u4", username: "Auramemnon" };
+const theAlgerian: User = { id: "u5", username: "TheAlgerianDev" };
 
 export const privateChannels: PrivateChannel[] = [
-  { id: "c1", channelName: "CyberNinja", member: [userOne, cyberNinja] },
-  { id: "c2", channelName: "DesignArch", member: [userOne, designArch] },
+  { id: "c1", channelName: "CyberNinja", users: [userOne, cyberNinja] },
+  { id: "c2", channelName: "DesignArch", users: [userOne, designArch] },
   {
     id: "c3",
     channelName: "Project Alpha Team",
-    member: [userOne, auramemnon, theAlgerian],
+    users: [userOne, auramemnon, theAlgerian],
   },
-  { id: "c4", channelName: "DevExpert", member: [userOne, devExpert] },
+  { id: "c4", channelName: "DevExpert", users: [userOne, devExpert] },
 ];
 
 export const channelMessages: Record<string, Message[]> = {

@@ -7,13 +7,13 @@ import org.springframework.stereotype.Service;
 import com.strife.common.exception.ActionNotAuthorizedException;
 import com.strife.common.exception.RessourceAlreadyExistException;
 import com.strife.common.exception.RessourceNotFoundException;
+import com.strife.common.model.RelationshipStatus;
 import com.strife.users.dto.FriendStatusList;
 import com.strife.users.dto.ProfileDTO;
 import com.strife.users.dto.RelationshipDTO;
 import com.strife.users.model.FriendListFilter;
 import com.strife.users.model.Profile;
 import com.strife.users.model.Relationship;
-import com.strife.users.model.RelationshipStatus;
 import com.strife.users.model.StatusPreference;
 import com.strife.users.repository.RelationshipRepository;
 

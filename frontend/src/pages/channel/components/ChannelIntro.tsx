@@ -35,7 +35,7 @@ function ChannelIntro({
         <p className="mt-2 text-[15px] text-on-surface-variant">
           Bienvenue au tout début du groupe{" "}
           <span className="font-semibold text-on-surface">{title}</span>, qui
-          compte {channel.member.length} membres.
+          compte {channel.users.length} membres.
         </p>
       ) : (
         <p className="mt-2 text-[15px] text-on-surface-variant">

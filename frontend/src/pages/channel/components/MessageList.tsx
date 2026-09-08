@@ -3,7 +3,6 @@ import ChannelIntro from "./ChannelIntro";
 import MessageRow from "./MessageRow";
 import type { Message, PrivateChannel } from "../types/channel";
 
-/** Messages closer than this to the previous one from the same author merge. */
 const GROUPING_WINDOW_MS = 5 * 60 * 1000;
 
 const dayFormatter = new Intl.DateTimeFormat("fr-FR", {
@@ -29,7 +28,6 @@ function MessageList({
 }: MessageListProps) {
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  // The feed is pinned to the newest message, like every chat client.
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ block: "end" });
   }, [channel.id, messages.length]);
@@ -57,7 +55,7 @@ function MessageList({
 
           const isGrouped =
             !startsNewDay &&
-            previous?.sender.userId === message.sender.userId &&
+            previous?.sender.id === message.sender.id &&
             sentAt.getTime() - (previousSentAt?.getTime() ?? 0) <
               GROUPING_WINDOW_MS;
 
