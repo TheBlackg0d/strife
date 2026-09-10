@@ -8,7 +8,7 @@
     <!-- Réplique locale du graphe d'amitié : users-service reste la source de
          vérité (relationship), messaging n'en garde qu'une copie alimentée par
          RelationshipChangeEvent, pour ne pas appeler users-service à chaque DM. -->
-    <changeSet id="007-create-user-friends-table" author="Moncles Junior Herisse">
+    <changeSet id="006-create-user-friends-table" author="Moncles Junior Herisse">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="user_friends"/>

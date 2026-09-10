@@ -5,12 +5,11 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
             http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
 
-    <include file="db/changelog/changes/001-create-channels-table.xml"/>
-    <include file="db/changelog/changes/002-create-private-channels-table.xml"/>
-    <include file="db/changelog/changes/003-create-users-table.xml"/>
-    <include file="db/changelog/changes/004-create-private-channel-users-table.xml"/>
-    <include file="db/changelog/changes/005-create-messages-table.xml"/>
-    <include file="db/changelog/changes/006-create-reactions-table.xml"/>
-    <include file="db/changelog/changes/007-create-user-friends-table.xml"/>
+    <include file="db/changelog/changes/001-create-users-table.xml"/>
+    <include file="db/changelog/changes/002-create-channels-table.xml"/>
+    <include file="db/changelog/changes/003-create-channel-members-table.xml"/>
+    <include file="db/changelog/changes/004-create-messages-table.xml"/>
+    <include file="db/changelog/changes/005-create-reactions-table.xml"/>
+    <include file="db/changelog/changes/006-create-user-friends-table.xml"/>
 
 </databaseChangeLog>

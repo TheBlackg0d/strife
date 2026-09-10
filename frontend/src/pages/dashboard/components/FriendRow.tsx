@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { useNavigate } from "react-router";
 import {
   MdBlock,
   MdChatBubble,
@@ -12,33 +13,38 @@ import DropdownMenu, {
   type DropdownMenuItem,
 } from "../../../components/ui/DropdownMenu";
 import IconButton from "../../../components/ui/IconButton";
-import type { Friend } from "../types/dashboard";
+import type { Friend, FriendFilter } from "../types/dashboard";
+import {
+  useAcceptFriendRequestMutation,
+  useBlockFriendMutation,
+  useRemoveFriendMutation,
+} from "../../../services/friend-api";
+import { useCreateDmMutation } from "../../../services/channel-api";
 
 interface FriendRowProps {
   friend: Friend;
-  onMessage?: (friendId: string) => void;
-  onAcceptFriendRequest?: (friendId: string) => void;
-  onRemoveFriend?: (friendId: string) => void;
-  onBlockFriend?: (friendId: string) => void;
-  onUnblockFriend?: (friendId: string) => void;
-  isInFriendRequestArea?: boolean;
-  isBlocked?: boolean;
+  friendFilter: FriendFilter;
 }
 
-function FriendRow({
-  friend,
-  onMessage,
-  onAcceptFriendRequest,
-  onRemoveFriend,
-  onBlockFriend,
-  onUnblockFriend,
-  isInFriendRequestArea,
-  isBlocked,
-}: FriendRowProps) {
+function FriendRow({ friend, friendFilter }: FriendRowProps) {
   const { id, username, tag, statusPreference, imageUrl, icon, isBot } = friend;
+
+  const navigate = useNavigate();
+  const [acceptFriendRequestMutation] = useAcceptFriendRequestMutation();
+  const [removeFriendMutation] = useRemoveFriendMutation();
+  const [blockFriendMutation] = useBlockFriendMutation();
+  const [createDm] = useCreateDmMutation();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const isBlocked = friendFilter === "BLOCKED";
+  const isInFriendRequestArea =
+    friendFilter === "PENDING_FRIEND_REQUEST_RECEIVED";
+
+  const openDm = async () => {
+    const channel = await createDm({ memberId: id }).unwrap();
+    navigate(`/channels/${channel.id}`);
+  };
 
   const menuItems: DropdownMenuItem[] = [
     isBlocked
@@ -47,14 +53,14 @@ function FriendRow({
           label: "Débloquer",
           icon: MdBlock,
           tone: "danger",
-          onSelect: () => onUnblockFriend?.(id),
+          onSelect: () => removeFriendMutation(id),
         }
       : {
           id: "block",
           label: "Bloquer",
           icon: MdBlock,
           tone: "danger",
-          onSelect: () => onBlockFriend?.(id),
+          onSelect: () => blockFriendMutation(id),
         },
   ];
 
@@ -64,7 +70,7 @@ function FriendRow({
       label: "Retirer l'ami",
       icon: MdPersonRemove,
       tone: "danger",
-      onSelect: () => onRemoveFriend?.(id),
+      onSelect: () => removeFriendMutation(id),
     });
   }
 
@@ -111,14 +117,14 @@ function FriendRow({
               label={`Ajouter ${username} à vos amis`}
               variant="raised"
               size={20}
-              onClick={() => onAcceptFriendRequest?.(id)}
+              onClick={() => acceptFriendRequestMutation(id)}
             />
             <IconButton
               icon={MdClose}
               label={`Refuser la demande de ${username}`}
               variant="raised"
               size={20}
-              onClick={() => onRemoveFriend?.(id)}
+              onClick={() => removeFriendMutation(id)}
             />
           </div>
         )}
@@ -127,7 +133,7 @@ function FriendRow({
           label={`Envoyer un message à ${username}`}
           variant="raised"
           size={20}
-          onClick={() => onMessage?.(id)}
+          onClick={openDm}
         />
         <IconButton
           ref={menuButtonRef}

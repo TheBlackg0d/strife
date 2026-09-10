@@ -5,52 +5,55 @@ import MemberListPanel from "./MemberListPanel";
 import MessageComposer from "./MessageComposer";
 import MessageList from "./MessageList";
 import UserProfilePanel from "./UserProfilePanel";
-import { currentUserId } from "../../../data/channels";
+import { useGetProfileQuery } from "../../../services/profile-api";
 import {
+  channelTitle,
   isGroupChannel,
   otherUser,
-  type User,
+  type Channel,
   type Message,
-  type PrivateChannel,
+  type User,
 } from "../types/channel";
 
-interface PrivateChannelViewProps {
-  initialChannel: PrivateChannel;
-  initialMessages: Message[];
+interface ChannelViewProps {
+  channel: Channel;
+  messages: Message[];
 }
 
-function PrivateChannelView({
-  initialChannel,
-  initialMessages,
-}: PrivateChannelViewProps) {
-  const [channel, setChannel] = useState(initialChannel);
-  const [messages, setMessages] = useState(initialMessages);
+function ChannelView({ channel, messages }: ChannelViewProps) {
+  const { data: profile } = useGetProfileQuery();
+  const [pendingMessages, setPendingMessages] = useState<Message[]>([]);
+  const [invitedMembers, setInvitedMembers] = useState<User[]>([]);
   const [isSidePanelOpen, setIsSidePanelOpen] = useState(true);
   const [isAddMembersOpen, setIsAddMembersOpen] = useState(false);
 
+  const currentUserId = profile?.id;
   const isGroup = isGroupChannel(channel);
   const peer = otherUser(channel, currentUserId);
-  const title = isGroup
-    ? channel.channelName
-    : (peer?.username ?? channel.channelName);
+  const title = channelTitle(channel, currentUserId);
+  const members = [...channel.users, ...invitedMembers];
 
   const handleSend = (content: string) => {
-    setMessages((previous) => [
+    if (!profile) {
+      return;
+    }
+
+    setPendingMessages((previous) => [
       ...previous,
       {
         id: crypto.randomUUID(),
+        channelId: channel.id,
         content,
-        sender: { id: currentUserId, username: "UserOne" },
+        media: null,
+        sender: { id: profile.id, username: profile.username },
         timestamp: new Date().toISOString(),
+        editedAt: null,
       },
     ]);
   };
 
   const handleAddMembers = (invited: User[]) => {
-    setChannel((previous) => ({
-      ...previous,
-      users: [...previous.users, ...invited],
-    }));
+    setInvitedMembers((previous) => [...previous, ...invited]);
   };
 
   return (
@@ -58,7 +61,7 @@ function PrivateChannelView({
       <ChannelHeader
         title={title}
         isGroup={isGroup}
-        memberCount={channel.users.length}
+        memberCount={members.length}
         isSidePanelOpen={isSidePanelOpen}
         onToggleSidePanel={() => setIsSidePanelOpen((open) => !open)}
         onAddMembers={() => setIsAddMembersOpen(true)}
@@ -67,10 +70,11 @@ function PrivateChannelView({
       <div className="flex min-h-0 flex-1">
         <div className="flex min-w-0 flex-1 flex-col">
           <MessageList
-            channel={channel}
+            channelId={channel.id}
             title={title}
             isGroup={isGroup}
-            messages={messages}
+            memberCount={members.length}
+            messages={[...messages, ...pendingMessages]}
             onAddMembers={() => setIsAddMembersOpen(true)}
           />
           <MessageComposer
@@ -82,7 +86,7 @@ function PrivateChannelView({
         {isSidePanelOpen &&
           (isGroup ? (
             <MemberListPanel
-              members={channel.users}
+              members={members}
               currentUserId={currentUserId}
               onAddMembers={() => setIsAddMembersOpen(true)}
             />
@@ -94,7 +98,7 @@ function PrivateChannelView({
       <AddMembersModal
         isOpen={isAddMembersOpen}
         channelName={title}
-        currentMembers={channel.users}
+        currentMembers={members}
         onClose={() => setIsAddMembersOpen(false)}
         onAddMembers={handleAddMembers}
       />
@@ -102,4 +106,4 @@ function PrivateChannelView({
   );
 }
 
-export default PrivateChannelView;
+export default ChannelView;

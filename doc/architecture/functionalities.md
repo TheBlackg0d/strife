@@ -57,11 +57,13 @@ Référence vivante des opérations que chaque service expose, au-delà du CRUD 
 
 | Fonctionnalité | Notes |
 |---|---|
-| `sendMessage` | Vers un channel de guilde ou un DM. |
+| `sendMessage` | Vers un channel, quel que soit son `type` — l'appelant ne distingue pas guilde et DM (voir `Channel` dans `data-model.md`). |
 | `editMessage` | Auteur uniquement. |
 | `deleteMessage` | Auteur, ou un modérateur (permission bitmask) pour un message dans un channel de guilde. |
-| `fetchMessageHistory` | Pagination par curseur sur `message_id` (chronologiquement trié) — "N messages avant tel id", pas de numéros de page. |
-| Démarrage d'un DM | `PrivateChannel` créé de façon paresseuse au premier message envoyé entre deux personnes, s'il n'existe pas déjà. |
+| `fetchMessageHistory` | Pagination par curseur sur `message_id` (chronologiquement trié) — "N messages avant tel id", pas de numéros de page. Vérifie d'abord l'appartenance de l'appelant au channel. |
+| `listChannels` | Les conversations privées de l'utilisateur (`DM` + `GROUP_DM`) en une seule liste — le client distingue les deux sur `type`, pas sur l'endpoint appelé. |
+| Démarrage d'un DM | Recherche-ou-création sur `dm_key` : le `Channel` de type `DM` est créé s'il n'existe pas déjà, sinon l'existant est renvoyé. L'unicité de la paire est garantie en base, pas seulement par cette recherche préalable. |
+| Création d'un DM de groupe | `Channel` de type `GROUP_DM`, 3 à 10 participants, créateur propriétaire. |
 | `addReaction` / `removeReaction` | |
 | Indicateur "en train d'écrire" | **Ne touche jamais Messaging ni sa base de données** — event éphémère qui passe directement par RabbitMQ/Gateway (client → Gateway → diffusion), même raisonnement que l'état de connexion ([ADR-0009](../adr/0009-gateway-presence-service.md)). |
 

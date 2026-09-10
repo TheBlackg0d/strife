@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useRef } from "react";
 import ChannelIntro from "./ChannelIntro";
 import MessageRow from "./MessageRow";
-import type { Message, PrivateChannel } from "../types/channel";
+import type { Message } from "../types/channel";
 
 const GROUPING_WINDOW_MS = 5 * 60 * 1000;
 
@@ -12,17 +12,19 @@ const dayFormatter = new Intl.DateTimeFormat("fr-FR", {
 });
 
 interface MessageListProps {
-  channel: PrivateChannel;
+  channelId: string;
   title: string;
   isGroup: boolean;
+  memberCount: number;
   messages: Message[];
   onAddMembers?: () => void;
 }
 
 function MessageList({
-  channel,
+  channelId,
   title,
   isGroup,
+  memberCount,
   messages,
   onAddMembers,
 }: MessageListProps) {
@@ -30,12 +32,12 @@ function MessageList({
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ block: "end" });
-  }, [channel.id, messages.length]);
+  }, [channelId, messages.length]);
 
   return (
     <div className="flex-1 overflow-y-auto px-4">
       <ChannelIntro
-        channel={channel}
+        memberCount={memberCount}
         isGroup={isGroup}
         title={title}
         onAddMembers={onAddMembers}

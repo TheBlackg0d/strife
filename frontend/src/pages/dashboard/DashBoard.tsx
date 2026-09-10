@@ -4,13 +4,7 @@ import FriendRow from "./components/FriendRow";
 import FriendsHeader from "./components/FriendsHeader";
 import type { DashboardTab, Friend, FriendFilter } from "./types/dashboard";
 
-import createFriendListQueryOptions from "./query-options/friend-list-query-option";
-import {
-  useAcceptFriendRequestMutation,
-  useBlockFriendMutation,
-  useGetFriendsQuery,
-  useRemoveFriendMutation,
-} from "../../services/friend-api";
+import { useGetFriendsQuery } from "../../services/friend-api";
 
 const sectionTitles: Record<FriendFilter, string> = {
   ONLINE: "EN LIGNE",
@@ -55,10 +49,6 @@ interface FriendListProps {
 }
 
 function FriendList({ filter, friends }: FriendListProps) {
-  const [acceptFriendRequestMutation] = useAcceptFriendRequestMutation();
-  const [removeFriendMutation] = useRemoveFriendMutation();
-  const [blockFriendMutation] = useBlockFriendMutation();
-
   const visibleFriends = friends?.[filter] ?? [];
 
   return (
@@ -70,20 +60,7 @@ function FriendList({ filter, friends }: FriendListProps) {
       {visibleFriends.length > 0 ? (
         <ul className="flex flex-col gap-2">
           {visibleFriends.map((friend) => (
-            <FriendRow
-              key={friend.id}
-              friend={friend}
-              isInFriendRequestArea={
-                filter === "PENDING_FRIEND_REQUEST_RECEIVED"
-              }
-              isBlocked={filter === "BLOCKED"}
-              onRemoveFriend={(friendId) => removeFriendMutation(friendId)}
-              onUnblockFriend={(friendId) => removeFriendMutation(friendId)}
-              onBlockFriend={(friendId) => blockFriendMutation(friendId)}
-              onAcceptFriendRequest={(friendId) =>
-                acceptFriendRequestMutation(friendId)
-              }
-            />
+            <FriendRow key={friend.id} friend={friend} friendFilter={filter} />
           ))}
         </ul>
       ) : (

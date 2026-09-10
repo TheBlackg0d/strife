@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import com.strife.common.event.AccountRegisteredEvent;
 import com.strife.common.event.RelationshipChangeEvent;
 import com.strife.messaging.dto.UserDTO;
-import com.strife.messaging.service.PrivateChannelService;
+import com.strife.messaging.service.ChannelService;
 import com.strife.messaging.service.UserService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -18,9 +18,11 @@ import lombok.extern.slf4j.Slf4j;
 public class UserConsumer {
 
     private UserService userService;
+    private ChannelService channelService;
 
-    public UserConsumer(UserService userService, PrivateChannelService privateChannelService) {
+    public UserConsumer(UserService userService, ChannelService channelService) {
         this.userService = userService;
+        this.channelService = channelService;
     }
 
     @Bean

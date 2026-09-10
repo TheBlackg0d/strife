@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="002-create-channels-table" author="Moncles Junior Herisse">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="channels"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="channels">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" primaryKeyName="pk_channels" nullable="false"/>
+            </column>
+            <column name="type" type="VARCHAR(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="dm_key" type="VARCHAR(73)"/>
+            <column name="guild_id" type="uuid"/>
+            <column name="owner_id" type="uuid"/>
+            <column name="show_channel" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint
+                tableName="channels"
+                columnNames="dm_key"
+                constraintName="uk_channel_dm_key"/>
+
+        <addForeignKeyConstraint
+                baseTableName="channels"
+                baseColumnNames="owner_id"
+                constraintName="fk_channel_owner"
+                referencedTableName="users"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+
+        <sql>
+            ALTER TABLE channels
+            ADD CONSTRAINT ck_channel_shape
+            CHECK (
+                (type = 'DM' AND dm_key IS NOT NULL AND name IS NULL AND owner_id IS NULL AND guild_id IS NULL)
+             OR (type = 'GROUP_DM' AND dm_key IS NULL AND name IS NOT NULL AND owner_id IS NOT NULL AND guild_id IS NULL)
+             OR (type = 'GUILD_TEXT' AND dm_key IS NULL AND name IS NOT NULL AND guild_id IS NOT NULL)
+            )
+        </sql>
+
+        <createIndex tableName="channels" indexName="idx_channel_type">
+            <column name="type"/>
+        </createIndex>
+
+        <createIndex tableName="channels" indexName="idx_channel_guild">
+            <column name="guild_id"/>
+        </createIndex>
+
+        <rollback>
+            <sql>ALTER TABLE channels DROP CONSTRAINT ck_channel_shape</sql>
+            <dropTable tableName="channels"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

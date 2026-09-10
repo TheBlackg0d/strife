@@ -11,14 +11,13 @@ import com.strife.messaging.repository.MessageRepository;
 @Service
 public class MessageService {
 
-    MessageRepository messageRepository;
+    private final MessageRepository messageRepository;
 
     public MessageService(MessageRepository messageRepository) {
         this.messageRepository = messageRepository;
     }
 
     public List<Message> getMessagesForChannel(UUID channelId) {
-        return messageRepository.findByChannelId(channelId);
+        return messageRepository.findByChannelIdOrderByTimestampAsc(channelId);
     }
-
 }

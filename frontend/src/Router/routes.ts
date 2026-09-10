@@ -2,7 +2,7 @@ import { createBrowserRouter } from "react-router";
 import Register from "../pages/register/Register";
 import Login from "../pages/login/Login";
 import DashBoard from "../pages/dashboard/DashBoard";
-import PrivateChannelPage from "../pages/channel/PrivateChannelPage";
+import ChannelPage from "../pages/channel/ChannelPage";
 import RootLayout from "../layout/RootLayout";
 
 import { authMiddleware, loggedInMiddleware } from "../auth/authMiddleware";
@@ -37,7 +37,7 @@ const router = createBrowserRouter([
           },
           {
             path: "channels/:channelId",
-            Component: PrivateChannelPage,
+            Component: ChannelPage,
           },
         ],
       },

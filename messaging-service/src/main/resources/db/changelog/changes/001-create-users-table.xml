@@ -5,18 +5,21 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
             http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
 
-    <changeSet id="001-create-channels-table" author="Moncles Junior Herisse">
+    <changeSet id="001-create-users-table" author="Moncles Junior Herisse">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="channels"/>
+                <tableExists tableName="users"/>
             </not>
         </preConditions>
 
-        <createTable tableName="channels">
+        <createTable tableName="users">
             <column name="id" type="uuid">
-                <constraints primaryKey="true" primaryKeyName="pk_channels" nullable="false"/>
+                <constraints primaryKey="true" primaryKeyName="pk_users" nullable="false"/>
             </column>
-            <column name="name" type="VARCHAR(255)"/>
+            <column name="username" type="VARCHAR(255)"/>
+            <column name="dm_privacy" type="VARCHAR(20)" defaultValue="EVERYONE">
+                <constraints nullable="false"/>
+            </column>
             <column name="version" type="BIGINT" defaultValueNumeric="1"/>
         </createTable>
     </changeSet>

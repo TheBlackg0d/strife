@@ -3,7 +3,7 @@ import { Outlet, useMatch, useNavigate } from "react-router";
 import DirectMessageSidebar from "./components/DirectMessageSidebar";
 import GuildRail from "./components/GuildRail";
 import SettingsModal from "../pages/settings/SettingsModal";
-import { conversations, guilds, pendingRequestCount } from "../data/dashboard";
+import { guilds, pendingRequestCount } from "../data/dashboard";
 
 import { useGetProfileQuery } from "../services/profile-api";
 
@@ -36,7 +36,7 @@ export default function AppLayout() {
       />
 
       <DirectMessageSidebar
-        conversations={conversations}
+        currentUserId={profileData?.id}
         currentUsername={username}
         currentUserStatus="ONLINE"
         activeConversationId={activeConversationId}

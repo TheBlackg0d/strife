@@ -80,7 +80,6 @@ public class RelationshipService {
         return RelationshipDTO.fromEntity(relationship);
     }
 
-    /** Bloque un profil, qu'une relation existe déjà ou non. */
     @Transactional
     public RelationshipDTO blockFriend(Profile profile, Profile friend) {
         Relationship relationship = relationshipRepository

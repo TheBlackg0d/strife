@@ -16,8 +16,6 @@
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="pk_relationship" nullable="false"/>
             </column>
-            <!-- Ordre canonique : first < second, pour qu'une paire (A,B) ne
-                 puisse pas exister aussi en (B,A). -->
             <column name="first_friend_id" type="uuid">
                 <constraints nullable="false"/>
             </column>
@@ -27,8 +25,6 @@
             <column name="status" type="VARCHAR(20)">
                 <constraints nullable="false"/>
             </column>
-            <!-- Qui a causé le statut actuel : demandeur si PENDING,
-                 bloqueur si BLOCKED (seul lui peut le lever). -->
             <column name="status_initiator" type="uuid">
                 <constraints nullable="false"/>
             </column>
@@ -58,7 +54,6 @@
                 referencedColumnNames="user_id"
                 onDelete="CASCADE"/>
 
-        <!-- Une relation se lit dans les deux sens : un index par colonne. -->
         <createIndex tableName="relationship" indexName="idx_relationship_first_friend_id">
             <column name="first_friend_id"/>
         </createIndex>
@@ -66,9 +61,6 @@
         <createIndex tableName="relationship" indexName="idx_relationship_second_friend_id">
             <column name="second_friend_id"/>
         </createIndex>
-
-        <!-- Garde-fou de l'ordre canonique : sans ça, l'unicité composite
-             ci-dessus laisserait passer un doublon inversé. -->
         <sql>
             ALTER TABLE relationship
             ADD CONSTRAINT ck_relationship_canonical_order

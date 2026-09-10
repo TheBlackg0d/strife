@@ -8,7 +8,6 @@ import java.util.UUID;
 
 import com.strife.common.model.DmPrivacy;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -40,9 +39,8 @@ public class User {
     @Enumerated(EnumType.STRING)
     private DmPrivacy dmPrivacy = DmPrivacy.EVERYONE;
 
-    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-    @JoinTable(name = "private_channel_users", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "private_channel_id"))
-    private List<PrivateChannel> privateChannels = new ArrayList<>();
+    @ManyToMany(mappedBy = "members", fetch = FetchType.LAZY)
+    private List<Channel> channels = new ArrayList<>();
 
     @OneToMany(mappedBy = "sender")
     private List<Message> messages = new ArrayList<>();

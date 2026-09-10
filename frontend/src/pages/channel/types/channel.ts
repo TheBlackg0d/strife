@@ -1,3 +1,5 @@
+export type ChannelType = "DM" | "GROUP_DM" | "GUILD_TEXT";
+
 export interface User {
   id: string;
   username: string;
@@ -5,27 +7,41 @@ export interface User {
 
 export interface Message {
   id: string;
+  channelId: string;
   content: string;
+  media: string | null;
   sender: User;
   timestamp: string;
+  editedAt: string | null;
 }
 
-export interface PrivateChannel {
+export interface Channel {
   id: string;
-  channelName: string;
+  type: ChannelType;
+  name: string | null;
+  ownerId: string | null;
+  guildId: string | null;
+  showChannel: boolean;
   users: User[];
 }
 
-/** Above two members a private channel is a group: it gets a member list. */
-export function isGroupChannel(channel: PrivateChannel): boolean {
-  return channel.users.length > 2;
+export function isGroupChannel(channel: Channel): boolean {
+  return channel.type === "GROUP_DM";
 }
 
 export function otherUser(
-  channel: PrivateChannel,
+  channel: Channel,
   currentUserId?: string,
 ): User | undefined {
-  return (
-    channel.users.find((user) => user.id !== currentUserId) ?? channel.users[0]
-  );
+  return channel.users.find((user) => user.id !== currentUserId);
+}
+
+export function channelTitle(
+  channel: Channel,
+  currentUserId?: string,
+): string {
+  if (isGroupChannel(channel)) {
+    return channel.name ?? "Groupe privé";
+  }
+  return otherUser(channel, currentUserId)?.username ?? "Conversation";
 }

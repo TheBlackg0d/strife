@@ -47,7 +47,7 @@ public class Relationship {
     private Long version;
 
     public static Relationship of(Profile a, Profile b, RelationshipStatus status, UUID statusInitiator) {
-        boolean aFirst = a.getUserId().compareTo(b.getUserId()) < 0;
+        boolean aFirst = a.getUserId().compareTo(b.getUserId()) > 0;
 
         Relationship relationship = new Relationship();
         relationship.setFirstFriend(aFirst ? a : b);

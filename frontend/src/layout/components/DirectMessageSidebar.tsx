@@ -1,13 +1,19 @@
-import { MdInbox, MdPerson } from "react-icons/md";
+import { MdGroups, MdInbox, MdPerson } from "react-icons/md";
 import DmListItem from "./DmListItem";
 import SectionHeader from "./SectionHeader";
 import SidebarNavItem from "./SidebarNavItem";
 import UserPanel from "./UserPanel";
 import type { Conversation } from "../../pages/dashboard/types/dashboard";
 import type { PresenceStatus } from "../../types/profile";
+import {
+  channelTitle,
+  isGroupChannel,
+  type Channel,
+} from "../../pages/channel/types/channel";
+import { useGetChannelListQuery } from "../../services/channel-api";
 
 interface DirectMessageSidebarProps {
-  conversations: Conversation[];
+  currentUserId?: string;
   currentUsername: string;
   currentUserStatus?: PresenceStatus;
   activeConversationId?: string;
@@ -21,8 +27,22 @@ interface DirectMessageSidebarProps {
   onOpenSettings?: () => void;
 }
 
+function toConversation(
+  channel: Channel,
+  currentUserId?: string,
+): Conversation {
+  const isGroup = isGroupChannel(channel);
+
+  return {
+    id: channel.id,
+    name: channelTitle(channel, currentUserId),
+    icon: isGroup ? MdGroups : undefined,
+    memberCount: isGroup ? channel.users.length : undefined,
+  };
+}
+
 function DirectMessageSidebar({
-  conversations,
+  currentUserId,
   currentUsername,
   currentUserStatus,
   activeConversationId,
@@ -35,6 +55,12 @@ function DirectMessageSidebar({
   onNewConversation,
   onOpenSettings,
 }: DirectMessageSidebarProps) {
+  const { data: channels } = useGetChannelListQuery();
+
+  const conversations = (channels ?? []).map((channel) =>
+    toConversation(channel, currentUserId),
+  );
+
   return (
     <aside className="flex h-full w-dm-sidebar shrink-0 flex-col bg-surface-container-low">
       <div className="flex h-12 shrink-0 items-center border-b border-surface-container-lowest/50 px-2">

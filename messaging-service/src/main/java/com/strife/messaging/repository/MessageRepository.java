@@ -9,5 +9,5 @@ import com.strife.messaging.model.Message;
 
 public interface MessageRepository extends JpaRepository<Message, UUID> {
 
-    List<Message> findByChannelId(UUID channelId);
+    List<Message> findByChannelIdOrderByTimestampAsc(UUID channelId);
 }

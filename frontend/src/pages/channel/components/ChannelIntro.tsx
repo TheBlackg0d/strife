@@ -1,10 +1,9 @@
 import { MdGroups } from "react-icons/md";
 import Avatar from "../../../components/ui/Avatar";
 import Button from "../../../components/ui/Button";
-import type { PrivateChannel } from "../types/channel";
 
 interface ChannelIntroProps {
-  channel: PrivateChannel;
+  memberCount: number;
   isGroup: boolean;
   title: string;
   onAddMembers?: () => void;
@@ -12,7 +11,7 @@ interface ChannelIntroProps {
 }
 
 function ChannelIntro({
-  channel,
+  memberCount,
   isGroup,
   title,
   onAddMembers,
@@ -35,7 +34,7 @@ function ChannelIntro({
         <p className="mt-2 text-[15px] text-on-surface-variant">
           Bienvenue au tout début du groupe{" "}
           <span className="font-semibold text-on-surface">{title}</span>, qui
-          compte {channel.users.length} membres.
+          compte {memberCount} membres.
         </p>
       ) : (
         <p className="mt-2 text-[15px] text-on-surface-variant">

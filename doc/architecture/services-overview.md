@@ -52,7 +52,7 @@ Statut : architecture v1 complète (2026-08-15).
 
 **Responsabilité** : persistance et diffusion des messages postés dans un channel.
 
-**Données possédées** : messages (contenu, channel, auteur, timestamp). Garde aussi une copie locale (read-model) des permissions/membres par channel, répliquée par events depuis Guild — plutôt qu'un appel synchrone à Guild à chaque post, vu la fréquence très élevée de cette opération.
+**Données possédées** : messages (contenu, channel, auteur, timestamp), et les conversations privées elles-mêmes — DM à deux et DM de groupe. Garde aussi une copie locale (read-model) des permissions/membres par channel de guilde, répliquée par events depuis Guild — plutôt qu'un appel synchrone à Guild à chaque post, vu la fréquence très élevée de cette opération ; ainsi qu'une copie du graphe d'amitié et de `dm_privacy` depuis Users, consultée avant d'autoriser l'ouverture d'un DM.
 
 **Expose (sync)** : endpoint REST pour poster un message — le client attend la confirmation que le message est sauvegardé.
 
@@ -62,7 +62,7 @@ Statut : architecture v1 complète (2026-08-15).
 
 **Voir** : [ADR-0003](../adr/0003-database-per-service-event-carried-state.md)
 
-**TBD (scope étendu)** : modèle de données pour les DM (conversation privée entre deux utilisateurs, distincte d'un channel de guilde) — amis/DM ajoutés au scope v1, voir `data-model.md`.
+**Scope étendu (amis/DM en v1)** : les DM ne sont pas une entité distincte d'un channel de guilde — c'est le même `Channel`, discriminé par un `type` (`DM`, `GROUP_DM`, `GUILD_TEXT`). Voir la section Messaging de `data-model.md` pour le raisonnement et les invariants tenus en base.
 
 ---
 

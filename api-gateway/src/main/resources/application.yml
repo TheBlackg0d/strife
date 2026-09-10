@@ -25,10 +25,10 @@ spring:
               uri: http://users-service:8082
               predicates:
                 - Path=/api/v1/relationships/**,/api/v1/profile/**
-            - id: message-service
-              uri: http://message-service:8084
+            - id: messaging-service
+              uri: http://messaging-service:8084
               predicates:
-                - Path=/api/v1/private-channel/**
+                - Path=/api/v1/channel/**,/api/v1/message/**
 
 server:
   port: 8080
