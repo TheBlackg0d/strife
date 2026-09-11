@@ -1,4 +1,4 @@
-import type { Message } from "../pages/channel/types/channel";
+import type { Message, MessageRequest } from "../pages/channel/types/channel";
 import { strifeApi } from "./strife-api";
 
 const messageApi = strifeApi.injectEndpoints({
@@ -9,7 +9,11 @@ const messageApi = strifeApi.injectEndpoints({
         { type: "Messages", id: channelId },
       ],
     }),
+    createMessage: builder.mutation<Message, MessageRequest>({
+      query: (body) => ({ url: "message/create", method: "POST", body }),
+    }),
   }),
 });
 
-export const { useGetMessagesForChannelQuery } = messageApi;
+export const { useGetMessagesForChannelQuery, useCreateMessageMutation } =
+  messageApi;

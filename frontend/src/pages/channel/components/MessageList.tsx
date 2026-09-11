@@ -3,7 +3,7 @@ import ChannelIntro from "./ChannelIntro";
 import MessageRow from "./MessageRow";
 import type { Message } from "../types/channel";
 
-const GROUPING_WINDOW_MS = 5 * 60 * 1000;
+const GROUPING_WINDOW_MS = 1 * 60 * 1000;
 
 const dayFormatter = new Intl.DateTimeFormat("fr-FR", {
   day: "numeric",

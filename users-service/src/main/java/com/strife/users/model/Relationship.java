@@ -47,7 +47,7 @@ public class Relationship {
     private Long version;
 
     public static Relationship of(Profile a, Profile b, RelationshipStatus status, UUID statusInitiator) {
-        boolean aFirst = a.getUserId().compareTo(b.getUserId()) > 0;
+        boolean aFirst = compareUnsigned(a.getUserId(), b.getUserId()) < 0;
 
         Relationship relationship = new Relationship();
         relationship.setFirstFriend(aFirst ? a : b);
@@ -57,6 +57,11 @@ public class Relationship {
         relationship.setVersion(1L);
 
         return relationship;
+    }
+
+    private static int compareUnsigned(UUID a, UUID b) {
+        int high = Long.compareUnsigned(a.getMostSignificantBits(), b.getMostSignificantBits());
+        return high != 0 ? high : Long.compareUnsigned(a.getLeastSignificantBits(), b.getLeastSignificantBits());
     }
 
     public Profile getInitiatorProfile() {

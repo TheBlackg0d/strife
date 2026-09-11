@@ -1,4 +1,5 @@
 import Avatar from "../../../components/ui/Avatar";
+import { stringToHslColor } from "../../../util/util";
 import type { Message } from "../types/channel";
 
 const stampFormatter = new Intl.DateTimeFormat("fr-FR", {
@@ -28,7 +29,7 @@ function MessageRow({ message, isGrouped }: MessageRowProps) {
       {isGrouped ? (
         <time
           dateTime={timestamp}
-          className="mt-1 w-10 shrink-0 pr-4 text-right text-[10px] text-outline-variant opacity-0 group-hover:opacity-100"
+          className="mt-1 mr-4 w-10 shrink-0 pr-4 text-right text-[10px] text-outline-variant opacity-0 group-hover:opacity-100"
         >
           {timeFormatter.format(sentAt)}
         </time>
@@ -37,6 +38,7 @@ function MessageRow({ message, isGrouped }: MessageRowProps) {
           name={sender.username}
           size={40}
           className="mt-0.5 mr-4 cursor-pointer"
+          backgroundColor={stringToHslColor(sender.username)}
         />
       )}
 

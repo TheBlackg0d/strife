@@ -15,6 +15,22 @@ export interface Message {
   editedAt: string | null;
 }
 
+export interface MessageRequest {
+  channelId: string;
+  content: string;
+  media: string | null;
+}
+
+export interface MessageWebSocketMessage {
+  messageId: string;
+  channelId: string;
+  senderId: string;
+  senderUsername: string;
+  content: string;
+  sentAt: string;
+  editAt?: String;
+}
+
 export interface Channel {
   id: string;
   type: ChannelType;
@@ -36,10 +52,7 @@ export function otherUser(
   return channel.users.find((user) => user.id !== currentUserId);
 }
 
-export function channelTitle(
-  channel: Channel,
-  currentUserId?: string,
-): string {
+export function channelTitle(channel: Channel, currentUserId?: string): string {
   if (isGroupChannel(channel)) {
     return channel.name ?? "Groupe privé";
   }

@@ -1,6 +1,7 @@
 import type { IconType } from "react-icons";
 import StatusDot, { type RingSurface } from "./StatusDot";
 import type { PresenceStatus } from "../../types/profile";
+import { initials, stringToHslColor } from "../../util/util";
 
 interface AvatarProps {
   name: string;
@@ -19,22 +20,7 @@ interface AvatarProps {
    */
   surfaceClassName?: string;
   className?: string;
-}
-
-function initials(name: string): string {
-  const parts = name
-    .trim()
-    .split(/[\s_-]+/)
-    .filter(Boolean);
-  if (parts.length > 1) {
-    return (parts[0][0] + parts[1][0]).toUpperCase();
-  }
-  // "CyberNinja" -> "CN"
-  const camel = name.match(/[A-Z][a-z]*/g);
-  if (camel && camel.length > 1) {
-    return (camel[0][0] + camel[1][0]).toUpperCase();
-  }
-  return name.slice(0, 2).toUpperCase();
+  backgroundColor?: string;
 }
 
 function Avatar({
@@ -45,6 +31,7 @@ function Avatar({
   status,
   ring = "surface",
   shape = "circle",
+  backgroundColor = "none",
   surfaceClassName = "bg-surface-container-high text-on-surface",
   className = "",
 }: AvatarProps) {
@@ -52,7 +39,11 @@ function Avatar({
 
   return (
     <div
-      style={{ width: size, height: size }}
+      style={{
+        width: size,
+        height: size,
+        backgroundColor,
+      }}
       className={`relative flex shrink-0 items-center justify-center ${surfaceClassName} ${radius} ${className}`}
     >
       {imageUrl ? (
@@ -66,7 +57,9 @@ function Avatar({
       ) : (
         <span
           aria-hidden
-          style={{ fontSize: Math.round(size * 0.38) }}
+          style={{
+            fontSize: Math.round(size * 0.38),
+          }}
           className="font-semibold"
         >
           {initials(name)}

@@ -23,6 +23,8 @@ spring:
       definition: accountCreatedEventConsumer;relationshipChangeEventConsumer
     stream:
       bindings:
+        messagePosted-out-0:
+          destination: messaging.events
         accountCreatedEventConsumer-in-0:
           destination: account.events
           group: ${spring.application.name}
@@ -31,6 +33,10 @@ spring:
           group: ${spring.application.name}
       rabbit:
         bindings:
+          messagePosted-out-0:
+            producer:
+              exchange-type: topic
+              routing-key-expression: headers['routingKey']
           accountCreatedEventConsumer-in-0:
             consumer:
               exchange-type: topic
