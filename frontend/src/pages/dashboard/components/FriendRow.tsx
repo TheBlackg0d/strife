@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import {
   MdBlock,
@@ -19,7 +19,10 @@ import {
   useBlockFriendMutation,
   useRemoveFriendMutation,
 } from "../../../services/friend-api";
-import { useCreateDmMutation } from "../../../services/channel-api";
+import {
+  useCreateDmMutation,
+  useGetPrivateChannelListQuery,
+} from "../../../services/channel-api";
 
 interface FriendRowProps {
   friend: Friend;
@@ -28,22 +31,38 @@ interface FriendRowProps {
 
 function FriendRow({ friend, friendFilter }: FriendRowProps) {
   const { id, username, tag, statusPreference, imageUrl, icon, isBot } = friend;
-
+  const { data: channels } = useGetPrivateChannelListQuery();
   const navigate = useNavigate();
   const [acceptFriendRequestMutation] = useAcceptFriendRequestMutation();
   const [removeFriendMutation] = useRemoveFriendMutation();
   const [blockFriendMutation] = useBlockFriendMutation();
-  const [createDm] = useCreateDmMutation();
+  const [createDm, { isSuccess, data: channel }] = useCreateDmMutation();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (isSuccess) {
+      navigate(`/channels/${channel.id}`);
+    }
+  }, [isSuccess, channel]);
+
   const isBlocked = friendFilter === "BLOCKED";
   const isInFriendRequestArea =
     friendFilter === "PENDING_FRIEND_REQUEST_RECEIVED";
 
   const openDm = async () => {
-    const channel = await createDm({ memberId: id }).unwrap();
-    navigate(`/channels/${channel.id}`);
+    const existingDm = channels?.find(
+      (channel) =>
+        channel.type == "DM" && channel.users.some((user) => user.id === id),
+    );
+
+    if (existingDm) {
+      navigate(`/channels/${existingDm.id}`);
+      return;
+    }
+
+    await createDm({ memberId: id });
   };
 
   const menuItems: DropdownMenuItem[] = [

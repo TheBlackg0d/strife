@@ -3,7 +3,7 @@ import { strifeApi } from "./strife-api";
 
 const channelApi = strifeApi.injectEndpoints({
   endpoints: (builder) => ({
-    getChannelList: builder.query<Channel[], void>({
+    getPrivateChannelList: builder.query<Channel[], void>({
       query: () => ({ url: "channel", method: "GET" }),
       providesTags: (result) => [
         { type: "Channels" as const, id: "LIST" },
@@ -21,7 +21,31 @@ const channelApi = strifeApi.injectEndpoints({
     }),
     createDm: builder.mutation<Channel, { memberId: string }>({
       query: (body) => ({ url: "channel/dm", method: "POST", body }),
-      invalidatesTags: [{ type: "Channels", id: "LIST" }],
+      async onQueryStarted(_result, { dispatch, queryFulfilled }) {
+        try {
+          const { data: createdChannel } = await queryFulfilled;
+          dispatch(
+            channelApi.util.updateQueryData(
+              "getPrivateChannelList",
+              undefined,
+              (draft) => {
+                const index = draft.findIndex(
+                  (channel) => channel.id === createdChannel.id,
+                );
+
+                if (index === -1) {
+                  draft.push(createdChannel);
+                  return;
+                }
+
+                draft[index] = createdChannel;
+              },
+            ),
+          );
+        } catch (error) {
+          console.log(error);
+        }
+      },
     }),
     createGroupDm: builder.mutation<
       Channel,
@@ -34,7 +58,7 @@ const channelApi = strifeApi.injectEndpoints({
 });
 
 export const {
-  useGetChannelListQuery,
+  useGetPrivateChannelListQuery,
   useGetChannelQuery,
   useCreateDmMutation,
   useCreateGroupDmMutation,

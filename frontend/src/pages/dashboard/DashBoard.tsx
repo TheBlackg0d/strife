@@ -5,6 +5,8 @@ import FriendsHeader from "./components/FriendsHeader";
 import type { DashboardTab, Friend, FriendFilter } from "./types/dashboard";
 
 import { useGetFriendsQuery } from "../../services/friend-api";
+import { useGetPrivateChannelListQuery } from "../../services/channel-api";
+import type { Channel } from "../channel/types/channel";
 
 const sectionTitles: Record<FriendFilter, string> = {
   ONLINE: "EN LIGNE",
@@ -24,6 +26,7 @@ const emptyMessages: Record<FriendFilter, string> = {
 
 function DashBoard() {
   const { data: friends } = useGetFriendsQuery();
+  const { data: channels } = useGetPrivateChannelListQuery();
   const [tab, setTab] = useState<DashboardTab>("ONLINE");
 
   if (!friends) {
@@ -46,6 +49,7 @@ function DashBoard() {
 interface FriendListProps {
   filter: FriendFilter;
   friends?: Record<FriendFilter, Friend[]>;
+  channels?: Channel[];
 }
 
 function FriendList({ filter, friends }: FriendListProps) {

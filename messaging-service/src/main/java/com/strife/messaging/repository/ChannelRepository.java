@@ -15,26 +15,27 @@ import com.strife.messaging.model.ChannelType;
 
 public interface ChannelRepository extends JpaRepository<Channel, UUID> {
 
-    @EntityGraph(attributePaths = "members")
-    Optional<Channel> findByDmKey(String dmKey);
+        @EntityGraph(attributePaths = "members")
+        Optional<Channel> findByDmKey(String dmKey);
 
-    @EntityGraph(attributePaths = "members")
-    @Query("""
-            select c from Channel c
-            where c.type in :types
-              and exists (select 1 from c.members m where m.id = :userId)
-            """)
-    List<Channel> findAllByMemberIdAndTypeIn(@Param("userId") UUID userId,
-            @Param("types") Collection<ChannelType> types);
+        @EntityGraph(attributePaths = "members")
+        @Query("""
+                        select c from Channel c
+                        where c.type in :types
+                          and exists (select 1 from c.members m where m.id = :userId)
+                        """)
+        List<Channel> findAllByMemberIdAndTypeIn(@Param("userId") UUID userId,
+                        @Param("types") Collection<ChannelType> types);
 
-    @EntityGraph(attributePaths = "members")
-    @Query("select c from Channel c where c.id = :id")
-    Optional<Channel> findByIdWithMembers(@Param("id") UUID id);
+        @EntityGraph(attributePaths = "members")
+        @Query("select c from Channel c where c.id = :id")
+        Optional<Channel> findByIdWithMembers(@Param("id") UUID id);
 
-    @Query("""
-            select case when count(c) > 0 then true else false end
-            from Channel c join c.members m
-            where c.id = :id and m.id = :memberId
-            """)
-    boolean existsByIdAndMemberId(@Param("id") UUID id, @Param("memberId") UUID memberId);
+        @Query("""
+                        select case when count(c) > 0 then true else false end
+                        from Channel c join c.members m
+                        where c.id = :id and m.id = :memberId
+                        """)
+        boolean existsByIdAndMemberId(@Param("id") UUID id, @Param("memberId") UUID memberId);
+
 }

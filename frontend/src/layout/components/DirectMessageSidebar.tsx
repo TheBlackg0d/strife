@@ -10,7 +10,7 @@ import {
   isGroupChannel,
   type Channel,
 } from "../../pages/channel/types/channel";
-import { useGetChannelListQuery } from "../../services/channel-api";
+import { useGetPrivateChannelListQuery } from "../../services/channel-api";
 
 interface DirectMessageSidebarProps {
   currentUserId?: string;
@@ -55,7 +55,7 @@ function DirectMessageSidebar({
   onNewConversation,
   onOpenSettings,
 }: DirectMessageSidebarProps) {
-  const { data: channels } = useGetChannelListQuery();
+  const { data: channels } = useGetPrivateChannelListQuery();
 
   const conversations = (channels ?? []).map((channel) =>
     toConversation(channel, currentUserId),
