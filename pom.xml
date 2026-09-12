@@ -62,6 +62,7 @@
         <module>users-service</module>
         <module>guild-service</module>
         <module>messaging-service</module>
+        <module>file-service</module>
         <module>realtime-gateway</module>
         <module>api-gateway</module>
         <module>event-store-service</module>
