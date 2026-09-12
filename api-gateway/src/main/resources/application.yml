@@ -29,6 +29,10 @@ spring:
               uri: http://messaging-service:8084
               predicates:
                 - Path=/api/v1/channel/**,/api/v1/message/**
+            - id: file-service
+              uri: http://file-service:8087
+              predicates:
+                - Path=/api/v1/files/**
 
 server:
   port: 8080

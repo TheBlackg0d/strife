@@ -5,7 +5,7 @@ import java.util.function.Consumer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.strife.common.event.AccountRegisteredEvent;
+import com.strife.common.event.auth.AccountRegisteredEvent;
 import com.strife.common.security.JwtPrincipal;
 import com.strife.users.service.ProfileService;
 

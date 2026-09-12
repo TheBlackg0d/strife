@@ -66,7 +66,7 @@ function ChannelView({ channel, messages }: ChannelViewProps) {
   const session = useStomp();
   useSubscription(session, `/topic/channel.${channel.id}`, onMessage);
 
-  const handleSend = (content: string) => {
+  const handleSend = (content: string, files: File[]) => {
     if (!profile) {
       return;
     }

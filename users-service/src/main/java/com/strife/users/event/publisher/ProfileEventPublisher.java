@@ -3,8 +3,8 @@ package com.strife.users.event.publisher;
 import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.context.annotation.Configuration;
 
-import com.strife.common.event.ProfileUpdatedEvent;
 import com.strife.common.event.Publisher;
+import com.strife.common.event.Profile.ProfileUpdatedEvent;
 
 import lombok.extern.slf4j.Slf4j;
 

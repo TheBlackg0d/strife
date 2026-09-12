@@ -5,8 +5,8 @@ import java.util.function.Consumer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.strife.common.event.AccountRegisteredEvent;
-import com.strife.common.event.RelationshipChangeEvent;
+import com.strife.common.event.Profile.RelationshipChangeEvent;
+import com.strife.common.event.auth.AccountRegisteredEvent;
 import com.strife.messaging.dto.UserDTO;
 import com.strife.messaging.service.ChannelService;
 import com.strife.messaging.service.UserService;

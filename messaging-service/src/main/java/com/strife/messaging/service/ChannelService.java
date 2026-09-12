@@ -5,32 +5,35 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import com.strife.common.event.file.FileOwnerChangeEvent;
 import com.strife.common.exception.ActionNotAuthorizedException;
 import com.strife.common.exception.RessourceDoNotMatchException;
 import com.strife.common.exception.RessourceNotFoundException;
 import com.strife.common.model.DmPrivacy;
+import com.strife.common.model.FileScope;
 import com.strife.common.model.RelationshipStatus;
 import com.strife.messaging.dto.DmRequest;
 import com.strife.messaging.dto.GroupDmRequest;
+import com.strife.messaging.event.publisher.MessageEventPublisher;
 import com.strife.messaging.model.Channel;
 import com.strife.messaging.model.ChannelType;
 import com.strife.messaging.model.User;
 import com.strife.messaging.repository.ChannelRepository;
 
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 
 @Service
+@AllArgsConstructor
 public class ChannelService {
 
     private static final List<ChannelType> PRIVATE_TYPES = List.of(ChannelType.DM, ChannelType.GROUP_DM);
 
     private final ChannelRepository channelRepository;
-    private final UserService userService;
 
-    public ChannelService(ChannelRepository channelRepository, UserService userService) {
-        this.channelRepository = channelRepository;
-        this.userService = userService;
-    }
+    private final MessageEventPublisher messageEventPublisher;
+
+    private final UserService userService;
 
     @Transactional
     public Channel getChannel(UUID channelId) {
@@ -73,7 +76,7 @@ public class ChannelService {
         checkDmAllowed(currentUser, member);
 
         return channelRepository.findByDmKey(Channel.dmKeyFor(currentUser.getId(), member.getId()))
-                .orElseGet(() -> channelRepository.save(Channel.dm(currentUser, member)));
+                .orElseGet(() -> createChannel(Channel.dm(currentUser, member), currentUser));
     }
 
     @Transactional
@@ -96,13 +99,22 @@ public class ChannelService {
                     "A group channel needs at least " + Channel.MIN_GROUP_MEMBERS + " members.", "members");
         }
 
-        return channelRepository.save(channel);
+        return createChannel(channel, currentUser);
     }
 
     @Transactional
     public void toggleChannelVisibility(Channel channel, RelationshipStatus status) {
         channel.setShowChannel(status.equals(RelationshipStatus.ACCEPTED));
         channelRepository.save(channel);
+    }
+
+    private Channel createChannel(Channel channel, User creator) {
+        Channel saved = channelRepository.save(channel);
+
+        messageEventPublisher.fileOwnerChanged(
+                new FileOwnerChangeEvent(creator.getId(), saved.getId(), FileScope.PRIVATE_GROUP_CHANNEL));
+
+        return saved;
     }
 
     private void checkDmAllowed(User currentUser, User target) {

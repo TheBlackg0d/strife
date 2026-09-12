@@ -10,7 +10,7 @@ import com.strife.auth.dto.RegisterDTO;
 import com.strife.auth.events.AccountEventPublisher;
 import com.strife.auth.model.Account;
 import com.strife.auth.service.AccountService;
-import com.strife.common.event.AccountRegisteredEvent;
+import com.strife.common.event.auth.AccountRegisteredEvent;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -25,6 +25,8 @@ spring:
       bindings:
         messagePosted-out-0:
           destination: messaging.events
+        fileOwnerChanged-out-0:
+          destination: messaging.events
         accountCreatedEventConsumer-in-0:
           destination: account.events
           group: ${spring.application.name}
@@ -34,6 +36,10 @@ spring:
       rabbit:
         bindings:
           messagePosted-out-0:
+            producer:
+              exchange-type: topic
+              routing-key-expression: headers['routingKey']
+          fileOwnerChanged-out-0:
             producer:
               exchange-type: topic
               routing-key-expression: headers['routingKey']

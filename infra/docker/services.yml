@@ -143,6 +143,43 @@ services:
         - action: rebuild
           path: ../../messaging-service/Dockerfile
 
+  file-service:
+    build:
+      context: ../../file-service
+      dockerfile: Dockerfile
+    image: strife/file-service:latest
+    container_name: strife-file-service
+    extends:
+      file: common-config.yml
+      service: microservice-base-config
+    environment:
+      MINIO_URL: http://minio:9000
+      MINIO_ACCESS_KEY: strife
+      MINIO_SECRET_KEY: strife
+      MINIO_BUCKET_NAME: strife-files
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget -q -O - http://localhost:8087/actuator/health | grep -q UP",
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 45s
+    depends_on:
+      minio:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    develop:
+      watch:
+        - action: sync+restart
+          path: ../../file-service/target/file-service-latest.jar
+          target: /app.jar
+        - action: rebuild
+          path: ../../file-service/Dockerfile
+
   event-store-service:
     build:
       context: ../../event-store-service

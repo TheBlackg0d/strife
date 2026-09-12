@@ -1,6 +1,5 @@
 package com.strife.users.controller;
 
-import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -8,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.strife.common.event.ProfileUpdatedEvent;
+import com.strife.common.event.Profile.ProfileUpdatedEvent;
 import com.strife.common.security.JwtPrincipal;
 import com.strife.users.dto.ProfileDTO;
 import com.strife.users.event.publisher.ProfileEventPublisher;
@@ -49,4 +48,5 @@ public class ProfileController {
         profileEventPublisher.publishProfileUpdatedEvent(event);
         return ResponseEntity.ok(profileDTO);
     }
+
 }

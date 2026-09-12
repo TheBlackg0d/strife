@@ -1,4 +1,4 @@
-package com.strife.common.event;
+package com.strife.common.event.Profile;
 
 import java.util.UUID;
 

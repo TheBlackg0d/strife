@@ -2,8 +2,9 @@ package com.strife.auth.events;
 
 import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.context.annotation.Configuration;
-import com.strife.common.event.AccountRegisteredEvent;
+
 import com.strife.common.event.Publisher;
+import com.strife.common.event.auth.AccountRegisteredEvent;
 
 import lombok.extern.slf4j.Slf4j;
 

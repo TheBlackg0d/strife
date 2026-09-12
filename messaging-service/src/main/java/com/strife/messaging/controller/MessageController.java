@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.strife.common.event.MessagePostedEvent;
+import com.strife.common.event.messaging.MessagePostedEvent;
 import com.strife.common.exception.ActionNotAuthorizedException;
 import com.strife.common.security.JwtPrincipal;
 import com.strife.messaging.dto.MessageDTO;

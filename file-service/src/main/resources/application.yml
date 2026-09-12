@@ -1,0 +1,49 @@
+spring:
+  application:
+    name: file-service
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/users_db
+    username: strife
+    password: strife
+    driverClassName: org.postgresql.Driver
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.xml
+    enabled: true
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: strife
+    password: strife
+  cloud:
+    function:
+      definition: fileOwnerChangeConsumer
+    stream:
+      bindings:
+        fileOwnerChangeConsumer-in-0:
+          destination: user.events,messaging.events
+          group: ${spring.application.name}
+      rabbit:
+        bindings:
+          fileOwnerChangeConsumer-in-0:
+            consumer:
+              exchange-type: topic
+              binding-routing-key: "*.file.owner.changed"
+server:
+  port: 8087
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+minio:
+  url: http://localhost:9000
+  access-key: strife
+  secret-key: strife
+  bucket:
+    name: strife-files

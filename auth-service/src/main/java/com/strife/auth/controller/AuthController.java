@@ -22,7 +22,7 @@ import com.strife.auth.model.Account;
 import com.strife.auth.model.RedisRefreshToken;
 import com.strife.common.dto.ResponseDTO;
 import com.strife.common.dto.UserDTO;
-import com.strife.common.event.AccountRegisteredEvent;
+import com.strife.common.event.auth.AccountRegisteredEvent;
 import com.strife.common.security.JwtUtility;
 import com.strife.auth.service.AccountService;
 import com.strife.auth.service.TokenRefreshService;

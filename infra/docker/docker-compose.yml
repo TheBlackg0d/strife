@@ -19,4 +19,5 @@ include:
   - ./postgres.yml
   - ./redis.yml
   - ./rabbitmq.yml
+  - ./minio.yml
   - ./services.yml

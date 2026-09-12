@@ -5,7 +5,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.strife.common.event.RelationshipChangeEvent;
+import com.strife.common.event.Profile.RelationshipChangeEvent;
 import com.strife.common.exception.RessourceNotFoundException;
 import com.strife.common.model.RelationshipStatus;
 import com.strife.messaging.dto.UserDTO;

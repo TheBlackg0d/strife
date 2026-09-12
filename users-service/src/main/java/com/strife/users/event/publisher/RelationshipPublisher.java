@@ -4,8 +4,7 @@ import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.context.annotation.Configuration;
 
 import com.strife.common.event.Publisher;
-
-import com.strife.common.event.RelationshipChangeEvent;
+import com.strife.common.event.Profile.RelationshipChangeEvent;
 
 @Configuration
 public class RelationshipPublisher extends Publisher {

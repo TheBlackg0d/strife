@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.strife.auth.service.AccountService;
-import com.strife.common.event.ProfileUpdatedEvent;
+import com.strife.common.event.Profile.ProfileUpdatedEvent;
 
 import lombok.extern.slf4j.Slf4j;
 

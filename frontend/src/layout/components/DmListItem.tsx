@@ -1,5 +1,6 @@
 import Avatar from "../../components/ui/Avatar";
 import type { Conversation } from "../../pages/dashboard/types/dashboard";
+import { stringToHslColor } from "../../util/util";
 
 interface DmListItemProps {
   conversation: Conversation;
@@ -34,6 +35,7 @@ function DmListItem({
         status={statusPreference}
         ring={isActive ? "surface-variant" : "surface-container-low"}
         className={isOffline ? "opacity-60" : undefined}
+        backgroundColor={stringToHslColor(name)}
       />
 
       <div

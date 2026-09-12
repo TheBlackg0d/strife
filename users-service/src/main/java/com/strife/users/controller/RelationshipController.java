@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.strife.common.dto.ResponseDTO;
-import com.strife.common.event.RelationshipChangeEvent;
+import com.strife.common.event.Profile.RelationshipChangeEvent;
 import com.strife.common.model.RelationshipStatus;
 import com.strife.common.security.JwtPrincipal;
 import com.strife.users.dto.FriendStatusList;

@@ -2,7 +2,7 @@ package com.strife.auth.service;
 
 import com.strife.auth.repository.AccountRepository;
 import com.strife.auth.repository.ProviderRepository;
-import com.strife.common.event.ProfileUpdatedEvent;
+import com.strife.common.event.Profile.ProfileUpdatedEvent;
 import com.strife.common.exception.RessourceAlreadyExistException;
 import com.strife.common.exception.RessourceDoNotMatchException;
 import com.strife.common.exception.RessourceNotFoundException;
