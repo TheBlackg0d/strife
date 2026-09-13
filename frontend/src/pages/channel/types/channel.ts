@@ -29,6 +29,7 @@ export interface MessageWebSocketMessage {
   content: string;
   sentAt: string;
   editAt?: String;
+  media: string[] | null;
 }
 
 export interface Channel {

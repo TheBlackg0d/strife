@@ -26,10 +26,13 @@ import com.strife.messaging.service.MessageService;
 import com.strife.messaging.service.UserService;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api/v1/message")
 @AllArgsConstructor
+@Slf4j
 public class MessageController {
 
     private final MessageService messageService;
@@ -68,12 +71,15 @@ public class MessageController {
 
         MessageDTO messageDto = MessageDTO.from(messageService.createMessage(request, channel, user), fileUrlSigner);
 
+        log.info("this is messageDto: {}", messageDto);
+
         MessagePostedEvent messagePostedEvent = new MessagePostedEvent(
                 messageDto.id(),
                 messageDto.channelId(),
                 messageDto.sender().id(),
                 messageDto.sender().username(),
                 messageDto.content(),
+                messageDto.media(),
                 messageDto.timestamp());
 
         this.messageEventPublisher.messagePosted(messagePostedEvent);

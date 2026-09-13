@@ -28,7 +28,7 @@ function convertMessageWebSocket(message: MessageWebSocketMessage): Message {
     id: message.messageId,
     channelId: message.channelId,
     content: message.content,
-    media: null,
+    media: message.media,
     sender: {
       id: message.senderId,
       username: message.senderUsername,
