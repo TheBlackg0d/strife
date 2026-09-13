@@ -9,13 +9,9 @@ import Separator from "./components/Separator";
 import StrifeLogo from "../../components/ui/StrifeLogo";
 import SecondaryButton from "../../components/ui/SecondaryButton";
 import type { LoginCredential } from "../../auth/types/auth";
-import {
-  hasFieldErrors,
-  type ApiError,
-  type FieldErrors,
-} from "../../api/errors";
+import { hasFieldErrors } from "../../api/errors";
 import { useLoginMutation } from "../../services/auth-api";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import useFieldError from "../../hook/use-field-error";
 
 export default function Login() {

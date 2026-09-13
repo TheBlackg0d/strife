@@ -43,10 +43,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(ActionNotAuthorizedException.class)
-    public ResponseEntity<ErrorResponseDTO> buildResponse(HttpStatus httpStatus, String message,
+    public ResponseEntity<ErrorResponseDTO> handleActionNotAuthorizedException(
             ActionNotAuthorizedException exception, WebRequest webRequest) {
-
-        return buildResponse(httpStatus, exception.getMessage(), Map.of(), webRequest);
+        return buildResponse(HttpStatus.FORBIDDEN, exception.getMessage(), Map.of(), webRequest);
     }
 
     @Override

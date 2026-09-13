@@ -11,5 +11,6 @@
     <include file="db/changelog/changes/004-create-messages-table.xml"/>
     <include file="db/changelog/changes/005-create-reactions-table.xml"/>
     <include file="db/changelog/changes/006-create-user-friends-table.xml"/>
+    <include file="db/changelog/changes/007-create-message-media-table.xml"/>
 
 </databaseChangeLog>

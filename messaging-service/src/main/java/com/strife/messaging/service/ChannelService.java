@@ -5,12 +5,11 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
-import com.strife.common.event.file.FileOwnerChangeEvent;
+import com.strife.common.event.channel.ChannelUpsertedEvent;
 import com.strife.common.exception.ActionNotAuthorizedException;
 import com.strife.common.exception.RessourceDoNotMatchException;
 import com.strife.common.exception.RessourceNotFoundException;
 import com.strife.common.model.DmPrivacy;
-import com.strife.common.model.FileScope;
 import com.strife.common.model.RelationshipStatus;
 import com.strife.messaging.dto.DmRequest;
 import com.strife.messaging.dto.GroupDmRequest;
@@ -76,7 +75,7 @@ public class ChannelService {
         checkDmAllowed(currentUser, member);
 
         return channelRepository.findByDmKey(Channel.dmKeyFor(currentUser.getId(), member.getId()))
-                .orElseGet(() -> createChannel(Channel.dm(currentUser, member), currentUser));
+                .orElseGet(() -> createChannel(Channel.dm(currentUser, member)));
     }
 
     @Transactional
@@ -99,7 +98,7 @@ public class ChannelService {
                     "A group channel needs at least " + Channel.MIN_GROUP_MEMBERS + " members.", "members");
         }
 
-        return createChannel(channel, currentUser);
+        return createChannel(channel);
     }
 
     @Transactional
@@ -108,11 +107,13 @@ public class ChannelService {
         channelRepository.save(channel);
     }
 
-    private Channel createChannel(Channel channel, User creator) {
+
+
+    private Channel createChannel(Channel channel) {
         Channel saved = channelRepository.save(channel);
 
-        messageEventPublisher.fileOwnerChanged(
-                new FileOwnerChangeEvent(creator.getId(), saved.getId(), FileScope.PRIVATE_GROUP_CHANNEL));
+        messageEventPublisher.channelUpserted(new ChannelUpsertedEvent(saved.getId(),
+                saved.getMembers().stream().map(User::getId).toList()));
 
         return saved;
     }

@@ -1,13 +1,22 @@
+import type { StrifeFile } from "../types/file";
 import { strifeApi } from "./strife-api";
 
 const fileApi = strifeApi.injectEndpoints({
   endpoints: (builder) => ({
-    uploadFiles: builder.mutation<any, File[]>({
+    uploadFile: builder.mutation<StrifeFile, FormData>({
       query: (files) => ({
-        url: "files",
+        url: "files/upload",
         method: "POST",
         body: files,
       }),
     }),
+    deleteFile: builder.mutation<void, string>({
+      query: (fileId) => ({
+        url: `files/${fileId}`,
+        method: "DELETE",
+      }),
+    }),
   }),
 });
+
+export const { useUploadFileMutation, useDeleteFileMutation } = fileApi;

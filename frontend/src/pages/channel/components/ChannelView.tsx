@@ -66,7 +66,7 @@ function ChannelView({ channel, messages }: ChannelViewProps) {
   const session = useStomp();
   useSubscription(session, `/topic/channel.${channel.id}`, onMessage);
 
-  const handleSend = (content: string, files: File[]) => {
+  const handleSend = (content: string, media: string[]) => {
     if (!profile) {
       return;
     }
@@ -74,7 +74,7 @@ function ChannelView({ channel, messages }: ChannelViewProps) {
     sendMessage({
       channelId: channel.id,
       content,
-      media: null,
+      media: media.length > 0 ? media : null,
     });
   };
 
@@ -106,6 +106,7 @@ function ChannelView({ channel, messages }: ChannelViewProps) {
           <MessageComposer
             placeholderTarget={isGroup ? title : `@${title}`}
             onSend={handleSend}
+            channel={channel}
           />
         </div>
 

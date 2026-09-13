@@ -25,7 +25,7 @@ spring:
       bindings:
         messagePosted-out-0:
           destination: messaging.events
-        fileOwnerChanged-out-0:
+        channelUpserted-out-0:
           destination: messaging.events
         accountCreatedEventConsumer-in-0:
           destination: account.events
@@ -39,7 +39,7 @@ spring:
             producer:
               exchange-type: topic
               routing-key-expression: headers['routingKey']
-          fileOwnerChanged-out-0:
+          channelUpserted-out-0:
             producer:
               exchange-type: topic
               routing-key-expression: headers['routingKey']
@@ -62,3 +62,10 @@ management:
         include: health,info
 jwt:
   secret: ${JWT_SECRET}
+
+file:
+  url:
+    base-url: ${FILE_PUBLIC_BASE_URL:http://localhost:8080/api/v1/files}
+    signing-key: ${FILE_URL_SIGNING_KEY}
+    ttl: 15m
+    bucket: 5m

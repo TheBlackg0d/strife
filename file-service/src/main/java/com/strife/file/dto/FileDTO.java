@@ -2,18 +2,21 @@ package com.strife.file.dto;
 
 import java.util.UUID;
 
-import com.strife.common.event.file.FileOwnerChangeEvent;
-import com.strife.common.model.FileScope;
+import com.strife.common.file.FileUrlSigner;
 import com.strife.file.model.File;
 
-public record FileDTO(UUID id, String url, UUID ownerId, UUID ressourceId, FileScope scope) {
+public record FileDTO(UUID id, String url, String originalName, String contentType, UUID ownerId, UUID channelId) {
 
-    public static FileDTO fromEntity(File file) {
-        return new FileDTO(file.getId(), file.getFileUrl(), file.getOwnerId(), file.getRessourceId(), file.getScope());
-    }
-
-    public static FileDTO fromEvent(FileOwnerChangeEvent event) {
-        return new FileDTO(null, null, event.ownerId(), event.ressourceId(), event.scope());
+    /**
+     * {@code url} est une URL signée à durée de vie courte : utilisable
+     * directement dans un {@code <img src>}, mais jamais à persister — elle
+     * expire. Côté messages, on stocke l'identifiant et on resigne à la
+     * lecture.
+     */
+    public static FileDTO fromEntity(File file, FileUrlSigner signer) {
+        return new FileDTO(file.getId(), signer.signedUrl(file.getId()), file.getOriginalName(),
+                file.getContentType(), file.getOwnerId(),
+                file.getChannel() == null ? null : file.getChannel().getId());
     }
 
 }

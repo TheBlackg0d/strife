@@ -9,7 +9,7 @@ export interface Message {
   id: string;
   channelId: string;
   content: string;
-  media: string | null;
+  media: string[] | null;
   sender: User;
   timestamp: string;
   editedAt: string | null;
@@ -18,7 +18,7 @@ export interface Message {
 export interface MessageRequest {
   channelId: string;
   content: string;
-  media: string | null;
+  media: string[] | null;
 }
 
 export interface MessageWebSocketMessage {

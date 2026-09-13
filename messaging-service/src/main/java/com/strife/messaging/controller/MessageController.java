@@ -14,12 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.strife.common.event.messaging.MessagePostedEvent;
 import com.strife.common.exception.ActionNotAuthorizedException;
+import com.strife.common.file.FileUrlSigner;
 import com.strife.common.security.JwtPrincipal;
 import com.strife.messaging.dto.MessageDTO;
 import com.strife.messaging.dto.MessageRequest;
 import com.strife.messaging.event.publisher.MessageEventPublisher;
 import com.strife.messaging.model.Channel;
-import com.strife.messaging.model.Message;
 import com.strife.messaging.model.User;
 import com.strife.messaging.service.ChannelService;
 import com.strife.messaging.service.MessageService;
@@ -40,6 +40,8 @@ public class MessageController {
 
     private final MessageEventPublisher messageEventPublisher;
 
+    private final FileUrlSigner fileUrlSigner;
+
     @GetMapping("/{channelId}")
     public ResponseEntity<List<MessageDTO>> getMessagesForChannel(@PathVariable UUID channelId,
             @AuthenticationPrincipal JwtPrincipal principal) {
@@ -49,7 +51,8 @@ public class MessageController {
         }
 
         return ResponseEntity.ok(
-                messageService.getMessagesForChannel(channelId).stream().map(MessageDTO::from).toList());
+                messageService.getMessagesForChannel(channelId).stream()
+                        .map(message -> MessageDTO.from(message, fileUrlSigner)).toList());
     }
 
     @PostMapping("/create")
@@ -63,7 +66,7 @@ public class MessageController {
             throw new ActionNotAuthorizedException("Cant send message You dont belong to this channel");
         }
 
-        MessageDTO messageDto = MessageDTO.from(messageService.createMessage(request, channel, user));
+        MessageDTO messageDto = MessageDTO.from(messageService.createMessage(request, channel, user), fileUrlSigner);
 
         MessagePostedEvent messagePostedEvent = new MessagePostedEvent(
                 messageDto.id(),

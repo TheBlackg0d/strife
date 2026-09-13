@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="003-create-files-table" author="Moncles Junior Herisse">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="files"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="files">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" primaryKeyName="pk_files" nullable="false"/>
+            </column>
+            <column name="owner_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="channel_id" type="uuid"/>
+            <column name="object_key" type="VARCHAR(512)"/>
+            <column name="original_name" type="VARCHAR(255)"/>
+            <column name="content_type" type="VARCHAR(128)"/>
+        </createTable>
+
+        <addUniqueConstraint
+                tableName="files"
+                columnNames="object_key"
+                constraintName="uk_file_object_key"/>
+
+        <addForeignKeyConstraint
+                baseTableName="files"
+                baseColumnNames="channel_id"
+                constraintName="fk_file_channel"
+                referencedTableName="channels"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+        <createIndex tableName="files" indexName="idx_file_channel">
+            <column name="channel_id"/>
+        </createIndex>
+
+        <rollback>
+            <dropTable tableName="files"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,4 +1,7 @@
+import { useRef } from "react";
 import Avatar from "../../../components/ui/Avatar";
+import { strifeApi } from "../../../services/strife-api";
+import { useAppDispatch } from "../../../store/hooks";
 import { stringToHslColor } from "../../../util/util";
 import type { Message } from "../types/channel";
 
@@ -16,8 +19,30 @@ interface MessageRowProps {
   isGrouped: boolean;
 }
 
+
+function Attachment({ url }: { url: string }) {
+  const dispatch = useAppDispatch();
+  const hasRetried = useRef(false);
+
+  const handleError = () => {
+    if (hasRetried.current) return;
+    hasRetried.current = true;
+    dispatch(strifeApi.util.invalidateTags(["Messages"]));
+  };
+
+  return (
+    <img
+      src={url}
+      alt=""
+      loading="lazy"
+      onError={handleError}
+      className="max-h-80 max-w-full rounded-lg object-contain"
+    />
+  );
+}
+
 function MessageRow({ message, isGrouped }: MessageRowProps) {
-  const { content, sender, timestamp } = message;
+  const { content, media, sender, timestamp } = message;
   const sentAt = new Date(timestamp);
 
   return (
@@ -58,9 +83,19 @@ function MessageRow({ message, isGrouped }: MessageRowProps) {
           </div>
         )}
 
-        <p className="text-[15px] leading-5.5 wrap-break-word whitespace-pre-wrap text-on-surface">
-          {content}
-        </p>
+        {content && (
+          <p className="text-[15px] leading-5.5 wrap-break-word whitespace-pre-wrap text-on-surface">
+            {content}
+          </p>
+        )}
+
+        {media && media.length > 0 && (
+          <div className="mt-1 flex flex-wrap gap-2">
+            {media.map((url) => (
+              <Attachment key={url} url={url} />
+            ))}
+          </div>
+        )}
       </div>
     </li>
   );

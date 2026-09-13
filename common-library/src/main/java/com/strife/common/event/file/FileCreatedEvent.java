@@ -4,6 +4,6 @@ import java.util.UUID;
 
 import com.strife.common.model.FileScope;
 
-public record FileOwnerChangeEvent(UUID ownerId, UUID ressourceId, FileScope scope) {
+public record FileCreatedEvent(FileScope scope, String objectKey, UUID ownerId, UUID ressourceId) {
 
 }

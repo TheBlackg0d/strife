@@ -15,19 +15,32 @@ import "filepond/dist/filepond.min.css";
 import FilePondPluginImagePreview from "filepond-plugin-image-preview";
 import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
 import FilePondPluginImageExifOrientation from "filepond-plugin-image-exif-orientation";
+import { useUploadFileMutation } from "../../../services/file-api";
+import type { StrifeFile } from "../../../types/file";
+import type { Channel } from "../types/channel";
 
 interface MessageComposerProps {
   placeholderTarget: string;
-  onSend: (content: string, files: File[]) => void;
+  onSend: (content: string, media: string[]) => void;
+  channel: Channel;
 }
 
 registerPlugin(FilePondPluginImagePreview, FilePondPluginImageExifOrientation);
 
-function MessageComposer({ placeholderTarget, onSend }: MessageComposerProps) {
+function MessageComposer({
+  placeholderTarget,
+  onSend,
+  channel,
+}: MessageComposerProps) {
   const [draft, setDraft] = useState("");
 
   const pondRef = useRef<FilePond>(null);
   const [files, setFiles] = useState<FilePondFile[]>([]);
+  const [uploadedFiles, setUploadedFiles] = useState<
+    Record<string, StrifeFile>
+  >({});
+
+  const [uploadFileMutation] = useUploadFileMutation();
 
   const hasAttachments = files.length > 0;
 
@@ -36,16 +49,38 @@ function MessageComposer({ placeholderTarget, onSend }: MessageComposerProps) {
     const content = draft.trim();
     if (!content && !hasAttachments) return;
 
-    onSend(
-      content,
-      files.map((item) => item.file as File),
-    );
+    const media = files
+      .map((item) => uploadedFiles[item.id]?.id)
+      .filter((id): id is string => Boolean(id));
+
+    onSend(content, media);
     setDraft("");
+    setUploadedFiles({});
     pondRef.current?.removeFiles();
   };
 
-  const handleFileUpload = () => {
+  const handleOpenFileExplorer = () => {
     pondRef.current?.browse();
+  };
+
+  const handleUploadFile = async (file: FilePondFile) => {
+    const f: File = file.file as File;
+
+    const formData = new FormData();
+    formData.append("file", f);
+    // Le propriétaire est déduit du JWT côté file-service ; le channel suffit
+    // à décider qui pourra relire la pièce jointe.
+    formData.append("channelId", channel.id);
+    try {
+      const uploaded = await uploadFileMutation(formData).unwrap();
+
+      setUploadedFiles((current) => ({ ...current, [file.id]: uploaded }));
+
+      return uploaded;
+    } catch (error) {
+      pondRef.current?.removeFile(file.id);
+      console.error("Error uploading file:", error);
+    }
   };
 
   return (
@@ -64,6 +99,12 @@ function MessageComposer({ placeholderTarget, onSend }: MessageComposerProps) {
           <FilePond
             ref={pondRef}
             onupdatefiles={setFiles}
+            onaddfile={(error, file) => {
+              handleUploadFile(file);
+            }}
+            onremovefile={(_error, file) => {
+              setUploadedFiles(({ [file.id]: _removed, ...rest }) => rest);
+            }}
             allowMultiple={true}
             maxFiles={3}
             name="files"
@@ -80,7 +121,7 @@ function MessageComposer({ placeholderTarget, onSend }: MessageComposerProps) {
             icon={MdAddCircle}
             label="Joindre un fichier"
             size={22}
-            onClick={handleFileUpload}
+            onClick={handleOpenFileExplorer}
           />
 
           <input

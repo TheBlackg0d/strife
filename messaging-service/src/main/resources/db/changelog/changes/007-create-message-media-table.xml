@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="007-create-message-media-table" author="Moncles Junior Herisse">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="message_media"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="message_media">
+            <column name="message_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="file_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="message_media"
+                baseColumnNames="message_id"
+                constraintName="fk_message_media_message"
+                referencedTableName="messages"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+        <createIndex tableName="message_media" indexName="idx_message_media_message">
+            <column name="message_id"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="007-drop-messages-media-column" author="Moncles Junior Herisse">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="messages" columnName="media"/>
+        </preConditions>
+
+        <dropColumn tableName="messages" columnName="media"/>
+
+        <rollback>
+            <addColumn tableName="messages">
+                <column name="media" type="TEXT"/>
+            </addColumn>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

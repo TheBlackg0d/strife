@@ -1,12 +1,16 @@
 spring:
   application:
     name: file-service
+  servlet:
+    multipart:
+      max-file-size: 25MB
+      max-request-size: 25MB
   jpa:
     hibernate:
       ddl-auto: validate
     show-sql: true
   datasource:
-    url: jdbc:postgresql://localhost:5432/users_db
+    url: jdbc:postgresql://localhost:5432/files_db
     username: strife
     password: strife
     driverClassName: org.postgresql.Driver
@@ -20,18 +24,25 @@ spring:
     password: strife
   cloud:
     function:
-      definition: fileOwnerChangeConsumer
+      definition: channelUpsertedConsumer
     stream:
       bindings:
-        fileOwnerChangeConsumer-in-0:
-          destination: user.events,messaging.events
+        fileDispatcher-out-0:
+          destination: file.events
+          group: ${spring.application.name}
+        channelUpsertedConsumer-in-0:
+          destination: messaging.events
           group: ${spring.application.name}
       rabbit:
         bindings:
-          fileOwnerChangeConsumer-in-0:
+          fileDispatcher-out-0:
+            producer:
+              exchange-type: topic
+              routing-key-expression: headers["routingKey"]
+          channelUpsertedConsumer-in-0:
             consumer:
               exchange-type: topic
-              binding-routing-key: "*.file.owner.changed"
+              binding-routing-key: messaging.channel.upserted
 server:
   port: 8087
 
@@ -41,9 +52,19 @@ management:
       exposure:
         include: health,info
 
+file:
+  url:
+    base-url: ${FILE_PUBLIC_BASE_URL:http://localhost:8080/api/v1/files}
+    signing-key: ${FILE_URL_SIGNING_KEY}
+    ttl: 15m
+    bucket: 5m
+
 minio:
   url: http://localhost:9000
   access-key: strife
-  secret-key: strife
+  secret-key: strifeMoncles123
   bucket:
     name: strife-files
+
+jwt:
+  secret: ${JWT_SECRET}

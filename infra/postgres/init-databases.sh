@@ -8,7 +8,7 @@
 # c'est un compromis de commodité locale, pas la topologie de production.
 set -e
 
-for db in auth_db users_db guild_db messaging_db eventstore_db; do
+for db in auth_db users_db guild_db messaging_db eventstore_db file_db; do
   # --dbname est obligatoire : sans lui psql prend le nom d'utilisateur comme
   # base par défaut ("strife"), qui n'existe pas -> le script échoue, le
   # conteneur redémarre, et l'init est définitivement sautée (data dir non vide).

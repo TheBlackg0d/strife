@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.UUID;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
@@ -44,8 +46,10 @@ public class Message {
     @Column(nullable = false, columnDefinition = "text")
     private String content;
 
-    @Column(columnDefinition = "text")
-    private String media;
+    @ElementCollection
+    @CollectionTable(name = "message_media", joinColumns = @JoinColumn(name = "message_id"))
+    @Column(name = "file_id", nullable = false)
+    private List<UUID> media;
 
     @Column(nullable = false)
     private Instant timestamp;

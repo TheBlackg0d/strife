@@ -5,8 +5,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import io.minio.MinioClient;
+import lombok.extern.slf4j.Slf4j;
 
 @Configuration
+@Slf4j
 public class MinioConfig {
 
     @Value("${minio.url}")
@@ -20,6 +22,7 @@ public class MinioConfig {
 
     @Bean
     MinioClient minioClient() {
+        log.info("Minio client initialized for {} with access key {}", minioUrl, accessKey);
         return MinioClient.builder()
                 .endpoint(minioUrl)
                 .credentials(accessKey, secretKey)
