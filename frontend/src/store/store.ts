@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { authReducer } from "./slices/auth-slice";
 import { strifeApi, strifeAuthApi } from "../services/strife-api";
-import { messageReducer } from "./slices/Message-slice";
+import { messageReducer } from "./slices/message-slice";
 
 export const store = configureStore({
   reducer: {

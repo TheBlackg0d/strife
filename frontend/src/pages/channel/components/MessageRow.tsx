@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import Avatar from "../../../components/ui/Avatar";
 import { strifeApi } from "../../../services/strife-api";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
@@ -6,7 +6,7 @@ import { stringToHslColor } from "../../../util/util";
 import type { Message } from "../types/channel";
 import MessageEditor from "./MessageEditor";
 import MessageActions from "./MessageActions";
-import { setMessageIdInEditMode } from "../../../store/slices/Message-slice";
+import { setMessageIdInEditMode } from "../../../store/slices/message-slice";
 
 const stampFormatter = new Intl.DateTimeFormat("fr-FR", {
   dateStyle: "short",
@@ -49,13 +49,13 @@ function MessageRow({ message, isGrouped }: MessageRowProps) {
 
   const dispatch = useAppDispatch();
 
+  useEffect(() => {});
+
   const messageIdInEditMode = useAppSelector(
     (state) => state.message.messageIdInEditMode,
   );
 
   const editMode: boolean = messageIdInEditMode === message.id;
-
-  const [editContent, setEditContent] = useState(content);
 
   const handleEdit = () => {};
 

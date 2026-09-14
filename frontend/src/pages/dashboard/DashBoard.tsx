@@ -7,7 +7,7 @@ import type { DashboardTab, Friend, FriendFilter } from "./types/dashboard";
 import { useGetFriendsQuery } from "../../services/friend-api";
 import { useGetPrivateChannelListQuery } from "../../services/channel-api";
 import type { Channel } from "../channel/types/channel";
-import { useStomp, useSubscription } from "../../hook/useStomp";
+import { useSubscription } from "../../hook/useStomp";
 import { useGetProfileQuery } from "../../services/profile-api";
 import { useAppDispatch } from "../../store/hooks";
 import { strifeApi } from "../../services/strife-api";
@@ -58,8 +58,10 @@ function DashBoard() {
     dispatch(strifeApi.util.invalidateTags(["Friends"]));
   };
 
-  const session = useStomp();
-  useSubscription(session, `/topic/relationship.${profile?.id}`, onMessage);
+  useSubscription(
+    profile ? `/topic/relationship.${profile.id}` : null,
+    onMessage,
+  );
 
   if (!friends) {
     return null;

@@ -13,6 +13,7 @@ import com.strife.common.model.DmPrivacy;
 import com.strife.common.model.RelationshipStatus;
 import com.strife.messaging.dto.DmRequest;
 import com.strife.messaging.dto.GroupDmRequest;
+import com.strife.messaging.event.EventRoutingKey;
 import com.strife.messaging.event.publisher.MessageEventPublisher;
 import com.strife.messaging.model.Channel;
 import com.strife.messaging.model.ChannelType;
@@ -107,13 +108,12 @@ public class ChannelService {
         channelRepository.save(channel);
     }
 
-
-
     private Channel createChannel(Channel channel) {
         Channel saved = channelRepository.save(channel);
 
-        messageEventPublisher.channelUpserted(new ChannelUpsertedEvent(saved.getId(),
-                saved.getMembers().stream().map(User::getId).toList()));
+        messageEventPublisher.sendMessagingEvent(EventRoutingKey.CHANNEL_UPSERTED,
+                new ChannelUpsertedEvent(saved.getId(),
+                        saved.getMembers().stream().map(User::getId).toList()));
 
         return saved;
     }

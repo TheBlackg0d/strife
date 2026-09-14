@@ -11,13 +11,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.strife.common.event.messaging.MessagePostedEvent;
+import com.strife.common.event.messaging.MessageUpdatedEvent;
 import com.strife.common.exception.ActionNotAuthorizedException;
 import com.strife.common.file.FileUrlSigner;
 import com.strife.common.security.JwtPrincipal;
 import com.strife.messaging.dto.MessageDTO;
 import com.strife.messaging.dto.MessageRequest;
+import com.strife.messaging.event.EventRoutingKey;
 import com.strife.messaging.event.publisher.MessageEventPublisher;
 import com.strife.messaging.model.Channel;
 import com.strife.messaging.model.User;
@@ -59,41 +59,61 @@ public class MessageController {
                         .map(message -> MessageDTO.from(message, fileUrlSigner)).toList());
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<MessageDTO> modifiedMessage(@PathVariable UUID id, @RequestBody MessageRequest request,
             @AuthenticationPrincipal JwtPrincipal principal) {
 
         User user = userService.getUser(principal.id());
 
-        return ResponseEntity.ok(MessageDTO.from(messageService.updateMessage(id, request, user), fileUrlSigner));
-    }
+        MessageDTO messageDto = MessageDTO.from(messageService.updateMessage(id, request, user), fileUrlSigner);
 
-    @PostMapping("/create")
-    public ResponseEntity<MessageDTO> createMessage(@RequestBody MessageRequest request,
-            @AuthenticationPrincipal JwtPrincipal principal) {
-
-        User user = userService.getUser(principal.id());
-        Channel channel = channelService.getChannel(request.channelId());
-
-        if (!channelService.memberBelongToChannel(channel.getId(), principal.id())) {
-            throw new ActionNotAuthorizedException("Cant send message You dont belong to this channel");
-        }
-
-        MessageDTO messageDto = MessageDTO.from(messageService.createMessage(request, channel, user), fileUrlSigner);
-
-        log.info("this is messageDto: {}", messageDto);
-
-        MessagePostedEvent messagePostedEvent = new MessagePostedEvent(
+        MessageUpdatedEvent messageUpdatedEvent = new MessageUpdatedEvent(
                 messageDto.id(),
                 messageDto.channelId(),
                 messageDto.sender().id(),
                 messageDto.sender().username(),
                 messageDto.content(),
                 messageDto.media(),
-                messageDto.timestamp());
+                messageDto.timestamp(),
+                messageDto.editedAt());
 
-        this.messageEventPublisher.messagePosted(messagePostedEvent);
+        this.messageEventPublisher.sendMessagingEvent(EventRoutingKey.MESSAGE_UPDATED, messageUpdatedEvent);
 
         return ResponseEntity.ok(messageDto);
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<MessageDTO> createMessage(@RequestBody MessageRequest request,
+            @AuthenticationPrincipal JwtPrincipal principal) {
+        try {
+            User user = userService.getUser(principal.id());
+            Channel channel = channelService.getChannel(request.channelId());
+
+            if (!channelService.memberBelongToChannel(channel.getId(), principal.id())) {
+                throw new ActionNotAuthorizedException("Cant send message You dont belong to this channel");
+            }
+
+            MessageDTO messageDto = MessageDTO.from(messageService.createMessage(request, channel, user),
+                    fileUrlSigner);
+
+            log.info("this is messageDto: {}", messageDto);
+
+            MessageUpdatedEvent messagePostedEvent = new MessageUpdatedEvent(
+                    messageDto.id(),
+                    messageDto.channelId(),
+                    messageDto.sender().id(),
+                    messageDto.sender().username(),
+                    messageDto.content(),
+                    messageDto.media(),
+                    messageDto.timestamp(),
+                    messageDto.editedAt());
+
+            this.messageEventPublisher.sendMessagingEvent(EventRoutingKey.MESSAGE_POSTED, messagePostedEvent);
+            return ResponseEntity.ok(messageDto);
+        } catch (Exception e) {
+            log.error("{}", e);
+        }
+
+        return ResponseEntity.ok().build();
     }
 }

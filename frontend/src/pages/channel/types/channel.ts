@@ -21,6 +21,8 @@ export interface MessageRequest {
   media: string[] | null;
 }
 
+export type MessageActionType = "CREATED" | "UPDATED" | "DELETED";
+
 export interface MessageWebSocketMessage {
   messageId: string;
   channelId: string;
@@ -28,8 +30,14 @@ export interface MessageWebSocketMessage {
   senderUsername: string;
   content: string;
   sentAt: string;
-  editAt?: String;
+  editedAt: string | null;
   media: string[] | null;
+}
+
+/** Envelope broadcast by realtime-gateway on /topic/channel.{channelId}. */
+export interface MessageBroadcast {
+  actionType: MessageActionType;
+  message: MessageWebSocketMessage;
 }
 
 export interface Channel {

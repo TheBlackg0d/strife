@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useRef } from "react";
 import ChannelIntro from "./ChannelIntro";
 import MessageRow from "./MessageRow";
-import type { Message } from "../types/channel";
+import { useGetMessagesForChannelQuery } from "../../../services/message-api";
 
 const GROUPING_WINDOW_MS = 1 * 60 * 1000;
 
@@ -16,7 +16,6 @@ interface MessageListProps {
   title: string;
   isGroup: boolean;
   memberCount: number;
-  messages: Message[];
   onAddMembers?: () => void;
 }
 
@@ -25,14 +24,16 @@ function MessageList({
   title,
   isGroup,
   memberCount,
-  messages,
   onAddMembers,
 }: MessageListProps) {
   const bottomRef = useRef<HTMLDivElement>(null);
 
+  // Live updates ride along with this query (see message-api onCacheEntryAdded).
+  const { data: messages } = useGetMessagesForChannelQuery(channelId);
+
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ block: "end" });
-  }, [channelId, messages.length]);
+  }, [channelId, messages?.length]);
 
   return (
     <div className="flex-1 overflow-y-auto px-4">
@@ -44,7 +45,7 @@ function MessageList({
       />
 
       <ul className="flex flex-col pb-4">
-        {messages.map((message, index) => {
+        {messages?.map((message, index) => {
           const previous = index > 0 ? messages[index - 1] : undefined;
           const sentAt = new Date(message.timestamp);
           const previousSentAt = previous

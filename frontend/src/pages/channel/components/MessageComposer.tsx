@@ -1,4 +1,3 @@
-import { useRef, useState, type SubmitEvent } from "react";
 import {
   MdAddCircle,
   MdCardGiftcard,
@@ -8,86 +7,51 @@ import {
 } from "react-icons/md";
 import IconButton from "../../../components/ui/IconButton";
 import { FilePond, registerPlugin } from "react-filepond";
-import type { FilePondFile } from "filepond";
 // Import FilePond styles
 import "filepond/dist/filepond.min.css";
 
 import FilePondPluginImagePreview from "filepond-plugin-image-preview";
 import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
 import FilePondPluginImageExifOrientation from "filepond-plugin-image-exif-orientation";
-import { useUploadFileMutation } from "../../../services/file-api";
-import type { StrifeFile } from "../../../types/file";
+import { type SubmitEvent } from "react";
 import type { Channel } from "../types/channel";
+import { useMessageDraft } from "../hook/useMessageDraft";
+import { useMessageAttachments } from "../hook/useMessageAttachments";
+import { useSendMessage } from "../hook/useSendMessage";
 
 interface MessageComposerProps {
   placeholderTarget: string;
-  onSend: (content: string, media: string[]) => void;
   channel: Channel;
 }
 
 registerPlugin(FilePondPluginImagePreview, FilePondPluginImageExifOrientation);
 
-function MessageComposer({
-  placeholderTarget,
-  onSend,
-  channel,
-}: MessageComposerProps) {
-  const [draft, setDraft] = useState("");
-
-  const pondRef = useRef<FilePond>(null);
-  const [files, setFiles] = useState<FilePondFile[]>([]);
-  const [uploadedFiles, setUploadedFiles] = useState<
-    Record<string, StrifeFile>
-  >({});
-
-  const [uploadFileMutation] = useUploadFileMutation();
-
-  const hasAttachments = files.length > 0;
+function MessageComposer({ placeholderTarget, channel }: MessageComposerProps) {
+  const { draft, setDraft, clearDraft } = useMessageDraft();
+  const {
+    pondRef,
+    hasAttachments,
+    mediaIds,
+    setFiles,
+    openFileExplorer,
+    handleAddFile,
+    handleRemoveFile,
+    clearAttachments,
+  } = useMessageAttachments(channel.id);
+  const { sendMessage } = useSendMessage(channel.id);
 
   const handleSubmit = (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
     const content = draft.trim();
     if (!content && !hasAttachments) return;
 
-    const media = files
-      .map((item) => uploadedFiles[item.id]?.id)
-      .filter((id): id is string => Boolean(id));
-
-    onSend(content, media);
-    setDraft("");
-    setUploadedFiles({});
-    pondRef.current?.removeFiles();
-  };
-
-  const handleOpenFileExplorer = () => {
-    pondRef.current?.browse();
-  };
-
-  const handleUploadFile = async (file: FilePondFile) => {
-    const f: File = file.file as File;
-
-    const formData = new FormData();
-    formData.append("file", f);
-    // Le propriétaire est déduit du JWT côté file-service ; le channel suffit
-    // à décider qui pourra relire la pièce jointe.
-    formData.append("channelId", channel.id);
-    try {
-      const uploaded = await uploadFileMutation(formData).unwrap();
-
-      setUploadedFiles((current) => ({ ...current, [file.id]: uploaded }));
-
-      return uploaded;
-    } catch (error) {
-      pondRef.current?.removeFile(file.id);
-      console.error("Error uploading file:", error);
-    }
+    sendMessage(content, mediaIds);
+    clearDraft();
+    clearAttachments();
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="shrink-0 px-4 pt-2 pb-6 bg-surface"
-    >
+    <form onSubmit={handleSubmit} className="shrink-0 px-4 pt-2 pb-6 bg-surface">
       <div className="rounded-lg bg-surface-bright">
         <div
           className={
@@ -99,11 +63,11 @@ function MessageComposer({
           <FilePond
             ref={pondRef}
             onupdatefiles={setFiles}
-            onaddfile={(error, file) => {
-              handleUploadFile(file);
+            onaddfile={(_error, file) => {
+              handleAddFile(file);
             }}
             onremovefile={(_error, file) => {
-              setUploadedFiles(({ [file.id]: _removed, ...rest }) => rest);
+              handleRemoveFile(file);
             }}
             allowMultiple={true}
             maxFiles={3}
@@ -121,7 +85,7 @@ function MessageComposer({
             icon={MdAddCircle}
             label="Joindre un fichier"
             size={22}
-            onClick={handleOpenFileExplorer}
+            onClick={openFileExplorer}
           />
 
           <input

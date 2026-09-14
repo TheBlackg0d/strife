@@ -6,7 +6,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
-import com.strife.common.event.messaging.MessagePostedEvent;
+import com.strife.common.event.messaging.MessageUpdatedEvent;
+import com.strife.gateway.realtime.dto.MessageBroadcastDTO;
+import com.strife.gateway.realtime.event.EventActionType;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,12 +22,21 @@ public class MessageBroadcaster {
     private final SimpMessagingTemplate messagingTemplate;
 
     @Bean
-    Consumer<MessagePostedEvent> messagePostedEventConsumer() {
+    Consumer<MessageUpdatedEvent> messagePostedEventConsumer() {
         return event -> {
             log.info("Received message posted event: {}", event);
             String destination = CHANNEL_TOPIC + event.channelId();
-
-            messagingTemplate.convertAndSend(destination, event);
+            messagingTemplate.convertAndSend(destination, MessageBroadcastDTO.created(event));
         };
     }
+
+    @Bean
+    Consumer<MessageUpdatedEvent> messageUpdatedEventConsumer() {
+        return event -> {
+            log.info("Received message updated event: {}", event);
+            String destination = CHANNEL_TOPIC + event.channelId();
+            messagingTemplate.convertAndSend(destination, MessageBroadcastDTO.updated(event));
+        };
+    }
+
 }
