@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 
 import com.strife.common.event.Publisher;
 import com.strife.common.event.Profile.RelationshipChangeEvent;
+import com.strife.users.event.EventRoutingKey;
 
 @Configuration
 public class RelationshipPublisher extends Publisher {
@@ -14,12 +15,7 @@ public class RelationshipPublisher extends Publisher {
         super(streamBridge);
     }
 
-    public void publishFriendAddedEvent(RelationshipChangeEvent event) {
-        this.publish(BINDING, "user.relationship.added", event);
+    public void publishFriendChangeEvent(EventRoutingKey key, RelationshipChangeEvent event) {
+        this.publish(BINDING, key.value(), event);
     }
-
-    public void publishFriendRemovedEvent(RelationshipChangeEvent event) {
-        this.publish(BINDING, "user.relationship.removed", event);
-    }
-
 }

@@ -19,6 +19,7 @@ import com.strife.common.security.JwtPrincipal;
 import com.strife.users.dto.FriendStatusList;
 import com.strife.users.dto.RelationshipDTO;
 import com.strife.users.dto.UsernameDTO;
+import com.strife.users.event.EventRoutingKey;
 import com.strife.users.event.publisher.RelationshipPublisher;
 import com.strife.users.model.Profile;
 import com.strife.users.service.ProfileService;
@@ -54,7 +55,10 @@ public class RelationshipController {
         Profile friend = profileService.findProfileByUsername(usernameDTO.username());
 
         RelationshipDTO relationshipDTO = relationshipService.sendFriendRequest(profile, friend);
+        RelationshipChangeEvent event = new RelationshipChangeEvent(profile.getUserId(), friend.getUserId(),
+                relationshipDTO.status());
 
+        relationshipPublisher.publishFriendChangeEvent(EventRoutingKey.RELATIONSHIP_SENT, event);
         return ResponseEntity.ok(relationshipDTO);
     }
 
@@ -69,7 +73,7 @@ public class RelationshipController {
         RelationshipChangeEvent event = new RelationshipChangeEvent(profile.getUserId(), friend.getUserId(),
                 relationshipDTO.status());
 
-        relationshipPublisher.publishFriendAddedEvent(event);
+        relationshipPublisher.publishFriendChangeEvent(EventRoutingKey.RELATIONSHIP_ADDED, event);
         return ResponseEntity.ok(relationshipDTO);
     }
 
@@ -85,7 +89,7 @@ public class RelationshipController {
         RelationshipChangeEvent event = new RelationshipChangeEvent(profile.getUserId(), friend.getUserId(),
                 relationshipDTO.status());
 
-        relationshipPublisher.publishFriendRemovedEvent(event);
+        relationshipPublisher.publishFriendChangeEvent(EventRoutingKey.RELATIONSHIP_REMOVED, event);
         return ResponseEntity.ok(relationshipDTO);
     }
 
@@ -100,7 +104,7 @@ public class RelationshipController {
 
         RelationshipChangeEvent event = new RelationshipChangeEvent(profile.getUserId(), friend.getUserId(),
                 RelationshipStatus.REMOVED);
-        relationshipPublisher.publishFriendRemovedEvent(event);
+        relationshipPublisher.publishFriendChangeEvent(EventRoutingKey.RELATIONSHIP_REMOVED, event);
 
         return ResponseEntity.ok(new ResponseDTO(HttpStatus.OK.toString(), "Friend has been removed"));
     }

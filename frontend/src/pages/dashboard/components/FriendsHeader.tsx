@@ -1,13 +1,7 @@
 import { MdGroups } from "react-icons/md";
 import type { DashboardTab, FriendFilter } from "../types/dashboard";
-
-const filters: { value: FriendFilter; label: string }[] = [
-  { value: "ONLINE", label: "En ligne" },
-  { value: "ALL", label: "Tous" },
-  { value: "PENDING_FRIEND_REQUEST_RECEIVED", label: "En attente" },
-  { value: "PENDING_FRIEND_REQUEST_SENT", label: "Envoyées" },
-  { value: "BLOCKED", label: "Bloqués" },
-];
+import { filters } from "../DashBoard";
+import Badge from "../../../components/ui/Badge";
 
 interface FriendsHeaderProps {
   activeTab: DashboardTab;
@@ -16,6 +10,7 @@ interface FriendsHeaderProps {
 
 function FriendsHeader({ activeTab, onTabChange }: FriendsHeaderProps) {
   const isAddingFriend = activeTab === "ADD_FRIEND";
+
   return (
     <header className="flex h-12 shrink-0 items-center border-b border-surface-container-lowest/30 px-4">
       <div className="flex flex-1 items-center gap-4">
@@ -27,7 +22,7 @@ function FriendsHeader({ activeTab, onTabChange }: FriendsHeaderProps) {
         <span aria-hidden className="mx-2 h-6 w-px bg-surface-variant" />
 
         <nav aria-label="Filtrer les amis" className="flex items-center gap-4">
-          {filters.map(({ value, label }) => (
+          {filters.map(({ value, label, count }) => (
             <button
               key={value}
               type="button"
@@ -39,7 +34,10 @@ function FriendsHeader({ activeTab, onTabChange }: FriendsHeaderProps) {
                   : "text-on-surface-variant hover:bg-surface-variant/50 hover:text-on-surface"
               }`}
             >
-              {label}
+              <div className="flex gap-1 justify-center items-center">
+                {label}
+                {count && count !== 0 && <Badge count={count} />}
+              </div>
             </button>
           ))}
         </nav>

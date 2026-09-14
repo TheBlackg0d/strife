@@ -1,4 +1,5 @@
 import type { IconType } from "react-icons";
+import Badge from "../../components/ui/Badge";
 
 interface SidebarNavItemProps {
   icon: IconType;
@@ -31,11 +32,7 @@ function SidebarNavItem({
         <span className="text-left text-[15px] font-medium">{label}</span>
       </span>
 
-      {badge ? (
-        <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-error px-1.5 text-[10px] font-bold text-on-error">
-          {badge}
-        </span>
-      ) : null}
+      {badge ? <Badge count={badge} /> : null}
     </button>
   );
 }

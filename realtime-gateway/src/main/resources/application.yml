@@ -8,13 +8,20 @@ spring:
     password: ${RABBITMQ_PASSWORD}
   cloud:
     function:
-      definition: messagePostedEventConsumer
+      definition: messagePostedEventConsumer;relationshipChangeEventConsumer
     stream:
       bindings:
+        relationshipChangeEventConsumer-in-0:
+          destination: user.events
         messagePostedEventConsumer-in-0:
           destination: messaging.events
       rabbit:
         bindings:
+          relationshipChangeEventConsumer-in-0:
+            consumer:
+              binding-routing-key-delimiter: ","
+              exchange-type: topic
+              binding-routing-key: user.relationship.added,user.relationship.sent
           messagePostedEventConsumer-in-0:
             consumer:
               exchange-type: topic

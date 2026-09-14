@@ -13,11 +13,11 @@ public abstract class Publisher {
 
     private final StreamBridge streamBridge;
 
-    public Publisher(StreamBridge streamBridge) {
+    protected Publisher(StreamBridge streamBridge) {
         this.streamBridge = streamBridge;
     }
 
-    public <T> void publish(String binding, String routingKey, T event) {
+    protected <T> void publish(String binding, String routingKey, T event) {
         log.info("Publishing event on binding {} with routing key {}: {}", binding, routingKey, event);
         Message<T> message = MessageBuilder.withPayload(event)
                 .setHeader(ROUTING_KEY, routingKey)

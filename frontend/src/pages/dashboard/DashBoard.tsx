@@ -7,6 +7,10 @@ import type { DashboardTab, Friend, FriendFilter } from "./types/dashboard";
 import { useGetFriendsQuery } from "../../services/friend-api";
 import { useGetPrivateChannelListQuery } from "../../services/channel-api";
 import type { Channel } from "../channel/types/channel";
+import { useStomp, useSubscription } from "../../hook/useStomp";
+import { useGetProfileQuery } from "../../services/profile-api";
+import { useAppDispatch } from "../../store/hooks";
+import { strifeApi } from "../../services/strife-api";
 
 const sectionTitles: Record<FriendFilter, string> = {
   ONLINE: "EN LIGNE",
@@ -24,10 +28,38 @@ const emptyMessages: Record<FriendFilter, string> = {
   BLOCKED: "Vous n'avez bloqué personne.",
 };
 
+export const filters: { value: FriendFilter; label: string; count?: number }[] =
+  [
+    { value: "ONLINE", label: "En ligne" },
+    { value: "ALL", label: "Tous" },
+    { value: "PENDING_FRIEND_REQUEST_RECEIVED", label: "En attente" },
+    { value: "PENDING_FRIEND_REQUEST_SENT", label: "Envoyées" },
+    { value: "BLOCKED", label: "Bloqués" },
+  ];
+
 function DashBoard() {
+  const { data: profile } = useGetProfileQuery();
   const { data: friends } = useGetFriendsQuery();
-  const { data: channels } = useGetPrivateChannelListQuery();
+
+  filters[2].count =
+    friends?.PENDING_FRIEND_REQUEST_RECEIVED.length === 0
+      ? undefined
+      : friends?.PENDING_FRIEND_REQUEST_RECEIVED.length;
+  filters[3].count =
+    friends?.PENDING_FRIEND_REQUEST_SENT.length === 0
+      ? undefined
+      : friends?.PENDING_FRIEND_REQUEST_SENT.length;
+
+  const dispatch = useAppDispatch();
+
   const [tab, setTab] = useState<DashboardTab>("ONLINE");
+
+  const onMessage = () => {
+    dispatch(strifeApi.util.invalidateTags(["Friends"]));
+  };
+
+  const session = useStomp();
+  useSubscription(session, `/topic/relationship.${profile?.id}`, onMessage);
 
   if (!friends) {
     return null;
