@@ -29,7 +29,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
-@RequestMapping("/api/v1/relationships")
+@RequestMapping("/api/v1/relationships/friends")
 @Slf4j
 @AllArgsConstructor
 public class RelationshipController {
@@ -40,14 +40,14 @@ public class RelationshipController {
 
     private ProfileService profileService;
 
-    @GetMapping("/friends")
+    @GetMapping
     public ResponseEntity<FriendStatusList> getFriends(@AuthenticationPrincipal JwtPrincipal principal) {
         Profile profile = profileService.getOrCreateProfileById(principal);
 
         return ResponseEntity.ok(relationshipService.getFriends(profile));
     }
 
-    @PostMapping("/friends")
+    @PostMapping
     public ResponseEntity<RelationshipDTO> sendFriendRequest(@AuthenticationPrincipal JwtPrincipal principal,
             @RequestBody UsernameDTO usernameDTO) {
 
@@ -62,7 +62,7 @@ public class RelationshipController {
         return ResponseEntity.ok(relationshipDTO);
     }
 
-    @PostMapping("/friends/{friendId}/accept")
+    @PostMapping("/{friendId}/accept")
     public ResponseEntity<RelationshipDTO> acceptFriendRequest(@AuthenticationPrincipal JwtPrincipal principal,
             @PathVariable UUID friendId) {
 
@@ -77,7 +77,7 @@ public class RelationshipController {
         return ResponseEntity.ok(relationshipDTO);
     }
 
-    @PostMapping("/friends/{friendId}/block")
+    @PostMapping("/{friendId}/block")
     public ResponseEntity<RelationshipDTO> blockFriend(@AuthenticationPrincipal JwtPrincipal principal,
             @PathVariable UUID friendId) {
 
@@ -93,7 +93,7 @@ public class RelationshipController {
         return ResponseEntity.ok(relationshipDTO);
     }
 
-    @PostMapping("/friends/{friendId}/remove")
+    @PostMapping("/{friendId}/remove")
     public ResponseEntity<ResponseDTO> rejectFriendRequest(@AuthenticationPrincipal JwtPrincipal principal,
             @PathVariable UUID friendId) {
 

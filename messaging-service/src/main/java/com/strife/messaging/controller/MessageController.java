@@ -28,6 +28,7 @@ import com.strife.messaging.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
 @RequestMapping("/api/v1/message")
@@ -56,6 +57,15 @@ public class MessageController {
         return ResponseEntity.ok(
                 messageService.getMessagesForChannel(channelId).stream()
                         .map(message -> MessageDTO.from(message, fileUrlSigner)).toList());
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<MessageDTO> modifiedMessage(@PathVariable UUID id, @RequestBody MessageRequest request,
+            @AuthenticationPrincipal JwtPrincipal principal) {
+
+        User user = userService.getUser(principal.id());
+
+        return ResponseEntity.ok(MessageDTO.from(messageService.updateMessage(id, request, user), fileUrlSigner));
     }
 
     @PostMapping("/create")

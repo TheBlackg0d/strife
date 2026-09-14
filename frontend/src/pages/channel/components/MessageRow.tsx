@@ -1,9 +1,12 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import Avatar from "../../../components/ui/Avatar";
 import { strifeApi } from "../../../services/strife-api";
-import { useAppDispatch } from "../../../store/hooks";
+import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { stringToHslColor } from "../../../util/util";
 import type { Message } from "../types/channel";
+import MessageEditor from "./MessageEditor";
+import MessageActions from "./MessageActions";
+import { setMessageIdInEditMode } from "../../../store/slices/Message-slice";
 
 const stampFormatter = new Intl.DateTimeFormat("fr-FR", {
   dateStyle: "short",
@@ -18,7 +21,6 @@ interface MessageRowProps {
   message: Message;
   isGrouped: boolean;
 }
-
 
 function Attachment({ url }: { url: string }) {
   const dispatch = useAppDispatch();
@@ -45,9 +47,23 @@ function MessageRow({ message, isGrouped }: MessageRowProps) {
   const { content, media, sender, timestamp } = message;
   const sentAt = new Date(timestamp);
 
+  const dispatch = useAppDispatch();
+
+  const messageIdInEditMode = useAppSelector(
+    (state) => state.message.messageIdInEditMode,
+  );
+
+  const editMode: boolean = messageIdInEditMode === message.id;
+
+  const [editContent, setEditContent] = useState(content);
+
+  const handleEdit = () => {};
+
+  const handleReact = (emoji: string) => console.log(emoji);
+
   return (
     <li
-      className={`group -mx-4 flex px-4 py-0.5 transition-colors hover:bg-surface-container-low/60 ${
+      className={`group relative -mx-4 flex px-4 py-0.5 transition-colors hover:bg-surface-container-low/60 ${
         isGrouped ? "" : "mt-4"
       }`}
     >
@@ -83,10 +99,18 @@ function MessageRow({ message, isGrouped }: MessageRowProps) {
           </div>
         )}
 
-        {content && (
+        {content && !editMode && (
           <p className="text-[15px] leading-5.5 wrap-break-word whitespace-pre-wrap text-on-surface">
             {content}
           </p>
+        )}
+
+        {content && editMode && (
+          <MessageEditor
+            content={content}
+            onSubmit={handleEdit}
+            onCancel={() => dispatch(setMessageIdInEditMode(null))}
+          />
         )}
 
         {media && media.length > 0 && (
@@ -97,6 +121,10 @@ function MessageRow({ message, isGrouped }: MessageRowProps) {
           </div>
         )}
       </div>
+      <MessageActions
+        onReact={handleReact}
+        onEdit={() => dispatch(setMessageIdInEditMode(message.id))}
+      />
     </li>
   );
 }
