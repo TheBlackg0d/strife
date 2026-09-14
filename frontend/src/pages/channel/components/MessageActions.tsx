@@ -8,17 +8,26 @@ const QUICK_REACTIONS = ["👍", "❤️", "😃", "😢", "🙏", "👎", "😡
 interface MessageActionsProps {
   onReact: (emoji: string) => void;
   onEdit: () => void;
+  showPicker: boolean;
 }
 
-function MessageActions({ onReact, onEdit }: MessageActionsProps) {
+function MessageActions({ onReact, onEdit, showPicker }: MessageActionsProps) {
   const moreRef = useRef<HTMLButtonElement>(null);
   const [isPickerOpen, setIsPickerOpen] = useState(false);
 
+  if (!showPicker) {
+    return <></>;
+  }
+
+  const handleOnEdit = () => {
+    onEdit();
+    setIsPickerOpen(false);
+  };
   return (
     <div
       className={`absolute -top-4 right-4 z-10 flex items-center gap-1 rounded-lg border border-surface-container bg-surface-container-high p-1 shadow-md shadow-black/30 ${
         isPickerOpen ? "" : "opacity-0 group-hover:opacity-100"
-      } focus-within:opacity-100`}
+      } hover:opacity-100`}
     >
       {QUICK_REACTIONS.map((emoji) => (
         <button
@@ -49,7 +58,7 @@ function MessageActions({ onReact, onEdit }: MessageActionsProps) {
         icon={MdModeEdit}
         label="Modifier le message"
         size={18}
-        onClick={onEdit}
+        onClick={handleOnEdit}
       />
 
       <EmojiPickerPopover

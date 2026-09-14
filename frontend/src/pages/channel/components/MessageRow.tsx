@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Avatar from "../../../components/ui/Avatar";
 import { strifeApi } from "../../../services/strife-api";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
@@ -7,6 +7,8 @@ import type { Message } from "../types/channel";
 import MessageEditor from "./MessageEditor";
 import MessageActions from "./MessageActions";
 import { setMessageIdInEditMode } from "../../../store/slices/message-slice";
+import { useUpdateMessageMutation } from "../../../services/message-api";
+import { useGetProfileQuery } from "../../../services/profile-api";
 
 const stampFormatter = new Intl.DateTimeFormat("fr-FR", {
   dateStyle: "short",
@@ -25,7 +27,6 @@ interface MessageRowProps {
 function Attachment({ url }: { url: string }) {
   const dispatch = useAppDispatch();
   const hasRetried = useRef(false);
-
   const handleError = () => {
     if (hasRetried.current) return;
     hasRetried.current = true;
@@ -45,19 +46,14 @@ function Attachment({ url }: { url: string }) {
 
 function MessageRow({ message, isGrouped }: MessageRowProps) {
   const { content, media, sender, timestamp } = message;
-  const sentAt = new Date(timestamp);
-
   const dispatch = useAppDispatch();
-
-  useEffect(() => {});
-
+  const sentAt = new Date(timestamp);
+  const { data: profile } = useGetProfileQuery();
   const messageIdInEditMode = useAppSelector(
     (state) => state.message.messageIdInEditMode,
   );
 
   const editMode: boolean = messageIdInEditMode === message.id;
-
-  const handleEdit = () => {};
 
   const handleReact = (emoji: string) => console.log(emoji);
 
@@ -105,13 +101,7 @@ function MessageRow({ message, isGrouped }: MessageRowProps) {
           </p>
         )}
 
-        {content && editMode && (
-          <MessageEditor
-            content={content}
-            onSubmit={handleEdit}
-            onCancel={() => dispatch(setMessageIdInEditMode(null))}
-          />
-        )}
+        {content && editMode && <MessageEditor message={message} />}
 
         {media && media.length > 0 && (
           <div className="mt-1 flex flex-wrap gap-2">
@@ -124,6 +114,7 @@ function MessageRow({ message, isGrouped }: MessageRowProps) {
       <MessageActions
         onReact={handleReact}
         onEdit={() => dispatch(setMessageIdInEditMode(message.id))}
+        showPicker={message.sender.id === profile?.id}
       />
     </li>
   );
