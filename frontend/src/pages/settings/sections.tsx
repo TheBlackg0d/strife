@@ -15,7 +15,6 @@ import type { SettingsSectionId } from "../../types/settings";
 
 export interface SettingsSectionEntry {
   id: SettingsSectionId;
-  /** Nav label, also used as the modal heading. */
   label: string;
   icon: IconType;
   Component: ComponentType;
@@ -26,10 +25,6 @@ export interface SettingsNavGroup {
   items: SettingsSectionEntry[];
 }
 
-/**
- * Single source of truth for the modal: adding a settings pane means adding
- * one entry here — the sidebar, the heading and the router follow.
- */
 export const settingsNavGroups: SettingsNavGroup[] = [
   {
     title: "Paramètres utilisateur",

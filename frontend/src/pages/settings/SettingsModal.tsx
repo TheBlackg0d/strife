@@ -6,6 +6,7 @@ import { getSection } from "./sections";
 import type { SettingsSectionId } from "../../types/settings";
 import { useLogoutMutation } from "../../services/auth-api";
 import { useNavigate } from "react-router";
+import CloseModalButton from "../../components/ui/CloseModalButton";
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -59,23 +60,7 @@ function SettingsModal({
           <Component />
         </div>
       </main>
-
-      <div className="absolute right-6 top-6 z-20 flex flex-col items-center gap-1">
-        <button
-          type="button"
-          onClick={onClose}
-          aria-label="Fermer les paramètres"
-          className="group flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border-2 border-outline-variant text-on-surface-variant transition-colors hover:bg-surface-variant hover:text-on-surface"
-        >
-          <MdClose
-            size={20}
-            className="transition-transform group-hover:scale-110"
-          />
-        </button>
-        <span className="font-label text-[10px] font-bold tracking-widest text-on-surface-variant">
-          ESC
-        </span>
-      </div>
+      <CloseModalButton onClose={onClose} />
     </Modal>
   );
 }

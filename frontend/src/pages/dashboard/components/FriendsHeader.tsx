@@ -2,6 +2,12 @@ import { MdGroups } from "react-icons/md";
 import type { DashboardTab, FriendFilter } from "../types/dashboard";
 import { filters } from "../DashBoard";
 import Badge from "../../../components/ui/Badge";
+import IconButton from "../../../components/ui/IconButton";
+import type { IconBaseProps } from "react-icons";
+import { TbMessage2Plus } from "react-icons/tb";
+import { BiSolidMessageRoundedAdd } from "react-icons/bi";
+import CreateGroupChannelModal from "./CreateGroupChannelModal";
+import { useState } from "react";
 
 interface FriendsHeaderProps {
   activeTab: DashboardTab;
@@ -10,6 +16,7 @@ interface FriendsHeaderProps {
 
 function FriendsHeader({ activeTab, onTabChange }: FriendsHeaderProps) {
   const isAddingFriend = activeTab === "ADD_FRIEND";
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   return (
     <header className="flex h-12 shrink-0 items-center border-b border-surface-container-lowest/30 px-4">
@@ -41,20 +48,29 @@ function FriendsHeader({ activeTab, onTabChange }: FriendsHeaderProps) {
             </button>
           ))}
         </nav>
+        <button
+          type="button"
+          onClick={() => onTabChange(isAddingFriend ? "ONLINE" : "ADD_FRIEND")}
+          aria-current={isAddingFriend ? "true" : undefined}
+          className={`cursor-pointer rounded-sm px-2 py-1 text-[13px] font-medium transition-colors ${
+            isAddingFriend
+              ? "bg-transparent text-secondary hover:bg-surface-variant/50"
+              : "bg-primary-container text-on-primary-container hover:bg-primary-container/90"
+          }`}
+        >
+          Ajouter un ami
+        </button>
       </div>
-
-      <button
-        type="button"
-        onClick={() => onTabChange(isAddingFriend ? "ONLINE" : "ADD_FRIEND")}
-        aria-current={isAddingFriend ? "true" : undefined}
-        className={`cursor-pointer rounded-sm px-2 py-1 text-[13px] font-medium transition-colors ${
-          isAddingFriend
-            ? "bg-transparent text-secondary hover:bg-surface-variant/50"
-            : "bg-primary-container text-on-primary-container hover:bg-primary-container/90"
-        }`}
-      >
-        Ajouter un ami
-      </button>
+      <IconButton
+        icon={BiSolidMessageRoundedAdd}
+        label={"Creer un groupe"}
+        size={36}
+        onClick={() => setIsOpen(true)}
+      />
+      <CreateGroupChannelModal
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+      />
     </header>
   );
 }

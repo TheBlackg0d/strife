@@ -16,8 +16,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
-
 @Entity
 @Table(name = "channels")
 @Getter
@@ -31,10 +29,6 @@ public class Channel {
     @OneToMany(mappedBy = "channel")
     private List<File> files = new ArrayList<>();
 
-    /**
-     * Simples ids : file-service ne connaît des membres que leur appartenance,
-     * c'est elle seule qui autorise l'accès aux fichiers du channel.
-     */
     @ElementCollection
     @CollectionTable(name = "channel_members", joinColumns = @JoinColumn(name = "channel_id"))
     @Column(name = "member_id")
