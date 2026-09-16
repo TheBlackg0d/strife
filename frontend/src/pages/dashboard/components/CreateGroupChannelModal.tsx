@@ -112,7 +112,7 @@ function CreateChannelFooter({ onClose, friends }: CreateChannelFooterProps) {
   const [createGroupDm] = useCreateGroupDmMutation();
 
   const friendIds = useMemo(() => friends.map((f) => f.id), [friends]);
-  console.log(friendIds);
+
   const nameGroupChannel = useMemo(
     () =>
       friends
