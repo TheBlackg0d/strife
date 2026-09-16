@@ -60,6 +60,10 @@ management:
     web:
       exposure:
         include: health,info
+strife:
+  seed:
+    enabled: ${STRIFE_SEED_ENABLED:false}
+
 jwt:
   secret: ${JWT_SECRET}
 
