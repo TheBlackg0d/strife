@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 public record MessageUpdatedEvent(UUID messageId, UUID channelId, UUID senderId, String senderUsername, String content,
-                List<String> media,
+                List<MediaAttachment> media,
                 Instant sentAt,
                 Instant editedAt) {
 

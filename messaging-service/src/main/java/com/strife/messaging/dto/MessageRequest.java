@@ -4,6 +4,6 @@ import java.util.List;
 import java.util.UUID;
 
 
-public record MessageRequest(UUID channelId, String content, List<UUID> media) {
+public record MessageRequest(UUID channelId, String content, List<MediaRequest> media) {
 
 }

@@ -21,11 +21,16 @@ import io.minio.PutObjectArgs;
 import io.minio.RemoveObjectArgs;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.UUID;
 
+import javax.print.attribute.standard.Media;
+
+import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 
 @Service
 @Slf4j
@@ -80,7 +85,6 @@ public class FileService {
 
         return FileDTO.fromEntity(fileRepository.save(saved), fileUrlSigner);
     }
-
 
     public File getFile(UUID fileId) {
         return fileRepository.findById(fileId)
@@ -139,6 +143,22 @@ public class FileService {
                 : "channels/" + channel.getId();
 
         return prefix + "/" + UUID.randomUUID() + extension;
+    }
+
+    public boolean isValidFileContent(MultipartFile file) {
+        Tika tika = new Tika();
+        try {
+            String detectedType = tika.detect(file.getInputStream());
+            return switch (detectedType) {
+                case MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_GIF_VALUE,
+                        MediaType.APPLICATION_PDF_VALUE, MediaType.TEXT_PLAIN_VALUE ->
+                    true;
+                default -> false;
+            };
+
+        } catch (IOException e) {
+            return false;
+        }
     }
 
 }

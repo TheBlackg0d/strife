@@ -31,7 +31,7 @@ function MessageComposer({ placeholderTarget, channel }: MessageComposerProps) {
   const {
     pondRef,
     hasAttachments,
-    mediaIds,
+    media,
     setFiles,
     openFileExplorer,
     handleAddFile,
@@ -45,7 +45,7 @@ function MessageComposer({ placeholderTarget, channel }: MessageComposerProps) {
     const content = draft.trim();
     if (!content && !hasAttachments) return;
 
-    sendMessage(content, mediaIds);
+    sendMessage(content, media);
     clearDraft();
     clearAttachments();
   };

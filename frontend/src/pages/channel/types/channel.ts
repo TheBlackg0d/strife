@@ -5,11 +5,24 @@ export interface User {
   username: string;
 }
 
+export interface MediaAttachment {
+  fileId: string;
+  url: string;
+  contentType: string | null;
+  originalName: string | null;
+}
+
+export interface MediaRequest {
+  fileId: string;
+  contentType: string | null;
+  originalName: string | null;
+}
+
 export interface Message {
   id: string;
   channelId: string;
   content: string;
-  media: string[] | null;
+  media: MediaAttachment[] | null;
   sender: User;
   timestamp: string;
   editedAt: string | null;
@@ -18,7 +31,7 @@ export interface Message {
 export interface MessageRequest {
   channelId: string;
   content: string;
-  media: string[] | null;
+  media: MediaRequest[] | null;
 }
 
 export type MessageActionType = "CREATED" | "UPDATED" | "DELETED";
@@ -31,7 +44,7 @@ export interface MessageWebSocketMessage {
   content: string;
   sentAt: string;
   editedAt: string | null;
-  media: string[] | null;
+  media: MediaAttachment[] | null;
 }
 
 /** Envelope broadcast by realtime-gateway on /topic/channel.{channelId}. */

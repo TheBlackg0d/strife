@@ -1,14 +1,14 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import Avatar from "../../../components/ui/Avatar";
 import { strifeApi } from "../../../services/strife-api";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { stringToHslColor } from "../../../util/util";
-import type { Message } from "../types/channel";
+import type { MediaAttachment, Message } from "../types/channel";
 import MessageEditor from "./MessageEditor";
 import MessageActions from "./MessageActions";
 import { setMessageIdInEditMode } from "../../../store/slices/message-slice";
-import { useUpdateMessageMutation } from "../../../services/message-api";
 import { useGetProfileQuery } from "../../../services/profile-api";
+import { MdInsertDriveFile } from "react-icons/md";
 
 const stampFormatter = new Intl.DateTimeFormat("fr-FR", {
   dateStyle: "short",
@@ -24,7 +24,7 @@ interface MessageRowProps {
   isGrouped: boolean;
 }
 
-function Attachment({ url }: { url: string }) {
+function Attachment({ media }: { media: MediaAttachment }) {
   const dispatch = useAppDispatch();
   const hasRetried = useRef(false);
   const handleError = () => {
@@ -33,10 +33,26 @@ function Attachment({ url }: { url: string }) {
     dispatch(strifeApi.util.invalidateTags(["Messages"]));
   };
 
+  if (!media.contentType?.startsWith("image/")) {
+    return (
+      <a
+        href={media.url}
+        target="_blank"
+        rel="noreferrer"
+        className="flex max-w-sm items-center gap-3 rounded-lg bg-surface-container-low px-4 py-3 text-on-surface hover:underline"
+      >
+        <MdInsertDriveFile size={28} className="shrink-0 text-outline-variant" />
+        <span className="truncate text-[15px]">
+          {media.originalName ?? "Fichier"}
+        </span>
+      </a>
+    );
+  }
+
   return (
     <img
-      src={url}
-      alt=""
+      src={media.url}
+      alt={media.originalName ?? ""}
       loading="lazy"
       onError={handleError}
       className="max-h-80 max-w-full rounded-lg object-contain"
@@ -105,8 +121,8 @@ function MessageRow({ message, isGrouped }: MessageRowProps) {
 
         {media && media.length > 0 && (
           <div className="mt-1 flex flex-wrap gap-2">
-            {media.map((url) => (
-              <Attachment key={url} url={url} />
+            {media.map((item) => (
+              <Attachment key={item.fileId} media={item} />
             ))}
           </div>
         )}

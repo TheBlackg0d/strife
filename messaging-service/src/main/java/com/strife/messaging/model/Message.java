@@ -48,8 +48,7 @@ public class Message {
 
     @ElementCollection
     @CollectionTable(name = "message_media", joinColumns = @JoinColumn(name = "message_id"))
-    @Column(name = "file_id", nullable = false)
-    private List<UUID> media;
+    private List<MessageMedia> media;
 
     @Column(nullable = false)
     private Instant timestamp;

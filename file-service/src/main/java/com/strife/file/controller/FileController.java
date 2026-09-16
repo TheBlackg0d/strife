@@ -52,6 +52,10 @@ public class FileController {
             @RequestParam(value = "channelId", required = false) UUID channelId,
             @AuthenticationPrincipal JwtPrincipal principal) throws Exception {
 
+        if (!fileService.isValidFileContent(file)) {
+            throw new ActionNotAuthorizedException("Invalid File Type");
+        }
+
         FileRequest fileRequest = new FileRequest(channelId, file);
 
         return ResponseEntity.ok(fileService.uploadFile(fileRequest, principal.id()));

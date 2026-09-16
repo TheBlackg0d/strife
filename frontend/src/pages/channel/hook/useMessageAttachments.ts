@@ -3,6 +3,7 @@ import type { FilePond } from "react-filepond";
 import type { FilePondFile } from "filepond";
 import { useUploadFileMutation } from "../../../services/file-api";
 import type { StrifeFile } from "../../../types/file";
+import type { MediaRequest } from "../types/channel";
 
 export function useMessageAttachments(channelId: string) {
   const [files, setFiles] = useState<FilePondFile[]>([]);
@@ -15,9 +16,14 @@ export function useMessageAttachments(channelId: string) {
 
   const hasAttachments = files.length > 0;
 
-  const mediaIds = files
-    .map((item) => uploadedFiles[item.id]?.id)
-    .filter((id): id is string => Boolean(id));
+  const media: MediaRequest[] = files
+    .map((item) => uploadedFiles[item.id])
+    .filter((file): file is StrifeFile => Boolean(file))
+    .map(({ id, contentType, originalName }) => ({
+      fileId: id,
+      contentType,
+      originalName,
+    }));
 
   const openFileExplorer = () => {
     pondRef.current?.browse();
@@ -53,7 +59,7 @@ export function useMessageAttachments(channelId: string) {
   return {
     pondRef,
     hasAttachments,
-    mediaIds,
+    media,
     setFiles,
     openFileExplorer,
     handleAddFile,

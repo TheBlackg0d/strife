@@ -29,7 +29,12 @@ export default function MessageEditor({ message }: MessageEditorProps) {
       messageUpdateMutation({
         messageId: message.id,
         payload: {
-          media: message.media,
+          media:
+            message.media?.map(({ fileId, contentType, originalName }) => ({
+              fileId,
+              contentType,
+              originalName,
+            })) ?? null,
           content: inputRef.current.value,
           channelId: message.channelId,
         },

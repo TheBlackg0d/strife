@@ -1,17 +1,21 @@
 package com.strife.messaging.service;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.strife.common.exception.ActionNotAuthorizedException;
 import com.strife.common.exception.RessourceNotFoundException;
+import com.strife.messaging.dto.MediaRequest;
 import com.strife.messaging.dto.MessageRequest;
 import com.strife.messaging.model.Channel;
 import com.strife.messaging.model.Message;
+import com.strife.messaging.model.MessageMedia;
 import com.strife.messaging.model.User;
 import com.strife.messaging.repository.MessageRepository;
 
@@ -35,7 +39,7 @@ public class MessageService {
 
         message.setChannel(channel);
         message.setContent(request.content());
-        message.setMedia(request.media());
+        message.setMedia(toMedia(request.media()));
         message.setTimestamp(Instant.now());
         message.setSender(user);
         message.setEditedAt(null);
@@ -53,9 +57,16 @@ public class MessageService {
         }
 
         message.setContent(request.content());
-        message.setMedia(request.media());
+        message.setMedia(toMedia(request.media()));
         message.setEditedAt(Instant.now());
 
         return messageRepository.save(message);
+    }
+
+    private List<MessageMedia> toMedia(List<MediaRequest> media) {
+        return media == null ? null
+                : media.stream()
+                        .map(m -> new MessageMedia(m.fileId(), m.contentType(), m.originalName()))
+                        .collect(Collectors.toCollection(ArrayList::new));
     }
 }
