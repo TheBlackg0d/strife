@@ -1,4 +1,4 @@
-import type { StrifeFile } from "../types/file";
+import type { StrifeFile } from "@/types/file";
 import { strifeApi } from "./strife-api";
 
 const fileApi = strifeApi.injectEndpoints({

@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { useUpdateMessageMutation } from "../../../services/message-api";
-import { useAppDispatch } from "../../../store/hooks";
-import type { Message } from "../types/channel";
-import { setMessageIdInEditMode } from "../../../store/slices/message-slice";
+import { useUpdateMessageMutation } from "@/services/message-api";
+import { useAppDispatch } from "@/store/hooks";
+import type { Message } from "@/pages/channel/types/channel";
+import { setMessageIdInEditMode } from "@/store/slices/message-slice";
 
 interface MessageEditorProps {
   message: Message;

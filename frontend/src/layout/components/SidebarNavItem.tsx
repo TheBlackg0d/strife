@@ -1,5 +1,5 @@
 import type { IconType } from "react-icons";
-import Badge from "../../components/ui/Badge";
+import Badge from "@/components/ui/strife/Badge";
 
 interface SidebarNavItemProps {
   icon: IconType;

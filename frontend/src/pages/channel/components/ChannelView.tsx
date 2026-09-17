@@ -5,14 +5,14 @@ import MemberListPanel from "./MemberListPanel";
 import MessageComposer from "./MessageComposer";
 import MessageList from "./MessageList";
 import UserProfilePanel from "./UserProfilePanel";
-import { useGetProfileQuery } from "../../../services/profile-api";
+import { useGetProfileQuery } from "@/services/profile-api";
 import {
   channelTitle,
   isGroupChannel,
   otherUser,
   type Channel,
   type User,
-} from "../types/channel";
+} from "@/pages/channel/types/channel";
 
 interface ChannelViewProps {
   channel: Channel;

@@ -9,7 +9,7 @@ import {
   MdSearch,
   MdVideocam,
 } from "react-icons/md";
-import IconButton from "../../../components/ui/IconButton";
+import IconButton from "@/components/ui/strife/IconButton";
 
 interface ChannelHeaderProps {
   title: string;

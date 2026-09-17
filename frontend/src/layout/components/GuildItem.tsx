@@ -1,5 +1,5 @@
 import type { IconType } from "react-icons";
-import Avatar from "../../components/ui/Avatar";
+import Avatar from "@/components/ui/strife/Avatar";
 
 interface GuildItemProps {
   name: string;

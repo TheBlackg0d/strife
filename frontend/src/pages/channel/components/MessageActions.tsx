@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { MdAdd, MdModeEdit } from "react-icons/md";
-import IconButton from "../../../components/ui/IconButton";
-import EmojiPickerPopover from "../../../components/ui/EmojiPickerPopover";
+import IconButton from "@/components/ui/strife/IconButton";
+import EmojiPickerPopover from "@/components/ui/strife/EmojiPickerPopover";
 
 const QUICK_REACTIONS = ["👍", "❤️", "😃", "😢", "🙏", "👎", "😡"];
 

@@ -1,7 +1,7 @@
 import { MdLogout } from "react-icons/md";
 import SettingsNavItem from "./SettingsNavItem";
-import { settingsNavGroups } from "../sections";
-import type { SettingsSectionId } from "../../../types/settings";
+import { settingsNavGroups } from "@/pages/settings/sections";
+import type { SettingsSectionId } from "@/types/settings";
 
 interface SettingsSidebarProps {
   activeSection: SettingsSectionId;

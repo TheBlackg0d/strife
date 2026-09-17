@@ -2,7 +2,7 @@ import {
   type Relationship,
   type Friend,
   type FriendFilter,
-} from "../pages/dashboard/types/dashboard";
+} from "@/pages/dashboard/types/dashboard";
 import { strifeApi } from "./strife-api";
 
 const friendApi = strifeApi.injectEndpoints({

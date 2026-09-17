@@ -1,4 +1,4 @@
-import type { PresenceStatus } from "../../types/profile";
+import type { PresenceStatus } from "@/types/profile";
 
 
 /**

@@ -1,5 +1,5 @@
-import type { Response } from "../types/generic";
-import type { PasswordFormValues } from "../types/settings";
+import type { Response } from "@/types/generic";
+import type { PasswordFormValues } from "@/types/settings";
 import { strifeApi } from "./strife-api";
 
 const accountApi = strifeApi.injectEndpoints({

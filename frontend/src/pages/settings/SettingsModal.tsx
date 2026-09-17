@@ -1,12 +1,12 @@
 import { useId, useState } from "react";
 import { MdClose } from "react-icons/md";
-import Modal from "../../components/ui/Modal";
+import Modal from "@/components/ui/strife/Modal";
 import SettingsSidebar from "./components/SettingsSidebar";
 import { getSection } from "./sections";
-import type { SettingsSectionId } from "../../types/settings";
-import { useLogoutMutation } from "../../services/auth-api";
+import type { SettingsSectionId } from "@/types/settings";
+import { useLogoutMutation } from "@/services/auth-api";
 import { useNavigate } from "react-router";
-import CloseModalButton from "../../components/ui/CloseModalButton";
+import CloseModalButton from "@/components/ui/strife/CloseModalButton";
 
 interface SettingsModalProps {
   isOpen: boolean;

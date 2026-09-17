@@ -1,4 +1,4 @@
-import type { Channel } from "../pages/channel/types/channel";
+import type { Channel } from "@/pages/channel/types/channel";
 import { strifeApi } from "./strife-api";
 
 const channelApi = strifeApi.injectEndpoints({

@@ -1,13 +1,13 @@
 import { createBrowserRouter } from "react-router";
-import Register from "../pages/register/Register";
-import Login from "../pages/login/Login";
-import DashBoard from "../pages/dashboard/DashBoard";
-import ChannelPage from "../pages/channel/ChannelPage";
-import RootLayout from "../layout/RootLayout";
+import Register from "@/pages/register/Register";
+import Login from "@/pages/login/Login";
+import DashBoard from "@/pages/dashboard/DashBoard";
+import ChannelPage from "@/pages/channel/ChannelPage";
+import RootLayout from "@/layout/RootLayout";
 
-import { authMiddleware, loggedInMiddleware } from "../auth/authMiddleware";
-import AppLayout from "../layout/AppLayout";
-import RootErrorBoundary, { NotFoundPage } from "../pages/error/ErrorPage";
+import { authMiddleware, loggedInMiddleware } from "@/auth/authMiddleware";
+import AppLayout from "@/layout/AppLayout";
+import RootErrorBoundary, { NotFoundPage } from "@/pages/error/ErrorPage";
 
 const router = createBrowserRouter([
   {

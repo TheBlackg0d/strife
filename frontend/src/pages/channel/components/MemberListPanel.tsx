@@ -1,6 +1,6 @@
 import { MdGroupAdd } from "react-icons/md";
 import MemberRow from "./MemberRow";
-import type { User } from "../types/channel";
+import type { User } from "@/pages/channel/types/channel";
 
 interface MemberListPanelProps {
   members: User[];

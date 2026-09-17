@@ -1,8 +1,8 @@
 import { redirect, type MiddlewareFunction } from "react-router";
 import { userContext } from "./context";
-import type { Profile } from "../types/profile";
-import { profileApi } from "../services/profile-api";
-import { store } from "../store/store";
+import type { Profile } from "@/types/profile";
+import { profileApi } from "@/services/profile-api";
+import { store } from "@/store/store";
 
 export const authMiddleware: MiddlewareFunction = async ({
   request,

@@ -1,6 +1,6 @@
 import { useState, type SubmitEvent } from "react";
-import { useSendFriendRequestMutation } from "../../../services/friend-api";
-import { toApiError, type ApiError } from "../../../api/errors";
+import { useSendFriendRequestMutation } from "@/services/friend-api";
+import { toApiError, type ApiError } from "@/api/errors";
 import type { FetchBaseQueryError } from "@reduxjs/toolkit/query/react";
 
 type Feedback = { tone: "success" | "error"; message: string };

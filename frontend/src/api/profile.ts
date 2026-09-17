@@ -1,6 +1,6 @@
-import type { Response } from "../types/generic";
-import type { Profile } from "../types/profile";
-import type { PasswordFormValues, ProfileFormValues } from "../types/settings";
+import type { Response } from "@/types/generic";
+import type { Profile } from "@/types/profile";
+import type { PasswordFormValues, ProfileFormValues } from "@/types/settings";
 import { api } from "./api";
 
 export async function updateProfile(profile: ProfileFormValues) {

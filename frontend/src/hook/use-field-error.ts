@@ -3,7 +3,7 @@ import {
   convertToApiError,
   type ApiError,
   type FieldErrors,
-} from "../api/errors";
+} from "@/api/errors";
 
 const useFieldError = (isError: boolean, error: any) => {
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});

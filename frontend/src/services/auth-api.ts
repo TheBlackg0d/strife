@@ -2,8 +2,8 @@ import {
   type RegisterCredential,
   type AuthResponse,
   type LoginCredential,
-} from "../auth/types/auth";
-import { loggedOut, tokenReceived } from "../store/slices/auth-slice";
+} from "@/auth/types/auth";
+import { loggedOut, tokenReceived } from "@/store/slices/auth-slice";
 import { strifeApi, strifeAuthApi } from "./strife-api";
 
 const authApi = strifeAuthApi.injectEndpoints({

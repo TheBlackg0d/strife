@@ -1,4 +1,4 @@
-import type { Message, MessageWebSocketMessage } from "../types/channel";
+import type { Message, MessageWebSocketMessage } from "@/pages/channel/types/channel";
 
 export function convertMessageWebSocket(
   message: MessageWebSocketMessage,

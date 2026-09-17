@@ -1,8 +1,8 @@
 import { MdGroups } from "react-icons/md";
-import type { DashboardTab, FriendFilter } from "../types/dashboard";
-import { filters } from "../DashBoard";
-import Badge from "../../../components/ui/Badge";
-import IconButton from "../../../components/ui/IconButton";
+import type { DashboardTab, FriendFilter } from "@/pages/dashboard/types/dashboard";
+import { filters } from "@/pages/dashboard/DashBoard";
+import Badge from "@/components/ui/strife/Badge";
+import IconButton from "@/components/ui/strife/IconButton";
 import type { IconBaseProps } from "react-icons";
 import { TbMessage2Plus } from "react-icons/tb";
 import { BiSolidMessageRoundedAdd } from "react-icons/bi";

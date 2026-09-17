@@ -1,10 +1,10 @@
-import { subscibeToTopic } from "../hook/useStomp";
-import { convertMessageWebSocket } from "../pages/channel/service/channel-service";
+import { subscibeToTopic } from "@/hook/useStomp";
+import { convertMessageWebSocket } from "@/pages/channel/service/channel-service";
 import {
   type MessageBroadcast,
   type Message,
   type MessageRequest,
-} from "../pages/channel/types/channel";
+} from "@/pages/channel/types/channel";
 import { strifeApi } from "./strife-api";
 
 const messageApi = strifeApi.injectEndpoints({

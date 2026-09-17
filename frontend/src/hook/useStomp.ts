@@ -1,7 +1,7 @@
 import { Client, type IMessage, type StompSubscription } from "@stomp/stompjs";
 import { useEffect, useRef } from "react";
-import { getAccessToken } from "../auth/tokenStore";
-import { refreshSession } from "../auth/session";
+import { getAccessToken } from "@/auth/tokenStore";
+import { refreshSession } from "@/auth/session";
 
 const WS_URL = import.meta.env.VITE_WS_URL ?? "ws://localhost:8085/ws";
 

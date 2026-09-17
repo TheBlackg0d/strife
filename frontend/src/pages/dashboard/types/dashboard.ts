@@ -3,7 +3,7 @@ import type {
   PresenceStatus,
   Profile,
   RelationshipStatus,
-} from "../../../types/profile";
+} from "@/types/profile";
 
 export interface Guild {
   id: string;

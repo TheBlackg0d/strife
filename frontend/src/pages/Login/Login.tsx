@@ -1,18 +1,18 @@
 import { useNavigate, useSearchParams } from "react-router";
 import { PiSignIn } from "react-icons/pi";
-import AuthSection from "../../components/AuthSection";
-import AuthLink from "../../components/ui/AuthLink";
-import FormInput from "../../components/ui/FormInput";
-import Header from "../../components/ui/Header";
-import SubmitButton from "../../components/ui/SubmitButton";
+import AuthSection from "@/components/AuthSection";
+import AuthLink from "@/components/ui/strife/AuthLink";
+import FormInput from "@/components/ui/strife/FormInput";
+import Header from "@/components/ui/strife/Header";
+import SubmitButton from "@/components/ui/strife/SubmitButton";
 import Separator from "./components/Separator";
-import StrifeLogo from "../../components/ui/StrifeLogo";
-import SecondaryButton from "../../components/ui/SecondaryButton";
-import type { LoginCredential } from "../../auth/types/auth";
-import { hasFieldErrors } from "../../api/errors";
-import { useLoginMutation } from "../../services/auth-api";
+import StrifeLogo from "@/components/ui/strife/StrifeLogo";
+import SecondaryButton from "@/components/ui/strife/SecondaryButton";
+import type { LoginCredential } from "@/auth/types/auth";
+import { hasFieldErrors } from "@/api/errors";
+import { useLoginMutation } from "@/services/auth-api";
 import { useEffect } from "react";
-import useFieldError from "../../hook/use-field-error";
+import useFieldError from "@/hook/use-field-error";
 
 export default function Login() {
   const navigate = useNavigate();

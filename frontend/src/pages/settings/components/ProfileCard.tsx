@@ -1,8 +1,8 @@
 import { MdAddAPhoto, MdEdit } from "react-icons/md";
-import Avatar from "../../../components/ui/Avatar";
+import Avatar from "@/components/ui/strife/Avatar";
 import SettingsField from "./SettingsField";
-import type { ProfileFormValues } from "../../../types/settings";
-import type { Profile } from "../../../types/profile";
+import type { ProfileFormValues } from "@/types/settings";
+import type { Profile } from "@/types/profile";
 
 interface ProfileCardProps {
   user: Profile;

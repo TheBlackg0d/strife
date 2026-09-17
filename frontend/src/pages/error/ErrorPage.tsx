@@ -1,7 +1,7 @@
 import { useNavigate, useRouteError } from "react-router";
 import { MdOutlineErrorOutline } from "react-icons/md";
-import Button from "@/components/ui/StrifeButton";
-import StrifeLogo from "../../components/ui/StrifeLogo";
+import Button from "@/components/ui/strife/StrifeButton";
+import StrifeLogo from "@/components/ui/strife/StrifeLogo";
 import { toErrorDetails, type ErrorDetails } from "./error";
 
 interface ErrorPageProps {

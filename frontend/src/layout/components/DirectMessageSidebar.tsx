@@ -12,7 +12,7 @@ import {
 } from "../../pages/channel/types/channel";
 import { useGetPrivateChannelListQuery } from "../../services/channel-api";
 import { Input } from "@/components/ui/input";
-import StrifeInput from "@/components/ui/StrifeInput";
+import StrifeInput from "@/components/ui/strife/StrifeInput";
 
 interface DirectMessageSidebarProps {
   currentUserId?: string;

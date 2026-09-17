@@ -1,15 +1,15 @@
 import { useMemo, useRef, useState } from "react";
-import Modal from "../../../components/ui/Modal";
-import { useGetFriendsQuery } from "../../../services/friend-api";
-import Avatar from "../../../components/ui/Avatar";
-import CloseModalButton from "../../../components/ui/CloseModalButton";
-import Header from "../../../components/ui/Header";
-import Button from "@/components/ui/StrifeButton";
+import Modal from "@/components/ui/strife/Modal";
+import { useGetFriendsQuery } from "@/services/friend-api";
+import Avatar from "@/components/ui/strife/Avatar";
+import CloseModalButton from "@/components/ui/strife/CloseModalButton";
+import Header from "@/components/ui/strife/Header";
+import Button from "@/components/ui/strife/StrifeButton";
 import {
   useCreateDmMutation,
   useCreateGroupDmMutation,
-} from "../../../services/channel-api";
-import type { Friend } from "../types/dashboard";
+} from "@/services/channel-api";
+import type { Friend } from "@/pages/dashboard/types/dashboard";
 
 interface CreateGroupChannelModalProps {
   isOpen: boolean;

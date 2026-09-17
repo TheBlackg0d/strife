@@ -4,13 +4,13 @@ import FriendRow from "./components/FriendRow";
 import FriendsHeader from "./components/FriendsHeader";
 import type { DashboardTab, Friend, FriendFilter } from "./types/dashboard";
 
-import { useGetFriendsQuery } from "../../services/friend-api";
-import { useGetPrivateChannelListQuery } from "../../services/channel-api";
-import type { Channel } from "../channel/types/channel";
-import { useSubscription } from "../../hook/useStomp";
-import { useGetProfileQuery } from "../../services/profile-api";
-import { useAppDispatch } from "../../store/hooks";
-import { strifeApi } from "../../services/strife-api";
+import { useGetFriendsQuery } from "@/services/friend-api";
+import { useGetPrivateChannelListQuery } from "@/services/channel-api";
+import type { Channel } from "@/pages/channel/types/channel";
+import { useSubscription } from "@/hook/useStomp";
+import { useGetProfileQuery } from "@/services/profile-api";
+import { useAppDispatch } from "@/store/hooks";
+import { strifeApi } from "@/services/strife-api";
 
 const sectionTitles: Record<FriendFilter, string> = {
   ONLINE: "EN LIGNE",

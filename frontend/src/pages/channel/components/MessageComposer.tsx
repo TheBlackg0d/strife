@@ -5,7 +5,7 @@ import {
   MdMood,
   MdStickyNote2,
 } from "react-icons/md";
-import IconButton from "../../../components/ui/IconButton";
+import IconButton from "@/components/ui/strife/IconButton";
 import { FilePond, registerPlugin } from "react-filepond";
 // Import FilePond styles
 import "filepond/dist/filepond.min.css";
@@ -14,10 +14,10 @@ import FilePondPluginImagePreview from "filepond-plugin-image-preview";
 import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
 import FilePondPluginImageExifOrientation from "filepond-plugin-image-exif-orientation";
 import { type SubmitEvent } from "react";
-import type { Channel } from "../types/channel";
-import { useMessageDraft } from "../hook/useMessageDraft";
-import { useMessageAttachments } from "../hook/useMessageAttachments";
-import { useSendMessage } from "../hook/useSendMessage";
+import type { Channel } from "@/pages/channel/types/channel";
+import { useMessageDraft } from "@/pages/channel/hook/useMessageDraft";
+import { useMessageAttachments } from "@/pages/channel/hook/useMessageAttachments";
+import { useSendMessage } from "@/pages/channel/hook/useSendMessage";
 
 interface MessageComposerProps {
   placeholderTarget: string;
@@ -51,7 +51,10 @@ function MessageComposer({ placeholderTarget, channel }: MessageComposerProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="shrink-0 px-4 pt-2 pb-6 bg-surface">
+    <form
+      onSubmit={handleSubmit}
+      className="shrink-0 px-4 pt-2 pb-6 bg-surface"
+    >
       <div className="rounded-lg bg-surface-bright">
         <div
           className={

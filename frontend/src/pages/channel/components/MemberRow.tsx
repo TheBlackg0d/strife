@@ -1,5 +1,5 @@
-import Avatar from "../../../components/ui/Avatar";
-import type { User } from "../types/channel";
+import Avatar from "@/components/ui/strife/Avatar";
+import type { User } from "@/pages/channel/types/channel";
 
 interface MemberRowProps {
   member: User;

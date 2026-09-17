@@ -1,6 +1,6 @@
 import { useParams } from "react-router";
 import ChannelView from "./components/ChannelView";
-import { useGetChannelQuery } from "../../services/channel-api";
+import { useGetChannelQuery } from "@/services/channel-api";
 
 function ChannelPage() {
   const { channelId } = useParams();

@@ -1,13 +1,13 @@
 import { useState } from "react";
-import Button from "@/components/ui/StrifeButton";
-import AboutMeSection from "../components/AboutMeSection";
-import ProfileCard from "../components/ProfileCard";
-import type { ProfileFormValues } from "../../../types/settings";
-import type { Profile } from "../../../types/profile";
+import Button from "@/components/ui/strife/StrifeButton";
+import AboutMeSection from "@/pages/settings/components/AboutMeSection";
+import ProfileCard from "@/pages/settings/components/ProfileCard";
+import type { ProfileFormValues } from "@/types/settings";
+import type { Profile } from "@/types/profile";
 import {
   useGetProfileQuery,
   useUpdateProfileMutation,
-} from "../../../services/profile-api";
+} from "@/services/profile-api";
 
 function toFormValues(user: Profile | undefined): ProfileFormValues {
   return {

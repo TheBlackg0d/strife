@@ -1,5 +1,5 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type { Message } from "../../pages/channel/types/channel";
+import type { Message } from "@/pages/channel/types/channel";
 
 interface MessageState {
   messageIdInEditMode: string | null;

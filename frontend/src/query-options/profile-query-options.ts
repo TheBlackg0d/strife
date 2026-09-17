@@ -1,6 +1,6 @@
 import { queryOptions } from "@tanstack/react-query";
-import type { Profile } from "../types/profile";
-import { getProfile } from "../api/profile";
+import type { Profile } from "@/types/profile";
+import { getProfile } from "@/api/profile";
 
 export function createProfileQueryOptions() {
   return queryOptions<Profile>({

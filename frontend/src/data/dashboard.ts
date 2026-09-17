@@ -3,7 +3,7 @@ import type {
   Conversation,
   Friend,
   Guild,
-} from "../pages/dashboard/types/dashboard";
+} from "@/pages/dashboard/types/dashboard";
 
 export const guilds: Guild[] = [
   { id: "g1", name: "Neon Arcade" },

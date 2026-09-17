@@ -1,7 +1,7 @@
-import Avatar from "../../../components/ui/Avatar";
-import { useGetFriendsQuery } from "../../../services/friend-api";
-import type { PresenceStatus } from "../../../types/profile";
-import type { User } from "../types/channel";
+import Avatar from "@/components/ui/strife/Avatar";
+import { useGetFriendsQuery } from "@/services/friend-api";
+import type { PresenceStatus } from "@/types/profile";
+import type { User } from "@/pages/channel/types/channel";
 
 const statusLabel: Record<PresenceStatus, string> = {
   ONLINE: "En ligne",

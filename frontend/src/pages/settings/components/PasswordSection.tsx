@@ -1,11 +1,11 @@
 import { useState } from "react";
-import Button from "@/components/ui/StrifeButton";
+import Button from "@/components/ui/strife/StrifeButton";
 import SettingsField from "./SettingsField";
 import SettingsSection from "./SettingsSection";
-import type { PasswordFormValues } from "../../../types/settings";
-import { useChangePasswordMutation } from "../../../services/account-api";
-import useFieldError from "../../../hook/use-field-error";
-import { hasFieldErrors } from "../../../api/errors";
+import type { PasswordFormValues } from "@/types/settings";
+import { useChangePasswordMutation } from "@/services/account-api";
+import useFieldError from "@/hook/use-field-error";
+import { hasFieldErrors } from "@/api/errors";
 
 const emptyForm: PasswordFormValues = {
   currentPassword: "",

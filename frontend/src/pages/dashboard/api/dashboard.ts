@@ -1,5 +1,5 @@
-import type { Friend, FriendFilter, Relationship } from "../types/dashboard";
-import { api } from "../../../api/api";
+import type { Friend, FriendFilter, Relationship } from "@/pages/dashboard/types/dashboard";
+import { api } from "@/api/api";
 
 const getFriendList = async (): Promise<Record<FriendFilter, Friend[]>> => {
   const res = await api.get<Record<FriendFilter, Friend[]>>(

@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useRef } from "react";
 import ChannelIntro from "./ChannelIntro";
 import MessageRow from "./MessageRow";
-import { useGetMessagesForChannelQuery } from "../../../services/message-api";
+import { useGetMessagesForChannelQuery } from "@/services/message-api";
 
 const GROUPING_WINDOW_MS = 1 * 60 * 1000;
 

@@ -8,21 +8,21 @@ import {
   MdMoreVert,
   MdPersonRemove,
 } from "react-icons/md";
-import Avatar from "../../../components/ui/Avatar";
+import Avatar from "@/components/ui/strife/Avatar";
 import DropdownMenu, {
   type DropdownMenuItem,
-} from "../../../components/ui/DropdownMenu";
-import IconButton from "../../../components/ui/IconButton";
-import type { Friend, FriendFilter } from "../types/dashboard";
+} from "@/components/ui/strife/DropdownMenu";
+import IconButton from "@/components/ui/strife/IconButton";
+import type { Friend, FriendFilter } from "@/pages/dashboard/types/dashboard";
 import {
   useAcceptFriendRequestMutation,
   useBlockFriendMutation,
   useRemoveFriendMutation,
-} from "../../../services/friend-api";
+} from "@/services/friend-api";
 import {
   useCreateDmMutation,
   useGetPrivateChannelListQuery,
-} from "../../../services/channel-api";
+} from "@/services/channel-api";
 
 interface FriendRowProps {
   friend: Friend;

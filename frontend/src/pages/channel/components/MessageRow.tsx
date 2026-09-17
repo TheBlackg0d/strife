@@ -1,13 +1,13 @@
 import { useRef } from "react";
-import Avatar from "../../../components/ui/Avatar";
-import { strifeApi } from "../../../services/strife-api";
-import { useAppDispatch, useAppSelector } from "../../../store/hooks";
-import { stringToHslColor } from "../../../util/util";
-import type { MediaAttachment, Message } from "../types/channel";
+import Avatar from "@/components/ui/strife/Avatar";
+import { strifeApi } from "@/services/strife-api";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { stringToHslColor } from "@/util/util";
+import type { MediaAttachment, Message } from "@/pages/channel/types/channel";
 import MessageEditor from "./MessageEditor";
 import MessageActions from "./MessageActions";
-import { setMessageIdInEditMode } from "../../../store/slices/message-slice";
-import { useGetProfileQuery } from "../../../services/profile-api";
+import { setMessageIdInEditMode } from "@/store/slices/message-slice";
+import { useGetProfileQuery } from "@/services/profile-api";
 import { MdInsertDriveFile } from "react-icons/md";
 
 const stampFormatter = new Intl.DateTimeFormat("fr-FR", {

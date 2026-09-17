@@ -1,6 +1,6 @@
-import Avatar from "../../components/ui/Avatar";
-import type { Conversation } from "../../pages/dashboard/types/dashboard";
-import { stringToHslColor } from "../../util/util";
+import Avatar from "@/components/ui/strife/Avatar";
+import type { Conversation } from "@/pages/dashboard/types/dashboard";
+import { stringToHslColor } from "@/util/util";
 
 interface DmListItemProps {
   conversation: Conversation;

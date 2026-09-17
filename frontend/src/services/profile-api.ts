@@ -1,5 +1,5 @@
-import type { Profile } from "../types/profile";
-import type { ProfileFormValues } from "../types/settings";
+import type { Profile } from "@/types/profile";
+import type { ProfileFormValues } from "@/types/settings";
 import { strifeApi } from "./strife-api";
 
 export const profileApi = strifeApi.injectEndpoints({

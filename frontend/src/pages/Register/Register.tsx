@@ -1,15 +1,15 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
-import FormInput from "../../components/ui/FormInput";
-import HeaderRegister from "../../components/ui/Header";
-import SubmitButton from "../../components/ui/SubmitButton";
-import AuthLink from "../../components/ui/AuthLink";
-import CheckboxInput from "../../components/ui/FormCheckboxInput";
-import AuthSection from "../../components/AuthSection";
-import type { RegisterCredential } from "../../auth/types/auth";
-import { hasFieldErrors, type FieldErrors } from "../../api/errors";
-import { useRegisterMutation } from "../../services/auth-api";
-import useFieldError from "../../hook/use-field-error";
+import FormInput from "@/components/ui/strife/FormInput";
+import HeaderRegister from "@/components/ui/strife/Header";
+import SubmitButton from "@/components/ui/strife/SubmitButton";
+import AuthLink from "@/components/ui/strife/AuthLink";
+import CheckboxInput from "@/components/ui/strife/FormCheckboxInput";
+import AuthSection from "@/components/AuthSection";
+import type { RegisterCredential } from "@/auth/types/auth";
+import { hasFieldErrors, type FieldErrors } from "@/api/errors";
+import { useRegisterMutation } from "@/services/auth-api";
+import useFieldError from "@/hook/use-field-error";
 
 function Register() {
   const navigate = useNavigate();

@@ -1,7 +1,7 @@
 import type { InternalAxiosRequestConfig } from "axios";
 import axios from "axios";
-import { clearSession, getAccessToken } from "../auth/tokenStore";
-import { refreshSession } from "../auth/session";
+import { clearSession, getAccessToken } from "@/auth/tokenStore";
+import { refreshSession } from "@/auth/session";
 
 interface RetriableRequestConfig extends InternalAxiosRequestConfig {
   _retried?: boolean;

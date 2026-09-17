@@ -2,10 +2,10 @@ import { useState } from "react";
 import { Outlet, useMatch, useNavigate } from "react-router";
 import DirectMessageSidebar from "./components/DirectMessageSidebar";
 import GuildRail from "./components/GuildRail";
-import SettingsModal from "../pages/settings/SettingsModal";
-import { guilds, pendingRequestCount } from "../data/dashboard";
+import SettingsModal from "@/pages/settings/SettingsModal";
+import { guilds, pendingRequestCount } from "@/data/dashboard";
 
-import { useGetProfileQuery } from "../services/profile-api";
+import { useGetProfileQuery } from "@/services/profile-api";
 
 /** "ada.lovelace@strife.dev" -> "ada.lovelace" */
 function displayName(email: string): string {

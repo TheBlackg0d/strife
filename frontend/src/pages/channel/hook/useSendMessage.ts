@@ -1,6 +1,6 @@
-import { useCreateMessageMutation } from "../../../services/message-api";
-import { useGetProfileQuery } from "../../../services/profile-api";
-import type { MediaRequest } from "../types/channel";
+import { useCreateMessageMutation } from "@/services/message-api";
+import { useGetProfileQuery } from "@/services/profile-api";
+import type { MediaRequest } from "@/pages/channel/types/channel";
 
 export function useSendMessage(channelId: string) {
   const { data: profile } = useGetProfileQuery();

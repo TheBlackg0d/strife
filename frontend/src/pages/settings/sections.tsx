@@ -11,7 +11,7 @@ import {
 import PlaceholderSection from "./components/PlaceholderSection";
 import MyAccountSection from "./sections/MyAccountSection";
 import PrivacySection from "./sections/PrivacySection";
-import type { SettingsSectionId } from "../../types/settings";
+import type { SettingsSectionId } from "@/types/settings";
 
 export interface SettingsSectionEntry {
   id: SettingsSectionId;

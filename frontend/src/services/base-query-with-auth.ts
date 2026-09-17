@@ -5,9 +5,9 @@ import {
   type FetchBaseQueryError,
 } from "@reduxjs/toolkit/query";
 import { Mutex } from "async-mutex";
-import type { RootState } from "../store/store";
-import { loggedOut, tokenReceived } from "../store/slices/auth-slice";
-import type { AuthResponse } from "../auth/types/auth";
+import type { RootState } from "@/store/store";
+import { loggedOut, tokenReceived } from "@/store/slices/auth-slice";
+import type { AuthResponse } from "@/auth/types/auth";
 
 const mutex = new Mutex();
 

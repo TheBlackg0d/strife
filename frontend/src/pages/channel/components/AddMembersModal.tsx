@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { MdCheck, MdClose } from "react-icons/md";
-import Avatar from "../../../components/ui/Avatar";
-import IconButton from "../../../components/ui/IconButton";
-import Modal from "../../../components/ui/Modal";
-import { useGetFriendsQuery } from "../../../services/friend-api";
-import type { User } from "../types/channel";
+import Avatar from "@/components/ui/strife/Avatar";
+import IconButton from "@/components/ui/strife/IconButton";
+import Modal from "@/components/ui/strife/Modal";
+import { useGetFriendsQuery } from "@/services/friend-api";
+import type { User } from "@/pages/channel/types/channel";
 
 interface AddMembersModalProps {
   isOpen: boolean;

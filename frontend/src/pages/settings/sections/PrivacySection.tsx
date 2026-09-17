@@ -1,5 +1,5 @@
-import PasswordSection from "../components/PasswordSection";
-import PlaceholderSection from "../components/PlaceholderSection";
+import PasswordSection from "@/pages/settings/components/PasswordSection";
+import PlaceholderSection from "@/pages/settings/components/PlaceholderSection";
 
 function PrivacySection() {
   return (

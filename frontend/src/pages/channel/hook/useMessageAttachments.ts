@@ -1,9 +1,9 @@
 import { useRef, useState } from "react";
 import type { FilePond } from "react-filepond";
 import type { FilePondFile } from "filepond";
-import { useUploadFileMutation } from "../../../services/file-api";
-import type { StrifeFile } from "../../../types/file";
-import type { MediaRequest } from "../types/channel";
+import { useUploadFileMutation } from "@/services/file-api";
+import type { StrifeFile } from "@/types/file";
+import type { MediaRequest } from "@/pages/channel/types/channel";
 
 export function useMessageAttachments(channelId: string) {
   const [files, setFiles] = useState<FilePondFile[]>([]);
