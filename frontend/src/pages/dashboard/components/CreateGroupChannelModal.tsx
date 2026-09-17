@@ -4,7 +4,7 @@ import { useGetFriendsQuery } from "../../../services/friend-api";
 import Avatar from "../../../components/ui/Avatar";
 import CloseModalButton from "../../../components/ui/CloseModalButton";
 import Header from "../../../components/ui/Header";
-import Button from "../../../components/ui/Button";
+import Button from "@/components/ui/StrifeButton";
 import {
   useCreateDmMutation,
   useCreateGroupDmMutation,

@@ -1,6 +1,6 @@
 import { MdGroups } from "react-icons/md";
 import Avatar from "../../../components/ui/Avatar";
-import Button from "../../../components/ui/Button";
+import Button from "@/components/ui/StrifeButton";
 
 interface ChannelIntroProps {
   memberCount: number;

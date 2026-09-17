@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Button from "../../../components/ui/Button";
+import Button from "@/components/ui/StrifeButton";
 import AboutMeSection from "../components/AboutMeSection";
 import ProfileCard from "../components/ProfileCard";
 import type { ProfileFormValues } from "../../../types/settings";

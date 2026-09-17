@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Button from "../../../components/ui/Button";
+import Button from "@/components/ui/StrifeButton";
 import SettingsField from "./SettingsField";
 import SettingsSection from "./SettingsSection";
 import type { PasswordFormValues } from "../../../types/settings";

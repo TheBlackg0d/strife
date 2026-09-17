@@ -58,7 +58,6 @@ management:
         include: health,info
 strife:
   seed:
-    # Comptes de dev crees au demarrage par DevAccountSeeder.
     enabled: ${STRIFE_SEED_ENABLED:false}
 
 jwt:

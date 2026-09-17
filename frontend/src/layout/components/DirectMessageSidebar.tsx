@@ -11,6 +11,8 @@ import {
   type Channel,
 } from "../../pages/channel/types/channel";
 import { useGetPrivateChannelListQuery } from "../../services/channel-api";
+import { Input } from "@/components/ui/input";
+import StrifeInput from "@/components/ui/StrifeInput";
 
 interface DirectMessageSidebarProps {
   currentUserId?: string;
@@ -64,13 +66,11 @@ function DirectMessageSidebar({
   return (
     <aside className="flex h-full w-dm-sidebar shrink-0 flex-col bg-surface-container-low">
       <div className="flex h-12 shrink-0 items-center border-b border-surface-container-lowest/50 px-2">
-        <button
-          type="button"
+        <StrifeInput
+          type="text"
           onClick={onSearch}
-          className="w-full cursor-pointer truncate rounded-sm bg-background px-2 py-1.5 text-left text-[13px] text-on-surface-variant transition-colors hover:bg-surface-container-highest"
-        >
-          Rechercher ou lancer une conversation
-        </button>
+          placeholder="Rechercher ou lancer une conversation"
+        />
       </div>
 
       <div className="flex flex-1 flex-col gap-0.5 overflow-y-auto px-2 py-2">

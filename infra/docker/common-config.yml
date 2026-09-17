@@ -13,6 +13,7 @@ services:
       JWT_SECRET: ${JWT_SECRET:?JWT_SECRET manquant - copie .env.example vers .env}
       FILE_URL_SIGNING_KEY: ${FILE_URL_SIGNING_KEY:?FILE_URL_SIGNING_KEY manquant - copie .env.example vers .env}
       JAVA_TOOL_OPTIONS: "-XX:MaxRAMPercentage=75"
+      STRIFE_SEED_ENABLED: ${STRIFE_SEED_ENABLED:-false}
     restart: unless-stopped
 
   microservice-db-config:
