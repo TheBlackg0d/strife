@@ -40,4 +40,10 @@ public class Reaction {
 
     @Column(nullable = false)
     private String emoji;
+
+    public Reaction(Message message, User user, String emoji) {
+        this.message = message;
+        this.user = user;
+        this.emoji = emoji;
+    }
 }

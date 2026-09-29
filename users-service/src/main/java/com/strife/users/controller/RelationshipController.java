@@ -16,6 +16,7 @@ import com.strife.common.dto.ResponseDTO;
 import com.strife.common.event.Profile.RelationshipChangeEvent;
 import com.strife.common.model.RelationshipStatus;
 import com.strife.common.security.JwtPrincipal;
+import com.strife.users.dto.DashboardDTO;
 import com.strife.users.dto.FriendStatusList;
 import com.strife.users.dto.RelationshipDTO;
 import com.strife.users.dto.UsernameDTO;
@@ -41,10 +42,10 @@ public class RelationshipController {
     private ProfileService profileService;
 
     @GetMapping
-    public ResponseEntity<FriendStatusList> getFriends(@AuthenticationPrincipal JwtPrincipal principal) {
+    public ResponseEntity<DashboardDTO> getFriendDashboard(@AuthenticationPrincipal JwtPrincipal principal) {
         Profile profile = profileService.getOrCreateProfileById(principal);
 
-        return ResponseEntity.ok(relationshipService.getFriends(profile));
+        return ResponseEntity.ok(DashboardDTO.of(relationshipService.getFriends(profile)));
     }
 
     @PostMapping

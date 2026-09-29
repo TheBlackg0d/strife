@@ -19,6 +19,7 @@ import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import io.minio.RemoveObjectArgs;
+import io.minio.RemoveObjectsArgs;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -159,6 +160,20 @@ public class FileService {
         } catch (IOException e) {
             return false;
         }
+    }
+
+    @Transactional
+    public void deleteFile(UUID fileId) {
+        File file = fileRepository.findById(fileId)
+                .orElseThrow(() -> new RessourceNotFoundException("file not found:" + fileId));
+
+        try {
+            minioClient.removeObject(RemoveObjectArgs.builder().bucket(bucketName).object(file.getObjectKey()).build());
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to delete file from MinIO", e);
+        }
+
+        fileRepository.delete(file);
     }
 
 }

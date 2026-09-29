@@ -33,6 +33,9 @@ spring:
         channelUpsertedConsumer-in-0:
           destination: messaging.events
           group: ${spring.application.name}
+        messageDeletedConsumer-in-0:
+          destination: messaging.events
+          group: ${spring.application.name}
       rabbit:
         bindings:
           fileDispatcher-out-0:
@@ -43,6 +46,10 @@ spring:
             consumer:
               exchange-type: topic
               binding-routing-key: messaging.channel.upserted
+          messageDeletedConsumer-in-0:
+            consumer:
+              exchange-type: topic
+              binding-routing-key: messaging.message.deleted
 server:
   port: 8087
 

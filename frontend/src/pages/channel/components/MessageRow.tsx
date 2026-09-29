@@ -1,70 +1,70 @@
-import { useRef } from "react";
 import Avatar from "@/components/ui/strife/Avatar";
 import { strifeApi } from "@/services/strife-api";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { stringToHslColor } from "@/util/util";
+import { stampFormatter, stringToHslColor, timeFormatter } from "@/util/util";
 import type { MediaAttachment, Message } from "@/pages/channel/types/channel";
 import MessageEditor from "./MessageEditor";
 import MessageActions from "./MessageActions";
 import { setMessageIdInEditMode } from "@/store/slices/message-slice";
 import { useGetProfileQuery } from "@/services/profile-api";
-import { MdInsertDriveFile } from "react-icons/md";
-
-const stampFormatter = new Intl.DateTimeFormat("fr-FR", {
-  dateStyle: "short",
-  timeStyle: "short",
-});
-const timeFormatter = new Intl.DateTimeFormat("fr-FR", {
-  hour: "2-digit",
-  minute: "2-digit",
-});
+import { FaDownload, FaFileAlt } from "react-icons/fa";
+import {
+  Attachment,
+  AttachmentActions,
+  AttachmentContent,
+  AttachmentDescription,
+  AttachmentMedia,
+  AttachmentTitle,
+} from "@/components/ui/attachment";
+import { useRef } from "react";
+import { useLazyGetFileQuery } from "@/services/file-api";
 
 interface MessageRowProps {
   message: Message;
   isGrouped: boolean;
 }
 
-function Attachment({ media }: { media: MediaAttachment }) {
-  const dispatch = useAppDispatch();
-  const hasRetried = useRef(false);
-  const handleError = () => {
-    if (hasRetried.current) return;
-    hasRetried.current = true;
-    dispatch(strifeApi.util.invalidateTags(["Messages"]));
-  };
+const QUICK_REACTIONS = ["👍", "❤️", "😃", "😢", "🙏", "👎", "😡"];
 
-  if (!media.contentType?.startsWith("image/")) {
-    return (
-      <a
-        href={media.url}
-        target="_blank"
-        rel="noreferrer"
-        className="flex max-w-sm items-center gap-3 rounded-lg bg-surface-container-low px-4 py-3 text-on-surface hover:underline"
-      >
-        <MdInsertDriveFile size={28} className="shrink-0 text-outline-variant" />
-        <span className="truncate text-[15px]">
-          {media.originalName ?? "Fichier"}
-        </span>
-      </a>
-    );
+async function downloadFile(blob: Blob, filename: string) {
+  const blobUrl = window.URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = blobUrl;
+  link.download = filename;
+
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  window.URL.revokeObjectURL(blobUrl);
+}
+
+function getSimplifiedType(
+  contentType: string,
+): "Image" | "pdf" | "text" | "unknown" {
+  const type = contentType.toLowerCase();
+
+  if (type.startsWith("image/")) {
+    return "Image";
+  }
+  if (type.includes("pdf")) {
+    return "pdf";
+  }
+  if (
+    type.startsWith("text/") ||
+    type.includes("json") ||
+    type.includes("xml")
+  ) {
+    return "text";
   }
 
-  return (
-    <img
-      src={media.url}
-      alt={media.originalName ?? ""}
-      loading="lazy"
-      onError={handleError}
-      className="max-h-80 max-w-full rounded-lg object-contain"
-    />
-  );
+  return "unknown";
 }
 
 function MessageRow({ message, isGrouped }: MessageRowProps) {
   const { content, media, sender, timestamp } = message;
   const dispatch = useAppDispatch();
   const sentAt = new Date(timestamp);
-  const { data: profile } = useGetProfileQuery();
+
   const messageIdInEditMode = useAppSelector(
     (state) => state.message.messageIdInEditMode,
   );
@@ -80,59 +80,218 @@ function MessageRow({ message, isGrouped }: MessageRowProps) {
       }`}
     >
       {isGrouped ? (
-        <time
-          dateTime={timestamp}
-          className="mt-1 mr-4 w-10 shrink-0 pr-4 text-right text-[10px] text-outline-variant opacity-0 group-hover:opacity-100"
-        >
-          {timeFormatter.format(sentAt)}
-        </time>
+        <GroupedMessageRowHeader message={message} />
       ) : (
-        <Avatar
-          name={sender.username}
-          size={40}
-          className="mt-0.5 mr-4 cursor-pointer"
-          backgroundColor={stringToHslColor(sender.username)}
-        />
+        <MessageRowHeader message={message} />
       )}
-
       <div className="min-w-0 flex-1">
-        {!isGrouped && (
-          <div className="mb-0.5 flex items-baseline gap-2">
-            <span className="cursor-pointer text-[16px] font-medium text-on-surface hover:underline">
-              {sender.username}
-            </span>
-            <time
-              dateTime={timestamp}
-              className="text-xs text-outline-variant"
-              title={sentAt.toLocaleString("fr-FR")}
-            >
-              {stampFormatter.format(sentAt)}
-            </time>
-          </div>
-        )}
+        {!isGrouped && <MessageRowTitle message={message} />}
 
-        {content && !editMode && (
-          <p className="text-[15px] leading-5.5 wrap-break-word whitespace-pre-wrap text-on-surface">
-            {content}
-          </p>
-        )}
+        {content && !editMode && <MessageRowContent message={message} />}
 
         {content && editMode && <MessageEditor message={message} />}
 
-        {media && media.length > 0 && (
-          <div className="mt-1 flex flex-wrap gap-2">
-            {media.map((item) => (
-              <Attachment key={item.fileId} media={item} />
-            ))}
-          </div>
-        )}
+        <MessageRowMedia message={message} />
+        <MessageRowReactions message={message} />
       </div>
-      <MessageActions
-        onReact={handleReact}
-        onEdit={() => dispatch(setMessageIdInEditMode(message.id))}
-        showPicker={message.sender.id === profile?.id}
-      />
+      <MessageActions message={message} />
     </li>
+  );
+}
+
+type MessageRowReactionsProps = Pick<MessageRowProps, "message">;
+
+function MessageRowReactions({ message }: MessageRowReactionsProps) {
+  return (
+    <div className="mt-1.5 flex flex-wrap gap-1">
+      {QUICK_REACTIONS.map((reaction) => (
+        <ReactionPill
+          key={reaction}
+          emoji={reaction}
+          count={1}
+          onClick={() => console.log(reaction)}
+        />
+      ))}
+    </div>
+  );
+}
+
+type MessageRowContentProps = Pick<MessageRowProps, "message">;
+
+function MessageRowContent({ message }: MessageRowContentProps) {
+  return (
+    <p className="text-[15px] leading-5.5 wrap-break-word whitespace-pre-wrap text-on-surface">
+      {message.content}
+    </p>
+  );
+}
+
+type MessageRowMediaProps = Pick<MessageRowProps, "message">;
+
+function MessageRowMedia({ message }: MessageRowMediaProps) {
+  if (!message.media || message.media.length === 0) {
+    return null;
+  }
+
+  return (
+    <div className="mt-1 flex flex-wrap gap-2">
+      {message.media.map((item) => (
+        <MessageAttachment key={item.fileId} media={item} />
+      ))}
+    </div>
+  );
+}
+
+type MessageRowTitleProps = Pick<MessageRowProps, "message">;
+
+function MessageRowTitle({ message }: MessageRowTitleProps) {
+  const sentAt = new Date(message.timestamp);
+  return (
+    <div className="mb-0.5 flex items-baseline gap-2">
+      <span className="cursor-pointer text-[16px] font-medium text-on-surface hover:underline">
+        {message.sender.username}
+      </span>
+      <time
+        dateTime={message.timestamp}
+        className="text-xs text-outline-variant"
+        title={sentAt.toLocaleString("fr-FR")}
+      >
+        {stampFormatter.format(sentAt)}
+      </time>
+    </div>
+  );
+}
+
+type MessageRowHeaderProps = Pick<MessageRowProps, "message">;
+
+function MessageRowHeader({ message }: MessageRowHeaderProps) {
+  return (
+    <Avatar
+      name={message.sender.username}
+      size={40}
+      className="mt-0.5 mr-4 cursor-pointer"
+      backgroundColor={stringToHslColor(message.sender.username)}
+    />
+  );
+}
+
+type GroupedMessageRowHeaderProps = Pick<MessageRowProps, "message">;
+
+function GroupedMessageRowHeader({ message }: GroupedMessageRowHeaderProps) {
+  const sentAt = new Date(message.timestamp);
+  return (
+    <time
+      dateTime={sentAt.toISOString()}
+      className="mt-1 mr-4 w-10 shrink-0 pr-4 text-right text-[10px] text-outline-variant opacity-0 group-hover:opacity-100"
+    >
+      {timeFormatter.format(sentAt)}
+    </time>
+  );
+}
+
+function ImageAttachment({
+  media,
+  handleError,
+}: {
+  media: MediaAttachment;
+  handleError: (e: any) => void;
+}) {
+  return (
+    <Attachment
+      key={media.fileId}
+      orientation="vertical"
+      className="w-80 min-w-0 has-data-[slot=attachment-content]:w-80"
+    >
+      <AttachmentMedia variant={"image"}>
+        <img
+          className="object-cover"
+          src={media.url}
+          alt={media.originalName ?? "image"}
+          onError={handleError}
+        />
+      </AttachmentMedia>
+      <AttachmentContent>
+        <AttachmentTitle>{media.originalName}</AttachmentTitle>
+        <AttachmentDescription>
+          {getSimplifiedType(media.contentType ?? "")}
+        </AttachmentDescription>
+      </AttachmentContent>
+    </Attachment>
+  );
+}
+
+function DocAttachment({ media }: { media: MediaAttachment }) {
+  const [trigger] = useLazyGetFileQuery();
+
+  const handleDownload = async () => {
+    const blob = await trigger(media.fileId).unwrap();
+    downloadFile(blob, media.originalName ?? "file");
+  };
+
+  return (
+    <Attachment key={media.fileId}>
+      <AttachmentMedia>
+        <FaFileAlt />
+      </AttachmentMedia>
+      <AttachmentContent>
+        <AttachmentTitle>{media.originalName}</AttachmentTitle>
+        <AttachmentDescription>
+          {getSimplifiedType(media.contentType ?? "")}
+        </AttachmentDescription>
+      </AttachmentContent>
+      <AttachmentActions onClick={handleDownload}>
+        <FaDownload />
+      </AttachmentActions>
+    </Attachment>
+  );
+}
+
+function MessageAttachment({ media }: { media: MediaAttachment }) {
+  const dispatch = useAppDispatch();
+  const hasRetried = useRef(false);
+  const handleError = () => {
+    if (hasRetried.current) return;
+    hasRetried.current = true;
+    dispatch(strifeApi.util.invalidateTags(["Messages"]));
+  };
+
+  if (!media.contentType?.startsWith("image/")) {
+    return <DocAttachment media={media} />;
+  }
+
+  return <ImageAttachment media={media} handleError={handleError} />;
+}
+
+function ReactionPill({
+  emoji,
+  count,
+  reacted,
+  onClick,
+}: {
+  emoji: string;
+  count: number;
+  reacted?: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`flex h-[26px] cursor-pointer items-center gap-1.5 rounded-lg border px-2 transition-colors ${
+        reacted
+          ? "border-primary-container bg-primary-container/25 hover:bg-primary-container/35"
+          : "border-primary-container/40 bg-primary-container/10 hover:border-primary-container hover:bg-primary-container/20"
+      }`}
+    >
+      <span className="text-[15px] leading-none">{emoji}</span>
+      <span
+        className={`text-xs leading-none font-semibold tabular-nums ${
+          reacted ? "text-primary" : "text-primary-fixed-dim"
+        }`}
+      >
+        {count}
+      </span>
+    </button>
   );
 }
 

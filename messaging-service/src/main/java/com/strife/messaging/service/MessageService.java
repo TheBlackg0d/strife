@@ -13,19 +13,26 @@ import com.strife.common.exception.ActionNotAuthorizedException;
 import com.strife.common.exception.RessourceNotFoundException;
 import com.strife.messaging.dto.MediaRequest;
 import com.strife.messaging.dto.MessageRequest;
+import com.strife.messaging.dto.ReactionRequest;
+import com.strife.messaging.event.EventRoutingKey;
 import com.strife.messaging.model.Channel;
 import com.strife.messaging.model.Message;
 import com.strife.messaging.model.MessageMedia;
+import com.strife.messaging.model.Reaction;
 import com.strife.messaging.model.User;
 import com.strife.messaging.repository.MessageRepository;
+import com.strife.messaging.repository.ReactionRepository;
 
 @Service
 public class MessageService {
 
     private final MessageRepository messageRepository;
 
-    public MessageService(MessageRepository messageRepository) {
+    private final ReactionRepository reactionRepository;
+
+    public MessageService(MessageRepository messageRepository, ReactionRepository reactionRepository) {
         this.messageRepository = messageRepository;
+        this.reactionRepository = reactionRepository;
     }
 
     public List<Message> getMessagesForChannel(UUID channelId) {
@@ -61,6 +68,46 @@ public class MessageService {
         message.setEditedAt(Instant.now());
 
         return messageRepository.save(message);
+    }
+
+    public List<UUID> deleteMessage(UUID messageId, UUID userId) {
+        Message message = messageRepository.findById(messageId)
+                .orElseThrow(() -> new RessourceNotFoundException("Message not found"));
+
+        if (!message.getSender().getId().equals(userId)) {
+            throw new ActionNotAuthorizedException("You are not authorized to delete this message");
+        }
+
+        List<UUID> mediaIds = message.getMedia().stream()
+                .map(MessageMedia::getFileId)
+                .toList();
+
+        messageRepository.delete(message);
+
+        return mediaIds;
+    }
+
+    @Transactional
+    public EventRoutingKey toggleReaction(ReactionRequest request, User user) {
+        Message message = messageRepository.findById(request.messageId())
+                .orElseThrow(() -> new RessourceNotFoundException("Message not found"));
+        if (!message.getSender().getId().equals(user.getId())) {
+            throw new ActionNotAuthorizedException("You are not authorized to delete this message");
+        }
+
+        Reaction reaction = reactionRepository
+                .findByMessageIdAndUserIdAndEmoji(request.messageId(), user.getId(), request.emoji())
+                .orElse(null);
+
+        if (reaction == null) {
+            reactionRepository.save(new Reaction(message, user, request.emoji()));
+            return EventRoutingKey.REACTION_ADDED;
+        }
+
+        reactionRepository.delete(reaction);
+
+        return EventRoutingKey.REACTION_REMOVED;
+
     }
 
     private List<MessageMedia> toMedia(List<MediaRequest> media) {

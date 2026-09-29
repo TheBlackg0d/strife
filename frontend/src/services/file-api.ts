@@ -10,6 +10,14 @@ const fileApi = strifeApi.injectEndpoints({
         body: files,
       }),
     }),
+    getFile: builder.query<Blob, string>({
+      query: (fileId) => ({
+        url: `files/${fileId}`,
+        method: "GET",
+        responseHandler: (response) => response.blob(),
+      }),
+      keepUnusedDataFor: 0,
+    }),
     deleteFile: builder.mutation<void, string>({
       query: (fileId) => ({
         url: `files/${fileId}`,
@@ -19,4 +27,9 @@ const fileApi = strifeApi.injectEndpoints({
   }),
 });
 
-export const { useUploadFileMutation, useDeleteFileMutation } = fileApi;
+export const {
+  useUploadFileMutation,
+  useDeleteFileMutation,
+  useGetFileQuery,
+  useLazyGetFileQuery,
+} = fileApi;

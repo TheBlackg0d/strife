@@ -47,7 +47,6 @@ export interface MessageWebSocketMessage {
   media: MediaAttachment[] | null;
 }
 
-/** Envelope broadcast by realtime-gateway on /topic/channel.{channelId}. */
 export interface MessageBroadcast {
   actionType: MessageActionType;
   message: MessageWebSocketMessage;
@@ -55,28 +54,15 @@ export interface MessageBroadcast {
 
 export interface Channel {
   id: string;
-  type: ChannelType;
-  name: string | null;
+  title: string;
   ownerId: string | null;
   guildId: string | null;
-  showChannel: boolean;
-  users: User[];
 }
 
-export function isGroupChannel(channel: Channel): boolean {
-  return channel.type === "GROUP_DM";
-}
-
-export function otherUser(
-  channel: Channel,
-  currentUserId?: string,
-): User | undefined {
-  return channel.users.find((user) => user.id !== currentUserId);
-}
-
-export function channelTitle(channel: Channel, currentUserId?: string): string {
-  if (isGroupChannel(channel)) {
-    return channel.name ?? "Groupe privé";
-  }
-  return otherUser(channel, currentUserId)?.username ?? "Conversation";
-}
+export type ChannelPageDetails = {
+  channel: Channel;
+  messages: Message[];
+  participants: User[];
+  currentUserId: string;
+  isGroupChannel: boolean;
+};

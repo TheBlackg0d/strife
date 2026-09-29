@@ -50,6 +50,14 @@ public class ChannelService {
         return channel;
     }
 
+    @Transactional
+    public Channel getDmChannelByFriendId(UUID friendId, UUID currentUserId) {
+        User currentUser = this.userService.getUser(currentUserId);
+        User friend = this.userService.getUser(friendId);
+
+        return this.createDm(currentUser, friend);
+    }
+
     public boolean memberBelongToChannel(UUID channelId, UUID userId) {
         return channelRepository.existsByIdAndMemberId(channelId, userId);
     }

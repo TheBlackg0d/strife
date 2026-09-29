@@ -1,4 +1,7 @@
-import type { Channel } from "@/pages/channel/types/channel";
+import type {
+  Channel,
+  ChannelPageDetails,
+} from "@/pages/channel/types/channel";
 import { strifeApi } from "./strife-api";
 
 const channelApi = strifeApi.injectEndpoints({
@@ -13,7 +16,7 @@ const channelApi = strifeApi.injectEndpoints({
         })),
       ],
     }),
-    getChannel: builder.query<Channel, string>({
+    getChannel: builder.query<ChannelPageDetails, string>({
       query: (channelId) => ({ url: `channel/${channelId}`, method: "GET" }),
       providesTags: (_result, _error, channelId) => [
         { type: "Channels", id: channelId },

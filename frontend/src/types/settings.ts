@@ -10,7 +10,6 @@ export interface SettingsUser {
   status?: PresenceStatus;
 }
 
-/** Editable fields of the "Mon compte" form. */
 export interface ProfileFormValues {
   username: string;
   email: string;

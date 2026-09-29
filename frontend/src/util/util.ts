@@ -29,3 +29,13 @@ export function initials(name: string): string {
   }
   return name.slice(0, 2).toUpperCase();
 }
+
+export const stampFormatter = new Intl.DateTimeFormat("fr-FR", {
+  dateStyle: "short",
+  timeStyle: "short",
+});
+
+export const timeFormatter = new Intl.DateTimeFormat("fr-FR", {
+  hour: "2-digit",
+  minute: "2-digit",
+});

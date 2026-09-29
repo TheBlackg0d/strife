@@ -1,0 +1,75 @@
+import { useId, useState } from "react";
+import { MdClose } from "react-icons/md";
+import SettingsSidebar from "./components/SettingsSidebar";
+import { getSection } from "./sections";
+import { useNavigate } from "react-router";
+import Modal from "~/components/strife/Modal";
+import { useLogoutMutation } from "~/api/auth/auth.hooks";
+import CloseModalButton from "~/components/strife/CloseModalButton";
+
+export type SettingsSectionId =
+  | "account"
+  | "profiles"
+  | "privacy"
+  | "appearance"
+  | "accessibility"
+  | "voice";
+
+interface SettingsModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  initialSection?: SettingsSectionId;
+}
+
+function SettingsModal({
+  isOpen,
+  onClose,
+  initialSection = "account",
+}: SettingsModalProps) {
+  const [activeSection, setActiveSection] =
+    useState<SettingsSectionId>(initialSection);
+  const headingId = useId();
+  const navigate = useNavigate();
+  const { mutate: logout } = useLogoutMutation();
+
+  const { label, Component } = getSection(activeSection);
+
+  const onLogout = async () => {
+    logout();
+    navigate("/login");
+    onClose();
+  };
+
+  return (
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      labelledBy={headingId}
+      panelClassName="relative flex h-full max-h-[921px] w-full max-w-7xl overflow-hidden rounded-xl bg-surface-container ring-1 ring-white/10"
+    >
+      <SettingsSidebar
+        activeSection={activeSection}
+        onSelectSection={setActiveSection}
+        onLogout={onLogout}
+      />
+
+      <main className="flex min-w-0 flex-1 flex-col overflow-y-auto pb-20">
+        <div className="sticky top-0 z-10 bg-surface-container/90 px-10 pb-4 pt-12 backdrop-blur-md">
+          <h1
+            id={headingId}
+            className="text-[20px] font-bold tracking-[-0.02em] text-on-surface"
+          >
+            {label}
+          </h1>
+        </div>
+
+        <div className="max-w-3xl px-10">
+          <Component />
+        </div>
+      </main>
+      <CloseModalButton onClose={onClose} />
+    </Modal>
+  );
+}
+
+export default SettingsModal;
