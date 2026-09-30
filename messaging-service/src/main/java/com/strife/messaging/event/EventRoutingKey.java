@@ -6,8 +6,8 @@ public enum EventRoutingKey {
     MESSAGE_UPDATED("messaging.message.updated"),
     MESSAGE_DELETED("messaging.message.deleted"),
 
-    REACTION_ADDED("messaging.reaction.added"),
-    REACTION_REMOVED("messaging.reaction.removed");
+    REACTION_CREATED("messaging.reaction.created"),
+    REACTION_DELETED("messaging.reaction.deleted");
 
     private String value;
 

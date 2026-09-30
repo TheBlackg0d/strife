@@ -18,9 +18,9 @@ export const emptyMessages: Record<FriendFilter, string> = {
 };
 
 export const filters: Filter[] = [
-  { value: "ONLINE", label: "En ligne" },
-  { value: "ALL", label: "Tous" },
-  { value: "PENDING_FRIEND_REQUEST_RECEIVED", label: "En attente" },
-  { value: "PENDING_FRIEND_REQUEST_SENT", label: "Envoyées" },
-  { value: "BLOCKED", label: "Bloqués" },
+  { filter: "ONLINE", label: "En ligne" },
+  { filter: "ALL", label: "Tous" },
+  { filter: "PENDING_FRIEND_REQUEST_RECEIVED", label: "En attente" },
+  { filter: "PENDING_FRIEND_REQUEST_SENT", label: "Envoyées" },
+  { filter: "BLOCKED", label: "Bloqués" },
 ];

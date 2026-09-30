@@ -30,7 +30,7 @@ export type ChannelPageDetails = {
   channel: Channel;
   messages: Message[];
   participants: Friend[];
-  currentUserId: string;
+  currentUser: ChannelUser;
   isGroupChannel: boolean;
   friends: Friend[];
 };

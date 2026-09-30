@@ -10,6 +10,8 @@ import type {
   ChannelBroadcast,
   Message,
   MessageWebSocketMessage,
+  Reaction,
+  ReactionWebSocketMessage,
 } from "./message.types";
 import { useStomp, useSubscription } from "~/shared/hooks/useStomp";
 
@@ -31,6 +33,68 @@ function useUpsertMessage() {
 
         return oldData.map((m) => (m.id === message.id ? message : m));
       },
+    );
+  };
+}
+
+function useUpsertReaction() {
+  const queryClient = useQueryClient();
+
+  return (reaction: Reaction) => {
+    queryClient.setQueryData<Message[]>(
+      getMessagesQueryOptions(reaction.channelId).queryKey,
+      (oldData) =>
+        oldData?.map((m) => {
+          if (m.id !== reaction.messageId) return m;
+
+          const hasGroup = m.reactions.some((g) => g.emoji === reaction.emoji);
+          const reactions = hasGroup
+            ? m.reactions.map((g) =>
+                g.emoji === reaction.emoji
+                  ? {
+                      ...g,
+                      count: g.count + 1,
+                      reactions: [...g.reactions, reaction],
+                    }
+                  : g,
+              )
+            : [
+                ...m.reactions,
+                { emoji: reaction.emoji, count: 1, reactions: [reaction] },
+              ];
+
+          return { ...m, reactions };
+        }),
+    );
+  };
+}
+
+function useDeleteReaction() {
+  const queryClient = useQueryClient();
+
+  return (reaction: Reaction) => {
+    queryClient.setQueryData<Message[]>(
+      getMessagesQueryOptions(reaction.channelId).queryKey,
+      (oldData) =>
+        oldData?.map((m) => {
+          if (m.id !== reaction.messageId) return m;
+
+          const reactions = m.reactions
+            .map((g) =>
+              g.emoji === reaction.emoji
+                ? {
+                    ...g,
+                    count: g.count - 1,
+                    reactions: g.reactions.filter(
+                      (r) => r.userId !== reaction.userId,
+                    ),
+                  }
+                : g,
+            )
+            .filter((g) => g.count > 0);
+
+          return { ...m, reactions };
+        }),
     );
   };
 }
@@ -83,21 +147,44 @@ function toMessage(message: MessageWebSocketMessage): Message {
       id: message.senderId,
       username: message.senderUsername,
     },
+    reactions: [],
     timestamp: message.sentAt,
     editedAt: message.editedAt ?? null,
+  };
+}
+
+function toReaction(reactionEvent: ReactionWebSocketMessage): Reaction {
+  return {
+    id: reactionEvent.reactionId,
+    emoji: reactionEvent.emoji,
+    messageId: reactionEvent.messageId,
+    userId: reactionEvent.userId,
+    channelId: reactionEvent.channelId,
   };
 }
 
 export function useMessageSubscription(channelId: string) {
   const queryClient = useQueryClient();
   const upsertMessage = useUpsertMessage();
+  const upsertReaction = useUpsertReaction();
+  const deleteReaction = useDeleteReaction();
   const stomp = useStomp();
 
   useSubscription<ChannelBroadcast>(
     stomp,
     `/topic/channel.${channelId}`,
     (broadcast) => {
-      if (!("message" in broadcast)) return;
+      if (!("message" in broadcast)) {
+        if (broadcast.actionType === "REACTION_CREATED") {
+          upsertReaction(toReaction(broadcast.reactionEvent));
+        }
+
+        if (broadcast.actionType === "REACTION_DELETED") {
+          deleteReaction(toReaction(broadcast.reactionEvent));
+        }
+
+        return;
+      }
 
       const message = toMessage(broadcast.message);
 

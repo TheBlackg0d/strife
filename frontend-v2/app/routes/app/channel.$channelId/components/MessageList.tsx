@@ -57,6 +57,10 @@ function MessageList({ channelDetails, onAddMembers }: MessageListProps) {
             sentAt.getTime() - (previousSentAt?.getTime() ?? 0) <
               GROUPING_WINDOW_MS;
 
+          const messageWithCurrentUserId = {
+            ...message,
+            currentUserId: channelDetails.currentUser.id,
+          };
           return (
             <Fragment key={message.id}>
               {startsNewDay && (
@@ -73,7 +77,10 @@ function MessageList({ channelDetails, onAddMembers }: MessageListProps) {
                   </span>
                 </li>
               )}
-              <MessageRow message={message} isGrouped={isGrouped} />
+              <MessageRow
+                message={messageWithCurrentUserId}
+                isGrouped={isGrouped}
+              />
             </Fragment>
           );
         })}

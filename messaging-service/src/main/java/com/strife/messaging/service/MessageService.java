@@ -88,11 +88,11 @@ public class MessageService {
     }
 
     @Transactional
-    public EventRoutingKey toggleReaction(ReactionRequest request, User user) {
+    public Reaction toggleReaction(ReactionRequest request, User user) {
         Message message = messageRepository.findById(request.messageId())
                 .orElseThrow(() -> new RessourceNotFoundException("Message not found"));
-        if (!message.getSender().getId().equals(user.getId())) {
-            throw new ActionNotAuthorizedException("You are not authorized to delete this message");
+        if (!message.getChannel().getMembers().stream().anyMatch(member -> member.getId().equals(user.getId()))) {
+            throw new ActionNotAuthorizedException("You are not authorized to react to this message");
         }
 
         Reaction reaction = reactionRepository
@@ -100,13 +100,12 @@ public class MessageService {
                 .orElse(null);
 
         if (reaction == null) {
-            reactionRepository.save(new Reaction(message, user, request.emoji()));
-            return EventRoutingKey.REACTION_ADDED;
+            return reactionRepository.save(new Reaction(message, user, request.emoji()));
         }
 
         reactionRepository.delete(reaction);
 
-        return EventRoutingKey.REACTION_REMOVED;
+        return null;
 
     }
 

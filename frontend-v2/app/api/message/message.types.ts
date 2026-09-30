@@ -10,8 +10,27 @@ export type Message = {
   content: string;
   media: MediaAttachment[] | null;
   sender: Sender;
+  reactions: ReactionGroup[];
   timestamp: string;
   editedAt: string | null;
+};
+
+export type MessageWithCurrentUserId = Message & {
+  currentUserId: string;
+};
+
+export type Reaction = {
+  id: string;
+  userId: string;
+  messageId: string;
+  channelId: string;
+  emoji: string;
+};
+
+export type ReactionGroup = {
+  emoji: string;
+  count: number;
+  reactions: Reaction[];
 };
 
 export type MessageRequest = Pick<Message, "channelId" | "content"> & {
@@ -63,6 +82,7 @@ export type MessageBroadcast = {
 };
 
 export type ReactionWebSocketMessage = {
+  reactionId: string;
   messageId: string;
   userId: string;
   channelId: string;

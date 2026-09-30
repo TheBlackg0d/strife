@@ -11,20 +11,25 @@ import { useRef } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { getFileQueryOptions } from "~/api/file/file.keys";
 import { getMessagesQueryOptions } from "~/api/message/message.keys";
-import type { MediaAttachment, Message } from "~/api/message/message.types";
+import type {
+  MediaAttachment,
+  Reaction,
+  MessageWithCurrentUserId,
+} from "~/api/message/message.types";
 import { useMessageRowEditMode } from "~/shared/store/useMessageRowEditMode";
 import MessageActions from "./MessageActions";
 import MessageEditor from "./MessageEditor";
 import { stampFormatter, timeFormatter } from "~/lib/format";
 import Avatar from "~/components/strife/Avatar";
 import { stringToHslColor } from "~/lib/avatar";
+import { useToggleReaction } from "~/api/message/message.hooks";
 
 interface MessageRowProps {
-  message: Message;
+  message: MessageWithCurrentUserId;
   isGrouped: boolean;
 }
 
-const QUICK_REACTIONS = ["👍", "❤️", "😃", "😢", "🙏", "👎", "😡"];
+// const QUICK_REACTIONS = ["👍", "❤️", "😃", "😢", "🙏", "👎", "😡"];
 
 async function downloadFile(blob: Blob, filename: string) {
   const blobUrl = window.URL.createObjectURL(blob);
@@ -99,14 +104,34 @@ function MessageRow({ message, isGrouped }: MessageRowProps) {
 type MessageRowReactionsProps = Pick<MessageRowProps, "message">;
 
 function MessageRowReactions({ message }: MessageRowReactionsProps) {
+  const toggleReaction = useToggleReaction();
+  const handleReact = (reactions: Reaction[]) => {
+    let reaction: Reaction | undefined = reactions.find(
+      (r) => r.userId === message.currentUserId,
+    );
+
+    console.log(reaction + "hey");
+
+    if (!reaction) {
+      reaction = {
+        id: "",
+        emoji: reactions[0].emoji,
+        messageId: message.id,
+        userId: message.currentUserId,
+        channelId: message.channelId,
+      };
+    }
+
+    toggleReaction.mutate(reaction);
+  };
   return (
     <div className="mt-1.5 flex flex-wrap gap-1">
-      {QUICK_REACTIONS.map((reaction) => (
+      {message.reactions.map((reactionGroup) => (
         <ReactionPill
-          key={reaction}
-          emoji={reaction}
-          count={1}
-          onClick={() => console.log(reaction)}
+          key={`${reactionGroup.emoji}-${reactionGroup.count}-${message.id}`}
+          emoji={`${reactionGroup.emoji}`}
+          count={reactionGroup.count}
+          onClick={() => handleReact(reactionGroup.reactions)}
         />
       ))}
     </div>

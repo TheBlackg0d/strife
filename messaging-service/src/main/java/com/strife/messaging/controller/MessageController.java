@@ -113,12 +113,17 @@ public class MessageController {
     public ResponseEntity<Void> toggleReaction(@RequestBody ReactionRequest reactionRequest,
             @PathVariable UUID messageId, @AuthenticationPrincipal JwtPrincipal principal) {
         User user = this.userService.getUser(principal.id());
-        EventRoutingKey eventRoutingKey = this.messageService.toggleReaction(reactionRequest, user);
+        Reaction reaction = this.messageService.toggleReaction(reactionRequest, user);
+
+        EventRoutingKey eventRoutingKey = reaction == null ? EventRoutingKey.REACTION_DELETED
+                : EventRoutingKey.REACTION_CREATED;
+
+        UUID reactionId = reaction == null ? null : reaction.getId();
 
         this.messageEventPublisher.sendMessagingEvent(
                 eventRoutingKey,
                 new MessageReactionEvent(reactionRequest.messageId(), user.getId(), reactionRequest.channelId(),
-                        reactionRequest.emoji()));
+                        reactionRequest.emoji(), reactionId));
 
         return ResponseEntity.ok().build();
     }
