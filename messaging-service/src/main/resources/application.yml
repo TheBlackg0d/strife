@@ -20,7 +20,7 @@ spring:
     password: strife
   cloud:
     function:
-      definition: accountCreatedEventConsumer;relationshipChangeEventConsumer
+      definition: accountCreatedEventConsumer;relationshipChangeEventConsumer;guildChannelCreatedEventConsumer
     stream:
       bindings:
         messagePosted-out-0:
@@ -32,6 +32,9 @@ spring:
           group: ${spring.application.name}
         relationshipChangeEventConsumer-in-0:
           destination: user.events
+          group: ${spring.application.name}
+        guildChannelCreatedEventConsumer-in-0:
+          destination: guild.events
           group: ${spring.application.name}
       rabbit:
         bindings:
@@ -51,6 +54,10 @@ spring:
             consumer:
               exchange-type: topic
               binding-routing-key: user.relationship.*
+          guildChannelCreatedEventConsumer-in-0:
+            consumer:
+              exchange-type: topic
+              binding-routing-key: guild.channel.created
 
 server:
   port: 8084

@@ -18,6 +18,18 @@ spring:
     username: strife
     password: strife
 
+  cloud:
+    stream:
+      bindings:
+        channelCreated-out-0:
+          destination: guild.events
+      rabbit:
+        bindings:
+          channelCreated-out-0:
+            producer:
+              exchange-type: topic
+              routing-key-expression: headers['routingKey']
+
 server:
   port: 8083
 
@@ -26,3 +38,6 @@ management:
     web:
       exposure:
         include: health,info
+
+jwt:
+  secret: ${JWT_SECRET}

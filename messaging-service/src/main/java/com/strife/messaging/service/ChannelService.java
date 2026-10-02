@@ -5,7 +5,9 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import com.strife.common.dto.UserDTO;
 import com.strife.common.event.channel.ChannelUpsertedEvent;
+import com.strife.common.event.guild.ChannelCreatedEvent;
 import com.strife.common.exception.ActionNotAuthorizedException;
 import com.strife.common.exception.RessourceDoNotMatchException;
 import com.strife.common.exception.RessourceNotFoundException;
@@ -108,6 +110,19 @@ public class ChannelService {
         }
 
         return createChannel(channel);
+    }
+
+    @Transactional
+    public void createGuildChannel(ChannelCreatedEvent event) {
+        if (channelRepository.existsById(event.channelId())) {
+            return;
+        }
+
+        List<UUID> memberIds = event.members() == null ? List.of()
+                : event.members().stream().map(UserDTO::id).toList();
+
+        createChannel(Channel.guildText(event.channelId(), event.guildId(), event.channelName(),
+                userService.getUsers(memberIds)));
     }
 
     @Transactional

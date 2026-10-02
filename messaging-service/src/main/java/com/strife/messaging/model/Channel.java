@@ -13,8 +13,6 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
@@ -47,7 +45,6 @@ public class Channel {
     public static final int MAX_GROUP_MEMBERS = 10;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Enumerated(EnumType.STRING)
@@ -82,6 +79,7 @@ public class Channel {
         }
 
         Channel channel = new Channel();
+        channel.id = UUID.randomUUID();
         channel.type = ChannelType.DM;
         channel.dmKey = dmKeyFor(first.getId(), second.getId());
         channel.members.add(first);
@@ -95,6 +93,7 @@ public class Channel {
         }
 
         Channel channel = new Channel();
+        channel.id = UUID.randomUUID();
         channel.type = ChannelType.GROUP_DM;
         channel.name = name;
         channel.owner = owner;
@@ -102,15 +101,21 @@ public class Channel {
         return channel;
     }
 
-    public static Channel guildText(UUID guildId, String name) {
+    public static Channel guildText(UUID id, UUID guildId, String name, List<User> members) {
+        if (id == null) {
+            throw new RessourceDoNotMatchException("A guild channel needs an id.", "id");
+        }
         if (name == null || name.isBlank()) {
             throw new RessourceDoNotMatchException("A guild channel needs a name.", "name");
         }
 
         Channel channel = new Channel();
+        channel.id = id;
         channel.type = ChannelType.GUILD_TEXT;
         channel.name = name;
         channel.guildId = guildId;
+        channel.showChannel = true;
+        channel.members.addAll(members);
         return channel;
     }
 

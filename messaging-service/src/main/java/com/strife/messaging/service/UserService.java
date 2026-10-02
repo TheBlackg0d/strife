@@ -1,5 +1,6 @@
 package com.strife.messaging.service;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -23,6 +24,10 @@ public class UserService {
     public User getUser(UUID id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new RessourceNotFoundException("User not found"));
+    }
+
+    public List<User> getUsers(List<UUID> ids) {
+        return userRepository.findAllById(ids);
     }
 
     public User createUser(UserDTO userDTO) {
