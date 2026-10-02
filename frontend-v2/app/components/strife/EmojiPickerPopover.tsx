@@ -62,15 +62,20 @@ function EmojiPickerPopover({
       anchorRef.current?.focus();
     }
 
+    function handleScroll(event: Event) {
+      if (popoverRef.current?.contains(event.target as Node)) return;
+      onClose();
+    }
+
     document.addEventListener("mousedown", handlePointerDown);
     document.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("scroll", onClose, true);
+    window.addEventListener("scroll", handleScroll, true);
     window.addEventListener("resize", onClose);
 
     return () => {
       document.removeEventListener("mousedown", handlePointerDown);
       document.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("scroll", onClose, true);
+      window.removeEventListener("scroll", handleScroll, true);
       window.removeEventListener("resize", onClose);
     };
   }, [isOpen, onClose, anchorRef]);

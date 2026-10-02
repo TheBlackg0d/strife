@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="002-create-member-table" author="Moncles Junior Herisse">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="member"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="member">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" primaryKeyName="pk_member" nullable="false"/>
+            </column>
+            <column name="guild_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="nickname" type="VARCHAR(255)"/>
+            <column name="username" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="joined_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint
+                tableName="member"
+                columnNames="guild_id, user_id"
+                constraintName="uq_member_guild_user"/>
+
+        <addForeignKeyConstraint
+                baseTableName="member"
+                baseColumnNames="guild_id"
+                constraintName="fk_member_guild"
+                referencedTableName="guild"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+
+        <createIndex tableName="member" indexName="idx_member_user_id">
+            <column name="user_id"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

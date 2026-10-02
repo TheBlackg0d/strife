@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="004-create-role-table" author="Moncles Junior Herisse">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="role"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="role">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" primaryKeyName="pk_role" nullable="false"/>
+            </column>
+            <column name="channel_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="permissions" type="BIGINT" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint
+                tableName="role"
+                columnNames="channel_id, name"
+                constraintName="uq_role_channel_name"/>
+
+        <addForeignKeyConstraint
+                baseTableName="role"
+                baseColumnNames="channel_id"
+                constraintName="fk_role_channel"
+                referencedTableName="channel"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+    </changeSet>
+
+</databaseChangeLog>

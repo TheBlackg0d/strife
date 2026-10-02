@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="005-create-member-role-table" author="Moncles Junior Herisse">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="member_role"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="member_role">
+            <column name="member_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey
+                tableName="member_role"
+                columnNames="member_id, role_id"
+                constraintName="pk_member_role"/>
+
+        <addForeignKeyConstraint
+                baseTableName="member_role"
+                baseColumnNames="member_id"
+                constraintName="fk_member_role_member"
+                referencedTableName="member"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint
+                baseTableName="member_role"
+                baseColumnNames="role_id"
+                constraintName="fk_member_role_role"
+                referencedTableName="role"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+
+        <createIndex tableName="member_role" indexName="idx_member_role_role_id">
+            <column name="role_id"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>
