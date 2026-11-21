@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import com.strife.messaging.dto.GroupDmRequest;
 import com.strife.messaging.dto.MessageRequest;
@@ -46,6 +46,10 @@ public class DevMessagingSeeder implements CommandLineRunner {
     private static final String MARKER_USER = "theblackg0d";
 
     private static final Duration MESSAGE_GAP = Duration.ofMinutes(3);
+
+    private static final int MAX_ATTEMPTS = 20;
+
+    private static final Duration RETRY_DELAY = Duration.ofSeconds(3);
 
     private static final List<SeedDm> SEED_DMS = List.of(
             new SeedDm("theblackg0d", "dev", List.of(
@@ -81,9 +85,43 @@ public class DevMessagingSeeder implements CommandLineRunner {
 
     private final MessageRepository messageRepository;
 
+    private final TransactionTemplate transactionTemplate;
+
     @Override
-    @Transactional
     public void run(String... args) {
+        Thread.ofVirtual().name("dev-messaging-seeder").start(this::seedWithRetry);
+    }
+
+    private void seedWithRetry() {
+        Set<String> usernames = seedUsernames();
+
+        for (int attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+            if (attempt > 1 && !sleep()) {
+                return;
+            }
+
+            if (usernames.stream().allMatch(username -> userRepository.findByUsername(username).isPresent())) {
+                transactionTemplate.executeWithoutResult(status -> seed());
+                return;
+            }
+        }
+
+        log.warn("Seed de dev : utilisateurs pas tous répliqués après {} tentatives, seed messaging partiel.",
+                MAX_ATTEMPTS);
+        transactionTemplate.executeWithoutResult(status -> seed());
+    }
+
+    private boolean sleep() {
+        try {
+            Thread.sleep(RETRY_DELAY);
+            return true;
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return false;
+        }
+    }
+
+    private void seed() {
         Map<String, User> users = loadSeedUsers();
 
         if (!users.containsKey(MARKER_USER)) {
@@ -134,6 +172,13 @@ public class DevMessagingSeeder implements CommandLineRunner {
     }
 
     private Map<String, User> loadSeedUsers() {
+        return seedUsernames().stream()
+                .map(userRepository::findByUsername)
+                .flatMap(Optional::stream)
+                .collect(Collectors.toMap(User::getUsername, user -> user));
+    }
+
+    private Set<String> seedUsernames() {
         Set<String> usernames = new LinkedHashSet<>();
         usernames.add(MARKER_USER);
         SEED_DMS.forEach(dm -> {
@@ -145,10 +190,7 @@ public class DevMessagingSeeder implements CommandLineRunner {
             usernames.addAll(group.members());
         });
 
-        return usernames.stream()
-                .map(userRepository::findByUsername)
-                .flatMap(Optional::stream)
-                .collect(Collectors.toMap(User::getUsername, user -> user));
+        return usernames;
     }
 
     private void seedMessages(Channel channel, List<SeedLine> lines, Map<String, User> users) {

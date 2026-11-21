@@ -10,12 +10,6 @@ public class GuildMapper {
         guild.setName(request.name());
         guild.setOwnerId(request.owner().id());
 
-        if (!request.members().stream().anyMatch(it -> it.id() == request.owner().id())) {
-            guild.getMembers().add(UserMapper.toEntity(request.owner()));
-        }
-
-        request.members().forEach(member -> guild.getMembers().add(UserMapper.toEntity(member)));
-
         return guild;
     }
 }

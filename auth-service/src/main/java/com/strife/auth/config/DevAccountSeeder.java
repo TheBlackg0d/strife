@@ -60,12 +60,11 @@ public class DevAccountSeeder implements CommandLineRunner {
         for (String username : SEED_USERNAMES) {
             String email = username + EMAIL_DOMAIN;
 
-            if (accountService.existsByEmail(email)) {
-                continue;
-            }
+            boolean exists = accountService.existsByEmail(email);
 
-            Account account = accountService.createAccount(
-                    new RegisterDTO(email, SEED_PASSWORD, SEED_PASSWORD, username));
+            Account account = exists
+                    ? accountService.getAccountByEmail(email)
+                    : accountService.createAccount(new RegisterDTO(email, SEED_PASSWORD, SEED_PASSWORD, username));
 
             AccountRegisteredEvent event = new AccountRegisteredEvent(
                     account.getId(),
@@ -74,6 +73,10 @@ public class DevAccountSeeder implements CommandLineRunner {
                     account.getVersion());
 
             accountEventPublisher.publishAccountRegisteredEvent(event);
+
+            if (exists) {
+                continue;
+            }
 
             log.debug("Compte de dev créé : {} ({})", account.getUsername(), account.getId());
             created++;

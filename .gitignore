@@ -18,3 +18,6 @@ target/
 
 # Env
 .env
+
+# Claude Code (réglages personnels)
+.claude/settings.local.json

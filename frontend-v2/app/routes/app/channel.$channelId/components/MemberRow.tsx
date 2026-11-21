@@ -2,7 +2,7 @@ import type { Friend } from "~/api/friend/friend.types";
 import Avatar from "~/components/strife/Avatar";
 
 interface MemberRowProps {
-  member: Friend;
+  member: Pick<Friend, "id" | "username">;
   isCurrentUser?: boolean;
   onSelect?: (userId: string) => void;
 }

@@ -1,4 +1,4 @@
-import { MdGroups } from "react-icons/md";
+import { MdGroups, MdTag } from "react-icons/md";
 import type { ChannelPageDetails } from "~/api/channel/channel.types";
 import Avatar from "~/components/strife/Avatar";
 import Button from "~/components/strife/StrifeButton";
@@ -15,6 +15,30 @@ function ChannelIntro({
   onBlock,
 }: ChannelIntroProps) {
   const { channel, isGroupChannel } = channelDetails;
+
+  if (channel.type === "GUILD_TEXT") {
+    return (
+      <div className="mb-6 pt-4">
+        <Avatar
+          name={channel.channelTitle}
+          icon={MdTag}
+          size={68}
+          className="mb-4"
+        />
+        <h2 className="text-[32px] leading-tight font-bold text-on-surface">
+          Bienvenue dans #{channel.channelTitle} !
+        </h2>
+        <p className="mt-2 text-[15px] text-on-surface-variant">
+          C'est le début du salon{" "}
+          <span className="font-semibold text-on-surface">
+            #{channel.channelTitle}
+          </span>
+          .
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="mb-6 pt-4">
       <Avatar

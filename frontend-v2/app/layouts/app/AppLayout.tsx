@@ -1,7 +1,7 @@
-import { Outlet, useMatch, useNavigate } from "react-router";
+import { Outlet, useMatch, useNavigate, useParams } from "react-router";
 import type { Route } from "./+types/AppLayout";
 import GuildList from "./components/guildSideBar/GuildList";
-import { guilds, pendingRequestCount } from "~/data/dashboard";
+import { pendingRequestCount } from "~/data/dashboard";
 
 import { useState } from "react";
 import DirectMessageSidebar from "./components/directMessage/DirectMessageSidebar";
@@ -15,6 +15,10 @@ import { getProfileQueryOptions } from "~/api/profile/profile.keys";
 import { authMiddleware } from "~/lib/auth-middleware";
 import type { Channel } from "~/api/channel/channel.types";
 import SettingsModal from "~/shared/settings/SettingsModal";
+import CreateGuildModal from "./components/guildSideBar/CreateGuildModal";
+import GuildSidebar from "./components/guildChannels/GuildSidebar";
+import { getGuildListQueryOptions } from "~/api/guild/guild.keys";
+import { useGuildList } from "~/api/guild/guild.hooks";
 
 export const clientMiddleware: Route.ClientMiddlewareFunction[] = [
   authMiddleware,
@@ -27,6 +31,7 @@ export async function clientLoader() {
     queryClient.query({
       ...getPrivateChannelListQueryOptions(),
     }),
+    queryClient.query(getGuildListQueryOptions()),
   ]);
 
   return { profile, channelList };
@@ -42,10 +47,11 @@ export async function clientLoader() {
 
 function AppLayout({ loaderData }: Route.ComponentProps) {
   const { profile, channelList } = loaderData;
-  const [activeGuildId, setActiveGuildId] = useState<string | undefined>(
-    undefined,
-  );
+  const { guildId: activeGuildId, channelId: activeGuildChannelId } =
+    useParams();
+  const { data: guilds = [] } = useGuildList();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isCreateGuildOpen, setIsCreateGuildOpen] = useState(false);
   const navigate = useNavigate();
   const [activeView, setActiveView] = useState<"friends" | "requests">(
     "friends",
@@ -68,36 +74,46 @@ function AppLayout({ loaderData }: Route.ComponentProps) {
       <GuildList
         guilds={guilds}
         activeGuildId={activeGuildId}
-        onSelectGuild={setActiveGuildId}
-        onSelectHome={() => setActiveGuildId(undefined)}
+        onSelectGuild={(guildId) => navigate(`/guild/${guildId}`)}
+        onSelectHome={() => navigate("/")}
+        onCreateGuild={() => setIsCreateGuildOpen(true)}
       />
-      <DirectMessageSidebar
-        profile={profile}
-        onSearch={() => {}}
-        onOpenSettings={() => setIsSettingsOpen(true)}
-      >
-        <SidebarNavItem
-          icon={MdPerson}
-          label="Amis"
-          isActive={activeView === "friends" && !activeConversationId}
-          onClick={() => navigate("/")}
+      {activeGuildId ? (
+        <GuildSidebar
+          guildId={activeGuildId}
+          activeChannelId={activeGuildChannelId}
+          profile={profile}
+          onOpenSettings={() => setIsSettingsOpen(true)}
         />
-        <SidebarNavItem
-          icon={MdInbox}
-          label="Demandes de message"
-          isActive={activeView === "requests"}
-          badge={pendingRequestCount}
-          onClick={() => navigate("/requests")}
-        />
-
-        <div className="mt-2">
-          <SectionHeader
-            title="MESSAGES PRIVÉS"
-            addLabel="Nouvelle conversation"
+      ) : (
+        <DirectMessageSidebar
+          profile={profile}
+          onSearch={() => {}}
+          onOpenSettings={() => setIsSettingsOpen(true)}
+        >
+          <SidebarNavItem
+            icon={MdPerson}
+            label="Amis"
+            isActive={activeView === "friends" && !activeConversationId}
+            onClick={() => navigate("/")}
           />
-        </div>
-        <DmList conversations={conversations} />
-      </DirectMessageSidebar>
+          <SidebarNavItem
+            icon={MdInbox}
+            label="Demandes de message"
+            isActive={activeView === "requests"}
+            badge={pendingRequestCount}
+            onClick={() => navigate("/requests")}
+          />
+
+          <div className="mt-2">
+            <SectionHeader
+              title="MESSAGES PRIVÉS"
+              addLabel="Nouvelle conversation"
+            />
+          </div>
+          <DmList conversations={conversations} />
+        </DirectMessageSidebar>
+      )}
       <main className="flex min-w-0 flex-1 flex-col bg-surface">
         <Outlet />
       </main>
@@ -105,6 +121,11 @@ function AppLayout({ loaderData }: Route.ComponentProps) {
       <SettingsModal
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
+      />
+      <CreateGuildModal
+        isOpen={isCreateGuildOpen}
+        owner={{ id: profile.id, username: profile.username }}
+        onClose={() => setIsCreateGuildOpen(false)}
       />
     </div>
   );

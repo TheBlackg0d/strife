@@ -25,7 +25,7 @@ public class ProfileService {
     }
 
     public Profile getOrCreateProfileById(JwtPrincipal jwtPrincipal) {
-        return this.profileRepository.findById(jwtPrincipal.id()).orElse(this.createProfile(jwtPrincipal));
+        return this.profileRepository.findById(jwtPrincipal.id()).orElseGet(() -> this.createProfile(jwtPrincipal));
     }
 
     public Profile getProfileByEmail(String email) {

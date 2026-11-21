@@ -31,6 +31,10 @@ public class UserService {
     }
 
     public User createUser(UserDTO userDTO) {
+        if (userRepository.existsById(userDTO.id())) {
+            return getUser(userDTO.id());
+        }
+
         User user = new User();
         user.setId(userDTO.id());
         user.setUsername(userDTO.username());

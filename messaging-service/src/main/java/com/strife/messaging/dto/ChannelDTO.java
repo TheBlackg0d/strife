@@ -19,6 +19,10 @@ public record ChannelDTO(UUID id, String channelTitle, UUID ownerId, UUID guildI
     }
 
     private static String getChannelTitle(Channel channel, UUID currentUserId) {
+        if (channel.getType().equals(ChannelType.GUILD_TEXT)) {
+            return channel.getName();
+        }
+
         if (channel.getType().equals(ChannelType.GROUP_DM)) {
             return channel.getName() != null ? channel.getName() : "Groupe Privé";
         }

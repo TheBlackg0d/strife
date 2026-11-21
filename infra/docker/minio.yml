@@ -1,6 +1,6 @@
 services:
   minio:
-    image: quay.io/minio/minio
+    image: pgsty/minio
     container_name: strife-minio
     ports:
       - "9000:9000"

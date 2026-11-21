@@ -39,8 +39,7 @@ function GuildRail({
         <GuildItem
           key={guild.id}
           name={guild.name}
-          imageUrl={guild.imageUrl}
-          icon={guild.icon}
+          imageUrl={guild.guildPicture ?? undefined}
           isActive={guild.id === activeGuildId}
           onClick={() => onSelectGuild?.(guild.id)}
         />

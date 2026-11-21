@@ -1,6 +1,8 @@
 package com.strife.users.config;
 
+import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,37 +57,67 @@ public class DevRelationshipSeeder implements CommandLineRunner {
 
     private final TransactionTemplate transactionTemplate;
 
+    private static final int MAX_ATTEMPTS = 20;
+
+    private static final Duration RETRY_DELAY = Duration.ofSeconds(3);
+
     @Override
     public void run(String... args) {
+        Thread.ofVirtual().name("dev-relationship-seeder").start(this::seedWithRetry);
+    }
+
+    private void seedWithRetry() {
+        List<SeedRelation> pending = new ArrayList<>(SEED_RELATIONS);
         int created = 0;
 
-        for (SeedRelation seed : SEED_RELATIONS) {
-            List<SeedEvent> events = transactionTemplate.execute(status -> seedRelation(seed));
-
-            if (events == null || events.isEmpty()) {
-                continue;
+        for (int attempt = 1; attempt <= MAX_ATTEMPTS && !pending.isEmpty(); attempt++) {
+            if (attempt > 1 && !sleep()) {
+                return;
             }
 
-            events.forEach(e -> relationshipPublisher.publishFriendChangeEvent(e.key(), e.event()));
-            created++;
+            Iterator<SeedRelation> it = pending.iterator();
+            while (it.hasNext()) {
+                SeedRelation seed = it.next();
+                Optional<List<SeedEvent>> events = transactionTemplate.execute(status -> seedRelation(seed));
+
+                if (events == null || events.isEmpty()) {
+                    continue;
+                }
+
+                it.remove();
+                if (!events.get().isEmpty()) {
+                    events.get().forEach(e -> relationshipPublisher.publishFriendChangeEvent(e.key(), e.event()));
+                    created++;
+                }
+            }
         }
 
+        pending.forEach(seed -> log.warn("Seed de dev : profil manquant pour {} -> {}, relation ignorée.",
+                seed.initiator(), seed.target()));
         log.info("Seed de dev : {} relation(s) créée(s) sur {}.", created, SEED_RELATIONS.size());
     }
 
-    private List<SeedEvent> seedRelation(SeedRelation seed) {
+    private boolean sleep() {
+        try {
+            Thread.sleep(RETRY_DELAY);
+            return true;
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return false;
+        }
+    }
+
+    private Optional<List<SeedEvent>> seedRelation(SeedRelation seed) {
         Optional<Profile> initiator = profileRepository.findByUsername(seed.initiator());
         Optional<Profile> target = profileRepository.findByUsername(seed.target());
 
         if (initiator.isEmpty() || target.isEmpty()) {
-            log.warn("Seed de dev : profil manquant pour {} -> {}, relation ignorée.", seed.initiator(),
-                    seed.target());
-            return List.of();
+            return Optional.empty();
         }
 
         if (relationshipRepository.findByProfilePair(initiator.get().getUserId(), target.get().getUserId())
                 .isPresent()) {
-            return List.of();
+            return Optional.of(List.of());
         }
 
         List<SeedEvent> events = new ArrayList<>();
@@ -101,6 +133,6 @@ public class DevRelationshipSeeder implements CommandLineRunner {
                             accepted.status())));
         }
 
-        return events;
+        return Optional.of(events);
     }
 }

@@ -297,20 +297,20 @@ services:
         - action: rebuild
           path: ../../api-gateway/Dockerfile
 
-  frontend:
-    build:
-      context: ../../frontend
-      dockerfile: Dockerfile
-    image: strife/frontend:latest
-    container_name: strife-frontend
-    extends:
-      file: common-config.yml
-      service: network-deploy-service
-    ports:
-      - "3000:80"
-    restart: unless-stopped
-    depends_on:
-      - api-gateway
+  # frontend:
+  # build:
+  #   context: ../../frontend
+  #   dockerfile: Dockerfile
+  # image: strife/frontend:latest
+  # container_name: strife-frontend
+  # extends:
+  #   file: common-config.yml
+  #   service: network-deploy-service
+  # ports:
+  #   - "3000:80"
+  # restart: unless-stopped
+  # depends_on:
+  #   - api-gateway
 
 networks:
   strife-net:

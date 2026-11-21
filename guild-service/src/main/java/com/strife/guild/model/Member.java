@@ -13,7 +13,9 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.Instant;
@@ -23,6 +25,8 @@ import java.util.UUID;
 
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(name = "uq_member_guild_user", columnNames = { "guild_id", "user_id" }))
+@AllArgsConstructor
+@NoArgsConstructor
 @Setter
 @Getter
 public class Member {

@@ -24,7 +24,7 @@ export type Channel = {
   memberCount: number;
 };
 
-export type ChannelType = "GROUP_DM" | "DM";
+export type ChannelType = "GROUP_DM" | "DM" | "GUILD_TEXT";
 
 export type ChannelPageDetails = {
   channel: Channel;
