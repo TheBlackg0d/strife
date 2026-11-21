@@ -1,7 +1,6 @@
 import { Outlet, useMatch, useNavigate, useParams } from "react-router";
 import type { Route } from "./+types/AppLayout";
 import GuildList from "./components/guildSideBar/GuildList";
-import { pendingRequestCount } from "~/data/dashboard";
 
 import { useState } from "react";
 import DirectMessageSidebar from "./components/directMessage/DirectMessageSidebar";
@@ -101,7 +100,7 @@ function AppLayout({ loaderData }: Route.ComponentProps) {
             icon={MdInbox}
             label="Demandes de message"
             isActive={activeView === "requests"}
-            badge={pendingRequestCount}
+            badge={5}
             onClick={() => navigate("/requests")}
           />
 
